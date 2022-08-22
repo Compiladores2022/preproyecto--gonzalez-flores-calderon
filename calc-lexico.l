@@ -21,9 +21,13 @@ digito [0-9]
                                 printf("INT : %d\n",atoi(yytext)); 
                                 return INT;}
 
+"end"						  { 
+                                printf("PROGRAM END : %s\n",yytext);
+                                return ;}
+
 {letra}({letra}|{digito})*    { 
                                 printf("ID : %s\n",yytext);
-                                return ID;}
+                                return END;}
 
 "-"                       {  printf("%s\n",yytext);
                                   return TMENOS;}    

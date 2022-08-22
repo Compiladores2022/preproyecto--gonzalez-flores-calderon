@@ -6,6 +6,7 @@
 %}
  
 %token INT
+%token END
 %token ID
 %token TMENOS
 
@@ -17,9 +18,14 @@
  
 %%
  
-prog: expr ';'  { printf("No hay errores \n"); } 
+prog: expr ';' nextLine { printf("No hay errores \n"); } 
     ;
   
+nextLine: expr ';' nextLine
+
+    | END
+    ;
+
 expr: VALOR               
 
     | expr '+' expr    
