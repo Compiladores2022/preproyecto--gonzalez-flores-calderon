@@ -28,6 +28,14 @@ digito [0-9]
 							    printf("TFALSE : %s\n",yytext);
 								return TFALSE;}
 
+"int"                      { 
+							    printf("TINT : %s\n",yytext);
+								return TINT;}
+
+"bool"                      { 
+							    printf("TBOOL : %s\n",yytext);
+								return TBOOL;}
+
 {letra}({letra}|{digito})*  { 
 								printf("ID : %s\n",yytext);
 								return ID;}

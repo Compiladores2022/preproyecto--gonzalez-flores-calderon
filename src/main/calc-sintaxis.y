@@ -28,12 +28,22 @@
  
 %%
  
-prog: expr ';' nextLine { printf("No hay errores \n"); } 
+prog: declList sentList
+    
+    | sentList
     ;
-  
-nextLine: expr ';' nextLine
 
-    | END
+declList: decl
+
+    | decl declList
+    ;
+
+decl: type ID '=' expr ';'
+    ;
+    
+sentList: expr ';' { printf("No hay errores \n"); } 
+    
+    | expr ';' sentList
     ;
 
 expr: VALOR               
@@ -49,12 +59,18 @@ expr: VALOR
     | expr TOR expr    
     
     | expr TAND expr    
-         
     ;   
 
 VALOR: INT
-     | TFALSE
-     | TTRUE              
+    
+    | TFALSE
+    
+    | TTRUE              
+    ;
+
+type: TINT
+
+    | TBOOL
     ;
 
 %%
