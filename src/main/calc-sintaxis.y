@@ -17,6 +17,7 @@
 %token TAND
 %token TTRUE
 %token TFALSE
+%token TReturn
 
 %type expr
 %type VALOR
@@ -45,12 +46,13 @@ sentList: sent
     | sentList  sent
     ;
 
-sent: ID "=" expr ";"
+sent: ID '=' expr ';'
 
-    | expr ";"
+    | expr ';'
 
-    | Return expr ";"
+    | TReturn expr ';'
     ;
+
 expr: VALOR               
 
     | expr '+' expr    
