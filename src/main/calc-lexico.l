@@ -20,6 +20,10 @@ digito [0-9]
                             	printf("INT : %d\n",atoi(yytext)); 
                             	return INT;}
 
+"return"					{ 
+								printf("Return : %s\n",yytext);
+								return TReturn;}
+
 "true"                      { 
 							    printf("TTRUE : %s\n",yytext);
 								return TTRUE;}
