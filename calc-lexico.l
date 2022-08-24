@@ -14,28 +14,37 @@
 letra [a-zA-Z]      
 digito [0-9]   
 
-
 %%
 
-{digito}+                     { 
-                                printf("INT : %d\n",atoi(yytext)); 
-                                return INT;}
+{digito}+                   { 
+                            	printf("INT : %d\n",atoi(yytext)); 
+                            	return INT;}
 
-"end"						  { 
-                                printf("PROGRAM END : %s\n",yytext);
-                                return ;}
+"true"                      { 
+							    printf("TTRUE : %s\n",yytext);
+								return TTRUE;}
 
-{letra}({letra}|{digito})*    { 
-                                printf("ID : %s\n",yytext);
-                                return END;}
+"false"                      { 
+							    printf("TFALSE : %s\n",yytext);
+								return TFALSE;}
 
-"-"                       {  printf("%s\n",yytext);
-                                  return TMENOS;}    
+{letra}({letra}|{digito})*  { 
+								printf("ID : %s\n",yytext);
+								return ID;}
 
-[+*;()]                   {  printf("%s\n",yytext);
-                                  return *yytext;}
+"&&"						{	printf("%s\n",yytext);
+                            	return TAND;}
 
-.|\n                          ; /* ignore all the rest */
+"||"						{	printf("%s\n",yytext);
+                            	return TOR;}
+
+"-"                       	{	printf("%s\n",yytext);
+                            	return TMENOS;}    
+
+[+*=;()]                    {	printf("%s\n",yytext);
+                                return *yytext;}
+
+.|\n                        ; /* ignore all the rest */
 
 %%
 
@@ -43,7 +52,7 @@ void yyerror(){
 	printf("%s%d\n","-> ERROR Sintactico en la linea: ",yylineno);
 }
 
-int main(int argc,char *argv[]){
+int main(int argc,char *argv[]) {
 	++argv,--argc;
 	if (argc > 0)
 		yyin = fopen(argv[0],"r");
