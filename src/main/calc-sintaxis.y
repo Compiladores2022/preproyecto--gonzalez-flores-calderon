@@ -40,12 +40,17 @@ declList: decl
 
 decl: type ID '=' expr ';'
     ;
-    
-sentList: expr ';' { printf("No hay errores \n"); } 
-    
-    | expr ';' sentList
+
+sentList: sent
+    | sentList  sent
     ;
 
+sent: ID "=" expr ";"
+
+    | expr ";"
+
+    | Return expr ";"
+    ;
 expr: VALOR               
 
     | expr '+' expr    
