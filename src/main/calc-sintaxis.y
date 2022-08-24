@@ -43,6 +43,7 @@ decl: type ID '=' expr ';'
     ;
 
 sentList: sent
+    
     | sentList  sent
     ;
 
@@ -53,7 +54,9 @@ sent: ID '=' expr ';'
     | TReturn expr ';'
     ;
 
-expr: VALOR               
+expr: VALOR
+    
+    |ID               
 
     | expr '+' expr    
     
