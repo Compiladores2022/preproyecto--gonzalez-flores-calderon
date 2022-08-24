@@ -4,17 +4,27 @@
 #include <stdio.h>
 
 %}
+
  
 %token INT
 %token END
 %token ID
+%token BOOL 
 %token TMENOS
+%token TBOOL
+%token TINT
+%token TOR
+%token TAND
+%token TTRUE
+%token TFALSE
 
 %type expr
 %type VALOR
     
 %left '+' TMENOS 
-%left '*'
+%left '*' 
+%left TAND
+%left TOR
  
 %%
  
@@ -34,13 +44,19 @@ expr: VALOR
 
     | expr TMENOS expr  
 
-    | '(' expr ')'      
+    | '(' expr ')'
+
+    | expr TOR expr    
+    
+    | expr TAND expr    
+         
+    ;   
+
+VALOR: INT
+     | TFALSE
+     | TTRUE              
     ;
 
-
-VALOR : INT              
-       ;
- 
 %%
 
 
