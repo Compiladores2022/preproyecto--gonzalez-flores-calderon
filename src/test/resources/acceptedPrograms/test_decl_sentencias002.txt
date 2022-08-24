@@ -1,0 +1,21 @@
+int  aux = 32;
+bool b1 = (false || true);
+int  x1 =2;
+bool b2 = 1 && true;
+
+b2 = (false);
+return b2;
+
+x1 = x1 * aux + 1;
+return ((x1));
+
+x1 = x1 * aux + 1;
+return ((x1));
+
+x1 = x1 * aux + 1;
+return ((aux + 2)*4*8*x1);
+
+x1 = x1 + 10;
+return ( (x1 +1)*1*1*1);
+
+

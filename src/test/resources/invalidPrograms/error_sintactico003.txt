@@ -1,0 +1,5 @@
+int  nombreVar1=4;
+bool b1= true;
+int x2 = 2;
+
+// faltan sentencias.. no tiene sentido aceptar un programa sin sentencias

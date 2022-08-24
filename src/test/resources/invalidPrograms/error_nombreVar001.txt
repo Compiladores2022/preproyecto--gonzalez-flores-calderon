@@ -1,0 +1,7 @@
+int  2aux = 88446;
+bool b1 = (false || true);
+
+b1 = (false);
+return b1;
+
+

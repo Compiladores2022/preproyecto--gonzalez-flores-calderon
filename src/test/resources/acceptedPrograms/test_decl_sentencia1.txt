@@ -1,0 +1,5 @@
+int  x1 = 0;
+int  x2 = 42;
+bool x3 = true;
+
+return x1 + (x2 * x2);
