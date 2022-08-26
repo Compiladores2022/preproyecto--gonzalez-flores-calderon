@@ -1,0 +1,13 @@
+#!/bin/bash
+
+flex calc-lexico.l 
+bison -d calc-sintaxis.y
+gcc lex.yy.c calc-sintaxis.tab.c
+
+mv lex.yy.c script_generated/lex.yy.c
+mv calc-sintaxis.tab.c script_generated/calc-sintaxis.tab.c
+mv calc-sintaxis.tab.h script_generated/calc-sintaxis.tab.h
+mv a.out script_generated/a.out
+
+printf "\n\nWrite a program";
+./script_generated/a.out
