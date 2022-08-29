@@ -13,6 +13,7 @@ void yyerror();
 %option yylineno
 
 letra [a-zA-Z]      
+minuscula [a-z]
 digito [0-9]   
 
 %%
@@ -45,7 +46,7 @@ digito [0-9]
 							    printf("COMMENT : %s\n",yytext);
 								return COMMENT;}
 
-{letra}({letra}|{digito})*  { 
+{minuscula}({letra}|{digito})*  { 
 								printf("ID : %s\n",yytext);
 								return ID;}
 

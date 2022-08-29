@@ -46,6 +46,8 @@ decl: type ID '=' expr ';'
     ;
 
 sentList: sent
+
+    | sentList COMMENT
     
     | sentList  sent
     ;
@@ -53,8 +55,6 @@ sentList: sent
 sent: ID '=' expr ';'
 
     | expr ';'
-
-    | COMMENT
 
     | TReturn expr ';'
     ;
