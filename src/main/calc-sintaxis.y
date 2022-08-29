@@ -10,6 +10,7 @@
 %token END
 %token ID
 %token BOOL 
+%token COMMENT
 %token TMENOS
 %token TBOOL
 %token TINT
@@ -50,6 +51,8 @@ sentList: sent
 sent: ID '=' expr ';'
 
     | expr ';'
+
+    | COMMENT
 
     | TReturn expr ';'
     ;

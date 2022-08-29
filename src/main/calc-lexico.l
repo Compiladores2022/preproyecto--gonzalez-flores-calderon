@@ -40,6 +40,10 @@ digito [0-9]
 							    printf("TBOOL : %s\n",yytext);
 								return TBOOL;}
 
+"//".*"\n"                      { 
+							    printf("COMMENT : %s\n",yytext);
+								return COMMENT;}
+
 {letra}({letra}|{digito})*  { 
 								printf("ID : %s\n",yytext);
 								return ID;}
