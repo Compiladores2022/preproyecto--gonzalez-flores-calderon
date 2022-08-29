@@ -6,6 +6,7 @@
 
 #include "calc-sintaxis.tab.h"
 
+void yyerror();
 %}
 
 %option noyywrap
@@ -60,12 +61,16 @@ digito [0-9]
 [+*=;()]                    {	printf("%s\n",yytext);
                                 return *yytext;}
 
-.|\n                        ; /* ignore all the rest */
+\n|" "                        ; /* ignore all the rest */
 
+
+.							{	printf("-> ERROR Simbolo invalido: %s: En linea : %d\n", yytext, yylineno); 
+							 	exit(0);} 
 %%
 
 void yyerror(){
-	printf("%s%d\n","-> ERROR Sintactico en la linea: ",yylineno);
+	printf("%s%d\n","-> ERROR Sintactico en la linea: ",yylineno); 
+	exit(0);
 }
 
 int main(int argc,char *argv[]) {
