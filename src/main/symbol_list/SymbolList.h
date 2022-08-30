@@ -3,25 +3,30 @@
 
 enum types{INT, BOOL};
 
-struct Symbol {
+typedef struct {
     enum types type;
     char *name;
     void *value;
-}
+    int level;
+}Symbol;
 
 struct Node {
-    struct Symbol info;
+    Symbol info;
     struct Node *next;
-}
+};
 
-Node *symbolList
+typedef struct{
+	struct Node *head;
+}SymbolList;
 
-void insert(Node *symbolList, Symbol symbol);
+void insert(SymbolList *symbolList, Symbol symbol);
 
-void search(Node *symbolList, char *name);
+void search(SymbolList *symbolList, char *name);
 
-void pop(Node *symbolList, Node *limit);
+void pop(SymbolList *symbolList, struct Node *limit);
 
+//void openLevel(SymbolList *SymbolList, int level);
 
+//void closeLevel(SymbolList *SymbolList, int level);
 
 #endif
