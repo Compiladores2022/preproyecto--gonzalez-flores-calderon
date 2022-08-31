@@ -27,7 +27,7 @@ typedef struct{
 
 void insert(SymbolList *symbolList, Symbol *symbol, int increaseLevel);
 
-int search(SymbolList *symbolList, char *name);
+int search(SymbolList *symbolList, Symbol *name);
 
 void pop(SymbolList *symbolList, struct Node *limit);
 

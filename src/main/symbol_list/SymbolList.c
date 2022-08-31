@@ -44,7 +44,7 @@ struct Node * CrateNode() {
     }
 }
 
-struct Node * CrateLevelNode() {
+struct levelNode * CrateLevelNode() {
     struct levelNode *newNode;
 
     newNode = (struct levelNode *) malloc (sizeof(struct levelNode));
@@ -65,16 +65,15 @@ void insert(SymbolList *symbolList, Symbol *symbol, int increaseLevel) {
 
     newNode = CrateNode();
     newNode->info = symbol;
-    newNode->next = symbolList->head;
-    symbolList->head = newNode;
+    newNode->next = symbolList->head->levelSymbols;
+    symbolList->head->levelSymbols = newNode;
 }
 
 //checks if the given symbol is already present in the current level of the symbolList
 int nameConflict(SymbolList *symbolList, Symbol *symbol) {
-    int currentLevel = symbolList->head->info->level;
-    struct Node *listPointer = symbolList->head;
+    struct Node *listPointer = symbolList->head->levelSymbols;
 
-    while (listPointer != NULL && listPointer->info->level != currentLevel) {
+    while (listPointer != NULL) {
         if (strcmp(listPointer->info->name, symbol->name)){
             return 1;
         }
@@ -83,17 +82,19 @@ int nameConflict(SymbolList *symbolList, Symbol *symbol) {
     return 0;
 }
 
-int search(SymbolList *symbolList, char *name) {
+int search(SymbolList *symbolList, Symbol *symbol) {
 
     if(symbolList == NULL){
         exit(EXIT_FAILURE);
     }
+
+    struct levelNode *ln = symbolList->head;
     
-    while (symbolList->head != NULL){
-        if(nameConflict(symbolList, name) == 1){
+    while (ln != NULL){
+        if(nameConflict(symbolList, symbol) == 1){
             return 1;
         }
-        symbolList->head = symbolList->head->next;
+        ln = ln->next;
     }
     return 0;
 }
