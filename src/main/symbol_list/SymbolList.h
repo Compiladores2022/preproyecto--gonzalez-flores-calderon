@@ -11,7 +11,7 @@ typedef struct {
 }Symbol;
 
 struct Node {
-    Symbol info;
+    Symbol *info;
     struct Node *next;
 };
 
@@ -19,9 +19,9 @@ typedef struct{
 	struct Node *head;
 }SymbolList;
 
-void insert(SymbolList *symbolList, Symbol symbol);
+void insert(SymbolList *symbolList, Symbol *symbol, int increaseLevel);
 
-void search(SymbolList *symbolList, char *name);
+Symbol * search(SymbolList *symbolList, char *name);
 
 void pop(SymbolList *symbolList, struct Node *limit);
 
