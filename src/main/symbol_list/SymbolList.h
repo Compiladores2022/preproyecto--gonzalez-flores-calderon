@@ -2,6 +2,7 @@
 #define SYMBOLLIST_H
 
 enum types{INT, BOOL};
+int currentLevel;
 
 typedef struct {
     enum types type;
@@ -21,12 +22,12 @@ typedef struct{
 
 void insert(SymbolList *symbolList, Symbol *symbol, int increaseLevel);
 
-Symbol * search(SymbolList *symbolList, char *name);
+int search(SymbolList *symbolList, char *name);
 
 void pop(SymbolList *symbolList, struct Node *limit);
 
-//void openLevel(SymbolList *SymbolList, int level);
+void openLevel(SymbolList *SymbolList, int level);
 
-//void closeLevel(SymbolList *SymbolList, int level);
+void closeLevel(SymbolList *SymbolList, int level);
 
 #endif
