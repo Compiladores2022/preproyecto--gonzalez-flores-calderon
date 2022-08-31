@@ -73,4 +73,13 @@ int search(SymbolList *symbolList, char *name) {
     return 0;
 }
 
+//Create new level
+void openLevel(SymbolList *SymbolList) {
+    struct levelNode *newLevelNode;
+
+    newLevelNode = CrateLevelNode();
+    newLevelNode->next = SymbolList->head;
+    SymbolList->head = newLevelNode;
+}
+
 // 1 true, 0 false
