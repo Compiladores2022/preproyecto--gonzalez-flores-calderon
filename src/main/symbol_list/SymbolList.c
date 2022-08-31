@@ -82,4 +82,21 @@ void openLevel(SymbolList *SymbolList) {
     SymbolList->head = newLevelNode;
 }
 
+//Delete current level
+void closeLevel(SymbolList *SymbolList) {
+    
+    struct levelNode *ln; //levelNode aux to free level
+    struct Node *n; //node aux to free list
+    
+    while (SymbolList->head->levelSymbols != NULL){
+        n = SymbolList->head->levelSymbols;
+        SymbolList->head->levelSymbols = SymbolList->head->levelSymbols->next;
+        free(n);
+    }
+
+    ln = SymbolList->head;
+    SymbolList->head = SymbolList->head->next;
+    free(ln);
+}
+
 // 1 true, 0 false
