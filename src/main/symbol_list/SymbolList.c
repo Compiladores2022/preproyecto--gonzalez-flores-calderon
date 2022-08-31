@@ -9,8 +9,12 @@ int nameConflict(SymbolList *symbolList, Symbol *symbol);
 int main(){
     return 0;
 }
+
+void initialize(SymbolList *SymbolList) {
+
+}
  
-struct Node * CrateNode(){
+struct Node * CrateNode() {
     struct Node *newNode;
 
     newNode = (struct Node *) malloc (sizeof(struct Node));
@@ -22,7 +26,7 @@ struct Node * CrateNode(){
     }
 }
 
-struct Node * CrateLevelNode(){
+struct Node * CrateLevelNode() {
     struct levelNode *newNode;
 
     newNode = (struct levelNode *) malloc (sizeof(struct levelNode));
@@ -34,12 +38,13 @@ struct Node * CrateLevelNode(){
     }
 }
 
-void insert(SymbolList *symbolList, Symbol *symbol, int increaseLevel){
+void insert(SymbolList *symbolList, Symbol *symbol, int increaseLevel) {
     struct Node *newNode;
 
-    if (increaseLevel != 1 && nameConflict(symbolList, symbol) == 1)
+    if (increaseLevel != 1 && nameConflict(symbolList, symbol) == 1){
         exit(0); //name already present
-    
+    }    
+
     newNode = CrateNode();
     newNode->info = symbol;
     newNode->next = symbolList->head;
@@ -52,8 +57,9 @@ int nameConflict(SymbolList *symbolList, Symbol *symbol) {
     struct Node *listPointer = symbolList->head;
 
     while (listPointer != NULL && listPointer->info->level != currentLevel) {
-        if (strcmp(listPointer->info->name, symbol->name))
+        if (strcmp(listPointer->info->name, symbol->name)){
             return 1;
+        }
         listPointer = listPointer->next;
     }
     return 0;
@@ -62,10 +68,11 @@ int nameConflict(SymbolList *symbolList, Symbol *symbol) {
 int search(SymbolList *symbolList, char *name) {
 
     if(symbolList == NULL){
-        exit (0);
+        exit(EXIT_FAILURE);
     }
+    
     while (symbolList->head != NULL){
-        if(strcmp(symbolList->head->levelSymbols->info, name) == 0){
+        if(nameConflict(symbolList, name) == 1){
             return 1;
         }
         symbolList->head = symbolList->head->next;
