@@ -9,11 +9,23 @@ int nameConflict(SymbolList *symbolList, Symbol *symbol);
 int main(){
     return 0;
 }
-
+ 
 struct Node * CrateNode(){
     struct Node *newNode;
 
     newNode = (struct Node *) malloc (sizeof(struct Node));
+    if(newNode == NULL){
+        exit(EXIT_FAILURE);
+    }
+    else{
+        return newNode;
+    }
+}
+
+struct Node * CrateLevelNode(){
+    struct levelNode *newNode;
+
+    newNode = (struct levelNode *) malloc (sizeof(struct levelNode));
     if(newNode == NULL){
         exit(EXIT_FAILURE);
     }
@@ -53,20 +65,12 @@ int search(SymbolList *symbolList, char *name) {
         exit (0);
     }
     while (symbolList->head != NULL){
-        if(strcmp(symbolList->head->info->name, name) == 0){
+        if(strcmp(symbolList->head->levelSymbols->info, name) == 0){
             return 1;
         }
         symbolList->head = symbolList->head->next;
     }
     return 0;
-}
-
-void openLevel(SymbolList *SymbolList, int level) {
-
-}
-
-void closeLevel(SymbolList *SymbolList, int level) {
-
 }
 
 // 1 true, 0 false
