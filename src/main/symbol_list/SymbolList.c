@@ -6,6 +6,10 @@
 
 int nameConflict(SymbolList *symbolList, Symbol *symbol);
 
+int main(){
+    return 0;
+}
+
 struct Node * CrateNode(){
     struct Node *newNode;
 
@@ -40,9 +44,29 @@ int nameConflict(SymbolList *symbolList, Symbol *symbol) {
             return 1;
         listPointer = listPointer->next;
     }
-
     return 0;
 }
 
+int search(SymbolList *symbolList, char *name) {
+
+    if(symbolList == NULL){
+        exit (0);
+    }
+    while (symbolList->head != NULL){
+        if(strcmp(symbolList->head->info->name, name) == 0){
+            return 1;
+        }
+        symbolList->head = symbolList->head->next;
+    }
+    return 0;
+}
+
+void openLevel(SymbolList *SymbolList, int level) {
+
+}
+
+void closeLevel(SymbolList *SymbolList, int level) {
+
+}
 
 // 1 true, 0 false
