@@ -1,4 +1,4 @@
-#include "SymbolList.h"
+#include "symbol_list.h"
 
 #include <stdio.h>
 #include <stdlib.h>

@@ -1,5 +1,5 @@
-#ifndef SYMBOLLIST_H
-#define SYMBOLLIST_H
+#ifndef SYMBOL_LIST_H
+#define SYMBOL_LIST_H
 
 enum types{INT, BOOL};
 
