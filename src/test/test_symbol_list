@@ -1,0 +1,5 @@
+#!/bin/bash
+
+gcc symbol_list_tests.c ../main/symbol_list/symbol_list.c ../main/symbol_list/symbol_list.h
+./a.out
+rm a.out

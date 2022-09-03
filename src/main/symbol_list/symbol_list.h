@@ -25,7 +25,7 @@ typedef struct{
 	struct levelNode *head;
 }SymbolList;
 
-void insert(SymbolList *symbolList, Symbol *symbol, int increaseLevel);
+void insert(SymbolList *symbolList, Symbol *symbol);
 
 int search(SymbolList *symbolList, Symbol *name);
 

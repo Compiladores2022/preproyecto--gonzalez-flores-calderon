@@ -4,11 +4,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-int nameConflict(SymbolList *symbolList, Symbol *symbol);
-
-int main(){
-    return 0;
-}
+int searchInLevel(SymbolList *symbolList, Symbol *symbol);
 
 void initialize(SymbolList *SymbolList) {
     
@@ -16,7 +12,6 @@ void initialize(SymbolList *SymbolList) {
     struct Node *n; //node aux to free list
     
     while(SymbolList->head != NULL){
-
         while (SymbolList->head->levelSymbols != NULL){
             n = SymbolList->head->levelSymbols;
             SymbolList->head->levelSymbols = SymbolList->head->levelSymbols->next;
@@ -56,10 +51,10 @@ struct levelNode * CrateLevelNode() {
     }
 }
 
-void insert(SymbolList *symbolList, Symbol *symbol, int increaseLevel) {
+void insert(SymbolList *symbolList, Symbol *symbol) {
     struct Node *newNode;
 
-    if (increaseLevel != 1 && nameConflict(symbolList, symbol) == 1){
+    if (searchInLevel(symbolList, symbol) == 1){
         exit(0); //name already present
     }    
 
@@ -70,11 +65,11 @@ void insert(SymbolList *symbolList, Symbol *symbol, int increaseLevel) {
 }
 
 //checks if the given symbol is already present in the current level of the symbolList
-int nameConflict(SymbolList *symbolList, Symbol *symbol) {
+int searchInLevel(SymbolList *symbolList, Symbol *symbol) {
     struct Node *listPointer = symbolList->head->levelSymbols;
 
     while (listPointer != NULL) {
-        if (strcmp(listPointer->info->name, symbol->name)){
+        if (strcmp(listPointer->info->name, symbol->name) == 0){
             return 1;
         }
         listPointer = listPointer->next;
@@ -91,7 +86,7 @@ int search(SymbolList *symbolList, Symbol *symbol) {
     struct levelNode *ln = symbolList->head;
     
     while (ln != NULL){
-        if(nameConflict(symbolList, symbol) == 1){
+        if(searchInLevel(symbolList, symbol)){
             return 1;
         }
         ln = ln->next;
