@@ -2,7 +2,6 @@
 #define SYMBOL_LIST_H
 
 enum types{INT, BOOL};
-int currentLevel;
 
 typedef struct {
     enum types type;
