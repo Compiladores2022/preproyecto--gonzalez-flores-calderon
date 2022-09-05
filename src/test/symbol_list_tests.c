@@ -2,7 +2,6 @@
 
 #include <stdio.h>
 
-Symbol createSymbol(enum types type, char *name, void *value);
 int currentLevel(SymbolList *symbolList);
 
 int addOneSymbolAndSearchIt();
@@ -104,15 +103,6 @@ int searchFindsCorrectSymbol() {
     insert(&list, &symbol5);
 
     return search(&list, "a") == &symbol4;
-}
-
-Symbol createSymbol(enum types type, char *name, void *value) {
-    Symbol newSymbol;
-    newSymbol.type = type;
-    newSymbol.name = name;
-    newSymbol.value = value;
-
-    return newSymbol;
 }
 
 int currentLevel(SymbolList *symbolList) {
