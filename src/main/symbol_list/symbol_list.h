@@ -22,7 +22,7 @@ typedef struct{
 
 void insert(SymbolList *symbolList, Symbol *symbol);
 
-int search(SymbolList *symbolList, Symbol *name);
+Symbol * search(SymbolList *symbolList, char *name);
 
 void pop(SymbolList *symbolList, struct Node *limit);
 

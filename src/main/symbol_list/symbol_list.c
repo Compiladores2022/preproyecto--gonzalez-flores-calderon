@@ -4,7 +4,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-int searchInLevel(struct Node *nodeList, Symbol *symbol);
+Symbol * searchInLevel(struct Node *nodeList, char *name);
 
 void initialize(SymbolList *SymbolList) {
     struct levelNode *ln; //levelNode aux to free level
@@ -52,7 +52,7 @@ struct levelNode * CrateLevelNode() {
 
 void insert(SymbolList *symbolList, Symbol *symbol) {
     struct Node *newNode;
-    if (searchInLevel(symbolList->head->levelSymbols, symbol) == 1){
+    if (searchInLevel(symbolList->head->levelSymbols, symbol->name) != NULL){
         exit(0); //name already present
     }    
 
@@ -62,33 +62,36 @@ void insert(SymbolList *symbolList, Symbol *symbol) {
     symbolList->head->levelSymbols = newNode;
 }
 
-//checks if the given symbol is already present in the current level of the symbolList
-int searchInLevel(struct Node *nodeList, Symbol *symbol) {
+/*
+    checks if the given name is already present in the current level of the symbolList
+    if found returns the reference to it, otherwise returns null
+*/
+Symbol * searchInLevel(struct Node *nodeList, char *name) {
     struct Node *listPointer = nodeList;
 
     while (listPointer != NULL) {
-        if (strcmp(listPointer->info->name, symbol->name) == 0){
-            return 1;
+        if (strcmp(listPointer->info->name, name) == 0){
+            return listPointer->info;
         }
         listPointer = listPointer->next;
     }
-    return 0;
+    return NULL;
 }
 
-int search(SymbolList *symbolList, Symbol *symbol) {
+Symbol * search(SymbolList *symbolList, char *name) {
     if(symbolList == NULL){
         exit(EXIT_FAILURE);
     }
 
     struct levelNode *ln = symbolList->head;
-    
     while (ln != NULL){
-        if(searchInLevel(ln->levelSymbols, symbol)){
-            return 1;
+        Symbol *foundSymbol = searchInLevel(ln->levelSymbols, name);
+        if(foundSymbol != NULL){
+            return foundSymbol;
         }
         ln = ln->next;
     }
-    return 0;
+    return NULL;
 }
 
 //Create new level
