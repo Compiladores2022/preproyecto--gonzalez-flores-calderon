@@ -1,26 +1,20 @@
-#ifndef SYMBOLLIST_H
-#define SYMBOLLIST_H
+#include "../types/type_structs.h"
 
-enum types{INT, BOOL};
-enum operators{PLUS, SUBSTRACT, AND, OR};
-
-struct Symbol {
-    enum types type;
-    int level;
-    char *name;
-    void *value;
-};
+#ifndef SINTACTIC_ANALYSIS_TREE_H 
+#define SINTACTIC_ANALYSIS_TREE_H
 
 struct Node {
-    struct Symbol info;
+    Symbol info;
     struct Node *left;
-    enum operators operator;
     struct Node *right;
 };
 
-struct SintacticAnalysisTree {
+typedef struct {
     Node *head;
-};
+}SintacticAnalysisTree;
 
+void newNode(Symbol *symbol);
+
+void createTree(struct Node *left, struct Node *right);
 
 #endif
