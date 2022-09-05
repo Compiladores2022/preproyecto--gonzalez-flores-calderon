@@ -30,10 +30,10 @@ Symbol * search(SymbolList *symbolList, char *name);
 
 void pop(SymbolList *symbolList, struct Node *limit);
 
-void openLevel(SymbolList *SymbolList);
+void openLevel(SymbolList *symbolList);
 
-void closeLevel(SymbolList *SymbolList);
+void closeLevel(SymbolList *symbolList);
 
-void initialize(SymbolList *SymbolList);
+void initialize(SymbolList *symbolList);
 
 #endif

@@ -6,24 +6,9 @@
 
 Symbol * searchInLevel(struct Node *nodeList, char *name);
 
-void initialize(SymbolList *SymbolList) {
-    struct levelNode *ln; //levelNode aux to free level
-    struct Node *n; //node aux to free list
-    
-    while(SymbolList->head != NULL){
-        while (SymbolList->head->levelSymbols != NULL){
-            n = SymbolList->head->levelSymbols;
-            SymbolList->head->levelSymbols = SymbolList->head->levelSymbols->next;
-            free(n);
-        }
-
-        ln = SymbolList->head;
-        SymbolList->head = SymbolList->head->next;
-        free(ln);
-    }
-
-    //Doubtful
-    openLevel(SymbolList); 
+void initialize(SymbolList *symbolList) {
+    symbolList->head = NULL;
+    openLevel(symbolList); 
 }
 
 struct Node * CrateNode() {

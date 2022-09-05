@@ -28,7 +28,6 @@ int main(){
 
 int addOneSymbolAndSearchIt() {
     SymbolList list;
-    list.head = NULL;
     initialize(&list);
     int i = 3;
     Symbol newSymbol = createSymbol(INT, "a", &i);
@@ -38,7 +37,6 @@ int addOneSymbolAndSearchIt() {
 
 int openAndCloseLevel() {
     SymbolList list;
-    list.head = NULL;
     initialize(&list);
     int initialLevel = 1;
     openLevel(&list);
@@ -54,7 +52,6 @@ int openAndCloseLevel() {
 
 int cannotCloseFinalLevel() {
     SymbolList list;
-    list.head = NULL;
     initialize(&list);
     closeLevel(&list);
     return list.head != NULL && list.head->level == 1;
@@ -62,7 +59,6 @@ int cannotCloseFinalLevel() {
 
 int searchFindsSymbolInPreviousLevels() {
     SymbolList list;
-    list.head = NULL;
     initialize(&list);
 
     int a = 0;
@@ -86,7 +82,6 @@ int searchFindsSymbolInPreviousLevels() {
 
 int searchFindsCorrectSymbol() {
     SymbolList list;
-    list.head = NULL;
     initialize(&list);
 
     int a = 3;
