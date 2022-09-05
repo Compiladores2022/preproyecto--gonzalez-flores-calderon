@@ -1,13 +1,9 @@
+#include "../types/type_structs.h"
+
 #ifndef SYMBOL_LIST_H
 #define SYMBOL_LIST_H
 
 enum types{INT, BOOL};
-
-typedef struct {
-    enum types type;
-    char *name;
-    void *value;
-}Symbol;
 
 struct Node {
     Symbol *info;
