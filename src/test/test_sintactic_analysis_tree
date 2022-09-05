@@ -1,0 +1,6 @@
+#!/bin/bash
+
+gcc sintactic_analysis_tree_tests.c ../main/sintactic_analysis_tree/sintactic_analysis_tree.c ../main/sintactic_analysis_tree/sintactic_analysis_tree.h
+./a.out
+rm a.out
+rm ../main/sintactic_analysis_tree/sintactic_analysis_tree.h.gch
