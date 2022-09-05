@@ -31,7 +31,7 @@ int addOneSymbolAndSearchIt() {
     int i = 3;
     Symbol newSymbol = createSymbol(INT, "a", &i);
     insert(&list, &newSymbol);
-    return search(&list, &newSymbol);
+    return search(&list, "a") == &newSymbol;
 }
 
 int openAndCloseLevel() {
@@ -79,7 +79,7 @@ int searchFindsSymbolInPreviousLevels() {
     insert(&list, &symbol4);
     openLevel(&list);
 
-    return search(&list, &symbol2);
+    return search(&list, "a") == &symbol1;
 }
 
 Symbol createSymbol(enum types type, char *name, void *value) {
