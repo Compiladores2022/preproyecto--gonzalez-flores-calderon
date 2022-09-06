@@ -4,17 +4,17 @@
 #define SINTACTIC_ANALYSIS_TREE_H
 
 struct Node {
-    Symbol info;
+    Symbol *info;
     struct Node *left;
     struct Node *right;
 };
 
 typedef struct {
-    Node *head;
+    struct Node *head;
 }SintacticAnalysisTree;
 
 void newNode(Symbol *symbol);
 
-void createTree(struct Node *left, struct Node *right);
+void createTree(Symbol *symbol, struct Node *right, struct Node *left);
 
 #endif
