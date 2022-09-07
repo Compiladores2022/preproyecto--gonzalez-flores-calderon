@@ -9,5 +9,5 @@ mv calc-sintaxis.tab.c script_generated/calc-sintaxis.tab.c
 mv calc-sintaxis.tab.h script_generated/calc-sintaxis.tab.h
 mv a.out script_generated/a.out
 
-printf "\n\nWrite a program";
+printf "\n\nWrite a program\n";
 ./script_generated/a.out

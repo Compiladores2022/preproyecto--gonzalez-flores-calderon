@@ -10,15 +10,37 @@ mv calc-sintaxis.tab.h script_generated/calc-sintaxis.tab.h
 mv a.out script_generated/a.out
 
 declare -i file_number=1
+declare -i tests_passed=0
+declare -i total_tests=
+error_message="-> ERROR "
+printf "Testing valid programs\n";
 for file in ../test/resources/acceptedPrograms/*; do
-    printf "\n\nValid program $file_number:\n";
-    ./script_generated/a.out $file
+    total_tests=total_tests+1
+    file_output=$(./script_generated/a.out $file)
+    if [ "$file_output" == *"$error_message"* ] #output contains error message
+    then
+        printf '\n\nTest %d - %s failed:\n' $file $file_number
+        printf '%s' $file_output;
+    else
+        tests_passed=tests_passed+1
+    fi
     file_number=file_number+1
 done
 
+
 file_number=1
+printf "\n\nTesting Invalid programs\n";
 for file in ../test/resources/invalidPrograms/*; do
-    printf "\n\nInvalid program $file_number:\n";
-    ./script_generated/a.out $file
+    total_tests=total_tests+1
+    file_output=$(./script_generated/a.out $file)
+    if [ !"$file_output" == *"$error_message"* ] #output contains error message
+    then
+        printf "\n\nTest %d - %s failed, compiler didn't detect the error\n" $file $file_number
+        printf '%s' $file_output;
+    else
+        tests_passed=tests_passed+1
+    fi
     file_number=file_number+1
 done
+
+printf "\n\n$tests_passed tests passed out of $total_tests\n"
