@@ -12,13 +12,13 @@ int searchFindsCorrectSymbol();
 
 int main(){
     //total tests must be manually updated when adding a new test
-    int testsPassed = 0, totalTests = 5;
+    int testsPassed = 0, totalTests = 0;
     
-    addOneSymbolAndSearchIt() ? testsPassed++ : printf("test add one symbol and search it failed\n");
-    openAndCloseLevel() ? testsPassed++ : printf("test open and close several levels failed\n");
-    cannotCloseFinalLevel() ? testsPassed++ : printf("test cannot close final level failed\n");
-    searchFindsSymbolInPreviousLevels() ? testsPassed++ : printf("test search finds symbol in previous levels failed\n");
-    searchFindsCorrectSymbol() ? testsPassed++ : printf("test search finds correct symbol failed\n");
+    addOneSymbolAndSearchIt() ? testsPassed++ : printf("test add one symbol and search it failed\n"); totalTests++;
+    openAndCloseLevel() ? testsPassed++ : printf("test open and close several levels failed\n"); totalTests++;
+    cannotCloseFinalLevel() ? testsPassed++ : printf("test cannot close final level failed\n"); totalTests++;
+    searchFindsSymbolInPreviousLevels() ? testsPassed++ : printf("test search finds symbol in previous levels failed\n"); totalTests++;
+    searchFindsCorrectSymbol() ? testsPassed++ : printf("test search finds correct symbol failed\n"); totalTests++;
     
 
     printf("tests passed: %d out of %d\n", testsPassed, totalTests);
