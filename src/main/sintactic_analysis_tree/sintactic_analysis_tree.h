@@ -13,8 +13,8 @@ typedef struct {
     struct Node *head;
 }SintacticAnalysisTree;
 
-struct Node * newNode(Symbol *symbol);
+struct Node * createNode(Symbol *symbol);
 
-struct Node * createTree(Symbol *symbol, struct Node *right, struct Node *left);
+SintacticAnalysisTree * createTree(Symbol *symbol, struct Node *right, struct Node *left);
 
 #endif
