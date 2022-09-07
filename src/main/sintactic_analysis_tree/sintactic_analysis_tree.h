@@ -1,4 +1,4 @@
-#include "../types/type_structs.h"
+#include "../types/symbol.h"
 
 #ifndef SINTACTIC_ANALYSIS_TREE_H 
 #define SINTACTIC_ANALYSIS_TREE_H
@@ -13,8 +13,8 @@ typedef struct {
     struct Node *head;
 }SintacticAnalysisTree;
 
-void newNode(Symbol *symbol);
+struct Node * newNode(Symbol *symbol);
 
-void createTree(Symbol *symbol, struct Node *right, struct Node *left);
+struct Node * createTree(Symbol *symbol, struct Node *right, struct Node *left);
 
 #endif

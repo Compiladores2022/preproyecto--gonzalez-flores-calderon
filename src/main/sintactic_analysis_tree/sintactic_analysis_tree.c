@@ -9,12 +9,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-int main()
-{
-    return 0;
-}
-
-
 struct Node * CrateEmptyNode() {
     struct Node *newNode;
 
@@ -27,7 +21,7 @@ struct Node * CrateEmptyNode() {
     }
 }
 
-void newNode(Symbol *symbol) {
+struct Node * newNode(Symbol *symbol) {
     struct Node *newNode;
 
     newNode = CrateEmptyNode();
@@ -38,7 +32,7 @@ void newNode(Symbol *symbol) {
     return newNode;
 }
 
-void createTree(Symbol *symbol, struct Node *right, struct Node *left) {
+struct Node * createTree(Symbol *symbol, struct Node *right, struct Node *left) {
     
     //Sintactic Analysis Tree (SAT)
     struct Node *sat;
@@ -50,4 +44,6 @@ void createTree(Symbol *symbol, struct Node *right, struct Node *left) {
     }
     sat->right = right;
     sat->left = left;
+
+    return sat;
 }
