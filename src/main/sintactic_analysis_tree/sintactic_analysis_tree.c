@@ -21,7 +21,15 @@ struct Node * CrateEmptyNode() {
     }
 }
 
-struct Node * newNode(Symbol *symbol) {
+SintacticAnalysisTree * CreateEmptyTree() {
+    SintacticAnalysisTree *newTree = NULL;
+
+    newTree = (SintacticAnalysisTree *) malloc (sizeof(SintacticAnalysisTree));
+
+    return newTree;
+}
+
+struct Node * createNode(Symbol *symbol) {
     struct Node *newNode;
 
     newNode = CrateEmptyNode();
@@ -32,18 +40,17 @@ struct Node * newNode(Symbol *symbol) {
     return newNode;
 }
 
-struct Node * createTree(Symbol *symbol, struct Node *right, struct Node *left) {
+SintacticAnalysisTree * createTree(Symbol *symbol, struct Node *right, struct Node *left) {
     
     //Sintactic Analysis Tree (SAT)
-    struct Node *sat;
-
-    sat = CrateEmptyNode();
-    sat->info = symbol;
+    SintacticAnalysisTree *sat = CreateEmptyTree();
+    sat->head = CrateEmptyNode();
+    sat->head->info = symbol;
     if(right == NULL){
-        exit(EXIT_FAILURE);
+        return NULL;
     }
-    sat->right = right;
-    sat->left = left;
+    sat->head->right = right;
+    sat->head->left = left;
 
     return sat;
 }
