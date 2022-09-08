@@ -5,10 +5,9 @@
 function testValidProgram {
     total_tests=total_tests+1
     file_output=$(./script_generated/a.out $file)
-    if [ "$file_output" == *"$error_message"* ] #output contains error message
+    if [[ "$file_output" == *"$error_message"* ]]; #output contains error message
     then
-        printf '\n\nTest %d - %s failed:\n' $file $file_number
-        printf '%s' $file_output;
+        printf "\n\n${RED}Test $file_number - $file failed:${NORMAL}\n\n$file_output"
     else
         tests_passed=tests_passed+1
     fi
@@ -20,10 +19,9 @@ function testValidProgram {
 function testInvalidProgram {
     total_tests=total_tests+1
     file_output=$(./script_generated/a.out $file)
-    if [ !"$file_output" == *"$error_message"* ] #output doesn't contains error message
+    if [[ "$file_output" != *"$error_message"* ]]; #output doesn't contains error message
     then
-        printf "\n\nTest %d - %s failed, compiler didn't detect the error\n" $file $file_number
-        printf '%s' $file_output;
+        printf "\n\n${RED}Test $file_number - $file failed, compiler didn't detect the error in:${NORMAL}\n\n$file_output"
     else
         tests_passed=tests_passed+1
     fi
@@ -39,18 +37,20 @@ mv calc-sintaxis.tab.c script_generated/calc-sintaxis.tab.c
 mv calc-sintaxis.tab.h script_generated/calc-sintaxis.tab.h
 mv a.out script_generated/a.out
 
-declare -i file_number=1
 declare -i tests_passed=0
 declare -i total_tests=0
-error_message="-> ERROR "
+RED=$(tput setaf 1) #red color for error messages
+NORMAL=$(tput sgr0) #normal color
+error_message="-> ERROR"
 
+declare -i file_number=1
 printf "Testing valid programs\n";
 for file in ../test/resources/acceptedPrograms/*; do
     testValidProgram
 done
 
 file_number=1
-printf "\n\nTesting Invalid programs\n";
+printf "\n\n\nTesting Invalid programs\n";
 for file in ../test/resources/invalidPrograms/*; do
     testInvalidProgram    
 done
