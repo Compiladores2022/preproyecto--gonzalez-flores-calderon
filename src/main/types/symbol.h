@@ -18,4 +18,12 @@ static Symbol createSymbol(enum types type, char *name, void *value) {
     return newSymbol;
 }
 
+static Symbol createSymbolNoValue(enum types type, char *name) {
+    Symbol newSymbol;
+    newSymbol.type = type;
+    newSymbol.name = name;
+
+    return newSymbol;
+}
+
 #endif
