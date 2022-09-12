@@ -48,7 +48,9 @@ digito [0-9]
 
 {minuscula}({letra}|{digito})*  { 
 								printf("ID : %s\n",yytext);
-								return ID;}
+								yylval.s = (char *) malloc(sizeof(yytext)*yyleng);
+    							strcpy(yylval.s, yytext);
+    							return ID;}
 
 "&&"						{	printf("%s\n",yytext);
                             	return TAND;}
