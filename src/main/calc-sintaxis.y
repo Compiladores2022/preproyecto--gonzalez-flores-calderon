@@ -1,10 +1,13 @@
+%code requires {
+    #include "types/symbol.h"    
+}
+
 %{
 
 #include <stdlib.h>
 #include <stdio.h>
 #include "symbol_list/symbol_list.h"
 #include "sintactic_analysis_tree/sintactic_analysis_tree.h"
-#include "types/symbol.h"
 
 void yyerror();
 int yylex();
@@ -15,8 +18,8 @@ SymbolList *list;
 
 %union {int i;
         char *s;
-        struct Node *n;
-        enum types t;} 
+        struct TreeNode *n;
+        types t;}
 
 %token INT
 %token END
@@ -33,7 +36,8 @@ SymbolList *list;
 %token TReturn
 
 %type<n> expr
-%type<i> VALOR
+%type<i> VALORINT
+%type<i> VALORBOOL
 %type<t> type
 %type<s> ID
 
@@ -58,7 +62,7 @@ declList: decl
     | decl declList
     ;
 
-decl: type ID '=' expr ';' { Symbol *s = createSymbol($1, $2); insert(list, s); }
+decl: type ID '=' expr ';' { Symbol s = createSymbol($1, $2, NULL); insert(list, &s); }
     ;
 
 sentList: sent
@@ -78,7 +82,9 @@ sent: ID '=' expr ';' { if (search(list, $1) == NULL) {
     | TReturn expr ';'
     ;
 
-expr: VALOR
+expr: VALORINT
+
+    | VALORBOOL
     
     | ID { if (search(list, $1) == NULL) {
                 printf("Undefined symbol %s\n", $1);
@@ -91,23 +97,24 @@ expr: VALOR
 
     | expr TMENOS expr  
 
-    | '(' expr ')'
+    | '(' expr ')' { $$ = $2; }
 
     | expr TOR expr    
     
     | expr TAND expr    
     ;   
 
-VALOR: INT
-    
-    | TFALSE
+VALORINT: INT
+    ;
+
+VALORBOOL: TFALSE
     
     | TTRUE              
     ;
 
-type: TINT {/*Type int */ $$ = INT;}
+type: TINT {/*Type int */ $$ = TYPEINT;}
 
-    | TBOOL {/*Type bool */$$ = BOOL;}
+    | TBOOL {/*Type bool */$$ = TYPEBOOL;}
     ;
 
 %%

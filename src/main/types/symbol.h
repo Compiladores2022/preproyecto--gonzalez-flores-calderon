@@ -1,15 +1,15 @@
 #ifndef TYPE_STRUCTS_H
 #define TYPE_STRUCTS_H
 
-enum types{INT, BOOL};
+typedef enum {TYPEINT, TYPEBOOL} types;
 
 typedef struct {
-    enum types type;
+    types type;
     char *name;
     void *value;
 }Symbol;
 
-static Symbol createSymbol(enum types type, char *name, void *value) {
+static Symbol createSymbol(types type, char *name, void *value) {
     Symbol newSymbol;
     newSymbol.type = type;
     newSymbol.name = name;
@@ -18,7 +18,9 @@ static Symbol createSymbol(enum types type, char *name, void *value) {
     return newSymbol;
 }
 
-static Symbol createSymbolNoValue(enum types type, char *name) {
+//it's better to just use the old function and pass it null, cause if we want to get value in this new function segmentation 
+//fault will be prompt cause it has a random memory direction
+static Symbol createSymbolNoValue(types type, char *name) {
     Symbol newSymbol;
     newSymbol.type = type;
     newSymbol.name = name;
