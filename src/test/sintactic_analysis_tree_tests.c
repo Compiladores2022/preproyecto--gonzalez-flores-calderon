@@ -21,11 +21,11 @@ int main(){
 int testCreateFullTree() {
     
     int a = 0;
-    Symbol symbol1 = createSymbol(BOOL, "a", &a);
+    Symbol symbol1 = createSymbol(TYPEBOOL, "a", &a);
     int b = 1;
-    Symbol symbol2 = createSymbol(BOOL, "a", &b);
+    Symbol symbol2 = createSymbol(TYPEBOOL, "a", &b);
     int c = 2;
-    Symbol symbol3 = createSymbol(BOOL, "a", &c);
+    Symbol symbol3 = createSymbol(TYPEBOOL, "a", &c);
     struct Node *right = createNode(&symbol1);
     struct Node *left = createNode(&symbol2);
     SintacticAnalysisTree *tree = createTree(&symbol3, right, left);
@@ -46,7 +46,7 @@ int testCreateFullTree() {
 
 int testInvalidTree(){
     int c = 2;
-    Symbol symbol3 = createSymbol(BOOL, "a", &c);
+    Symbol symbol3 = createSymbol(TYPEBOOL, "a", &c);
     if(createTree(&symbol3, NULL, NULL) == NULL){
         return 1;
     }
@@ -55,10 +55,10 @@ int testInvalidTree(){
 
 int testSingleLeaf(){
     int a = 0;
-    Symbol symbol1 = createSymbol(BOOL, "a", &a);
+    Symbol symbol1 = createSymbol(TYPEBOOL, "a", &a);
     struct Node *right = createNode(&symbol1);
     int c = 2;
-    Symbol symbol3 = createSymbol(BOOL, "a", &c);
+    Symbol symbol3 = createSymbol(TYPEBOOL, "a", &c);
     if(createTree(&symbol3, right, NULL) == NULL){
         return 0;
     }

@@ -29,7 +29,7 @@ int addOneSymbolAndSearchIt() {
     SymbolList list;
     initialize(&list);
     int i = 3;
-    Symbol newSymbol = createSymbol(INT, "a", &i);
+    Symbol newSymbol = createSymbol(TYPEINT, "a", &i);
     insert(&list, &newSymbol);
     return search(&list, "a") == &newSymbol;
 }
@@ -61,13 +61,13 @@ int searchFindsSymbolInPreviousLevels() {
     initialize(&list);
 
     int a = 0;
-    Symbol symbol1 = createSymbol(BOOL, "a", &a);
+    Symbol symbol1 = createSymbol(TYPEBOOL, "a", &a);
     int b = 2;
-    Symbol symbol2 = createSymbol(INT, "dl", &b);
+    Symbol symbol2 = createSymbol(TYPEINT, "dl", &b);
     int c = 0;
-    Symbol symbol3 = createSymbol(BOOL, "n", &c);
+    Symbol symbol3 = createSymbol(TYPEBOOL, "n", &c);
     int d = 15;
-    Symbol symbol4 = createSymbol(INT, "i", &d);
+    Symbol symbol4 = createSymbol(TYPEINT, "i", &d);
 
     insert(&list, &symbol1);
     insert(&list, &symbol2);
@@ -84,15 +84,15 @@ int searchFindsCorrectSymbol() {
     initialize(&list);
 
     int a = 3;
-    Symbol symbol1 = createSymbol(INT, "a", &a);
+    Symbol symbol1 = createSymbol(TYPEINT, "a", &a);
     int b = 89;
-    Symbol symbol2 = createSymbol(INT, "dl", &b);
+    Symbol symbol2 = createSymbol(TYPEINT, "dl", &b);
     int c = -4;
-    Symbol symbol3 = createSymbol(INT, "n", &c);
+    Symbol symbol3 = createSymbol(TYPEINT, "n", &c);
     int d = 1;
-    Symbol symbol4 = createSymbol(BOOL, "a", &d);
+    Symbol symbol4 = createSymbol(TYPEBOOL, "a", &d);
     int e = 1;
-    Symbol symbol5 = createSymbol(BOOL, "er", &e);
+    Symbol symbol5 = createSymbol(TYPEBOOL, "er", &e);
 
     insert(&list, &symbol1);
     insert(&list, &symbol2);

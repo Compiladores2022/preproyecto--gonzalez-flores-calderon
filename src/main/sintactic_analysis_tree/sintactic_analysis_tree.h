@@ -3,18 +3,18 @@
 #ifndef SINTACTIC_ANALYSIS_TREE_H 
 #define SINTACTIC_ANALYSIS_TREE_H
 
-struct Node {
+struct TreeNode {
     Symbol *info;
-    struct Node *left;
-    struct Node *right;
+    struct TreeNode *left;
+    struct TreeNode *right;
 };
 
 typedef struct {
-    struct Node *head;
+    struct TreeNode *head;
 }SintacticAnalysisTree;
 
-struct Node * createNode(Symbol *symbol);
+struct TreeNode * createNode(Symbol *symbol);
 
-SintacticAnalysisTree * createTree(Symbol *symbol, struct Node *right, struct Node *left);
+SintacticAnalysisTree * createTree(Symbol *symbol, struct TreeNode *right, struct TreeNode *left);
 
 #endif

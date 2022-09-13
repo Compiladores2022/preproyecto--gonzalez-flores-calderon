@@ -9,10 +9,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-struct Node * CrateEmptyNode() {
-    struct Node *newNode;
+struct TreeNode * CrateEmptyNode() {
+    struct TreeNode *newNode;
 
-    newNode = (struct Node *) malloc (sizeof(struct Node));
+    newNode = (struct TreeNode *) malloc (sizeof(struct TreeNode));
     if(newNode == NULL){
         exit(EXIT_FAILURE);
     }
@@ -29,8 +29,8 @@ SintacticAnalysisTree * CreateEmptyTree() {
     return newTree;
 }
 
-struct Node * createNode(Symbol *symbol) {
-    struct Node *newNode;
+struct TreeNode * createNode(Symbol *symbol) {
+    struct TreeNode *newNode;
 
     newNode = CrateEmptyNode();
     newNode->info = symbol;
@@ -40,7 +40,7 @@ struct Node * createNode(Symbol *symbol) {
     return newNode;
 }
 
-SintacticAnalysisTree * createTree(Symbol *symbol, struct Node *right, struct Node *left) {
+SintacticAnalysisTree * createTree(Symbol *symbol, struct TreeNode *right, struct TreeNode *left) {
     
     //Sintactic Analysis Tree (SAT)
     SintacticAnalysisTree *sat = CreateEmptyTree();

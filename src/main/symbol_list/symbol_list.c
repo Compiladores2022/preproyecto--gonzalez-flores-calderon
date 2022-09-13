@@ -4,17 +4,17 @@
 #include <stdlib.h>
 #include <string.h>
 
-Symbol * searchInLevel(struct Node *nodeList, char *name);
+Symbol * searchInLevel(struct TableNode *nodeList, char *name);
 
 void initialize(SymbolList *symbolList) {
     symbolList->head = NULL;
     openLevel(symbolList); 
 }
 
-struct Node * CrateNode() {
-    struct Node *newNode;
+struct TableNode * CrateNode() {
+    struct TableNode *newNode;
 
-    newNode = (struct Node *) malloc (sizeof(struct Node));
+    newNode = (struct TableNode *) malloc (sizeof(struct TableNode));
     if(newNode == NULL){
         exit(EXIT_FAILURE);
     }
@@ -36,7 +36,7 @@ struct levelNode * CrateLevelNode() {
 }
 
 void insert(SymbolList *symbolList, Symbol *symbol) {
-    struct Node *newNode;
+    struct TableNode *newNode;
     if (searchInLevel(symbolList->head->levelSymbols, symbol->name) != NULL){
         exit(0); //name already present
     }    
@@ -51,8 +51,8 @@ void insert(SymbolList *symbolList, Symbol *symbol) {
     checks if the given name is already present in the current level of the symbolList
     if found returns the reference to it, otherwise returns null
 */
-Symbol * searchInLevel(struct Node *nodeList, char *name) {
-    struct Node *listPointer = nodeList;
+Symbol * searchInLevel(struct TableNode *nodeList, char *name) {
+    struct TableNode *listPointer = nodeList;
 
     while (listPointer != NULL) {
         if (strcmp(listPointer->info->name, name) == 0){
@@ -96,7 +96,7 @@ void openLevel(SymbolList *symbolList) {
 
 //Delete current level
 void closeLevel(SymbolList *symbolList) {
-    struct Node *n; //node aux to free list
+    struct TableNode *n; //node aux to free list
     while (symbolList->head->levelSymbols != NULL){
         n = symbolList->head->levelSymbols;
         symbolList->head->levelSymbols = symbolList->head->levelSymbols->next;
