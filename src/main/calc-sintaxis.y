@@ -58,7 +58,7 @@ declList: decl
     | decl declList
     ;
 
-decl: type ID '=' expr ';' {Symbol *s = createSymbol($1, $2); insert(list, s);}
+decl: type ID '=' expr ';' { Symbol *s = createSymbol($1, $2); insert(list, s); }
     ;
 
 sentList: sent
@@ -68,7 +68,10 @@ sentList: sent
     | sentList  sent
     ;
 
-sent: ID '=' expr ';'
+sent: ID '=' expr ';' { if (search(list, $1) == NULL) {
+                            printf("Undefined symbol %s\n", $1);
+                            yyerror();
+                        }}
 
     | expr ';'
 
@@ -77,7 +80,10 @@ sent: ID '=' expr ';'
 
 expr: VALOR
     
-    |ID               
+    | ID { if (search(list, $1) == NULL) {
+                printf("Undefined symbol %s\n", $1);
+                yyerror();
+            }}
 
     | expr '+' expr    
     
