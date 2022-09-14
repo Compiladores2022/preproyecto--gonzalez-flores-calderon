@@ -25,7 +25,6 @@ SymbolList *list;
 %token END
 %token ID
 %token BOOL 
-%token COMMENT
 %token TMENOS
 %token TBOOL
 %token TINT
@@ -74,8 +73,6 @@ decl: type ID '=' expr ';' { if (search(list, $2) != NULL) {
     ;
 
 sentList: sent { $$ = $1; }
-
-    | sentList COMMENT
     
     | sentList  sent
     ;
