@@ -43,12 +43,14 @@ SymbolList *list;
 %type<i> VALORBOOL
 %type<t> type
 %type<s> ID
+%type<n> declList
+%type<n> decl
 
 %left '+' TMENOS 
 %left '*' 
 %left TAND
 %left TOR
- 
+
 %%
 
 
@@ -91,10 +93,15 @@ sent: ID '=' expr ';'   {   Symbol * idSymbol = search(list, $1);
                                 printf("Undefined Symbol %s", $1);
                                 yyerror();
                             }
+                            if(idSymbol->type != $3->info->type){
+                                printf("Incompatible types");
+                                yyerror();
+                            }
                             Symbol s = createSymbol(idSymbol->type, "=", $3->info->value);
                             struct TreeNode * idNode = createNode(&s);
                             struct TreeNode * newNode = createTree(&s, idNode, $3);
-                            $$ = newNode; }
+                            $$ = newNode; 
+                        }
 
     | expr ';' { $$ = $1; }
 
@@ -114,7 +121,10 @@ expr: VALORINT  { Symbol s = createSymbol(INT, NULL, &$1);
             if (s == NULL) {
                 printf("Undefined symbol %s\n", $1);
                 yyerror();
-            }
+            }Symbol s = createSymbol(idSymbol->type, "=", $3->info->value);
+                            struct TreeNode * idNode = createNode(&s);
+                            struct TreeNode * newNode = createTree(&s, idNode, $3);
+                            $$ = newNode;
             $$ = createNode(s); }
 
     | expr '+' expr { if ($1->info->type != INT || $3->info->type != INT) {
