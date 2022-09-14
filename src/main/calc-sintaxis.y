@@ -8,6 +8,7 @@
 #include <stdio.h>
 #include "symbol_list/symbol_list.h"
 #include "sintactic_analysis_tree/sintactic_analysis_tree.h"
+#include "utils.h"
 
 void yyerror();
 int yylex();
