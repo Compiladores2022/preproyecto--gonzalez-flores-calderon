@@ -22,8 +22,6 @@ void insert(SymbolList *symbolList, Symbol *symbol);
 
 Symbol * search(SymbolList *symbolList, char *name);
 
-void pop(SymbolList *symbolList, struct TableNode *limit);
-
 void openLevel(SymbolList *symbolList);
 
 void closeLevel(SymbolList *symbolList);
