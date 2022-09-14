@@ -30,11 +30,11 @@ digito [0-9]
 							    printf("TTRUE : %s\n",yytext);
 								return TTRUE;}
 
-"false"                      { 
+"false"                     { 
 							    printf("TFALSE : %s\n",yytext);
 								return TFALSE;}
 
-"int"                      { 
+"int"                      	{	 
 							    printf("TINT : %s\n",yytext);
 								return TINT;}
 
@@ -42,11 +42,9 @@ digito [0-9]
 							    printf("TBOOL : %s\n",yytext);
 								return TBOOL;}
 
-"//".*"\n"                      { 
-							    printf("COMMENT : %s\n",yytext);
-								return COMMENT;}
+"//".*"\n"                 	{ }
 
-{minuscula}({letra}|{digito})*  { 
+{minuscula}({letra}|{digito})* { 
 								printf("ID : %s\n",yytext);
 								yylval.s = (char *) malloc(sizeof(yytext)*yyleng);
     							strcpy(yylval.s, yytext);
