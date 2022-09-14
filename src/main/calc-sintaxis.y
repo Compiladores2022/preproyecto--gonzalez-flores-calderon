@@ -62,11 +62,11 @@ prog: declList sentList
     | sentList
     ;
 
-declList: decl          {   Symbol s = createSymbol(NULL, "next", NULL);
+declList: decl          {   Symbol s = createSymbol($1->info->type, "next", NULL);
                             struct TreeNode * newNode = createTree(&s, NULL, $1);    
                         }
 
-    | decl declList     {   Symbol s = createSymbol(NULL, "next", NULL);
+    | decl declList     {   Symbol s = createSymbol($1->info->type, "next", NULL);
                             struct TreeNode * newNode = createTree(&s, $2, $1);    
                         }
     ;
@@ -81,7 +81,7 @@ decl: type ID '=' expr ';'  {   if (search(list, $2) != NULL) {
 
 sentList: sent { $$ = $1; } 
     
-    | sent sentList     {   Symbol s = createSymbol(NULL, "next", NULL);
+    | sent sentList     {   Symbol s = createSymbol($1->info->type, "next", NULL);
                             struct TreeNode * newNode = createTree(&s, $2, $1);    
                         }
     ;
