@@ -3,15 +3,15 @@
 #ifndef SYMBOL_LIST_H
 #define SYMBOL_LIST_H
 
-struct Node {
+struct TableNode {
     Symbol *info;
-    struct Node *next;
+    struct TableNode *next;
 };
 
 struct levelNode {
     int level;
     struct levelNode *next;
-    struct Node *levelSymbols;
+    struct TableNode *levelSymbols;
 };
 
 typedef struct{
@@ -22,7 +22,7 @@ void insert(SymbolList *symbolList, Symbol *symbol);
 
 Symbol * search(SymbolList *symbolList, char *name);
 
-void pop(SymbolList *symbolList, struct Node *limit);
+void pop(SymbolList *symbolList, struct TableNode *limit);
 
 void openLevel(SymbolList *symbolList);
 
