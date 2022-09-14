@@ -1,19 +1,18 @@
 %code requires {
-    #include "types/symbol.h"    
+    #include <stdlib.h>
+    #include <stdio.h>
+    #include "sintactic_analysis_tree/sintactic_analysis_tree.h"
+    #include "utils.h"
+    #include "symbol_list/symbol_list.h"
 }
 
 %{
 
-#include <stdlib.h>
-#include <stdio.h>
-#include "symbol_list/symbol_list.h"
-#include "sintactic_analysis_tree/sintactic_analysis_tree.h"
-#include "utils.h"
 
 void yyerror();
 int yylex();
-
 SymbolList *list;
+
 
 %}
 
@@ -83,8 +82,9 @@ sent: ID '=' expr ';' { Symbol * idSymbol = search(list, $1);
                             printf("Undefined Symbol %s", $1);
                             yyerror();
                         }
-                        Symbol s = createSymbol(idSymbol->type, "=", NULL);
-                        struct TreeNode * newNode = createTree(&s, $1, $3);
+                        Symbol s = createSymbol(idSymbol->type, "=", $3->info->value);
+                        struct TreeNode * idNode = createNode(&s);
+                        struct TreeNode * newNode = createTree(&s, idNode, $3);
                         $$ = newNode; }
 
     | expr ';' { $$ = $1; }
@@ -94,18 +94,20 @@ sent: ID '=' expr ';' { Symbol * idSymbol = search(list, $1);
                         $$ = newNode; }
     ;
 
-expr: VALORINT  { Symbol s = createSymbol(INT, NULL, $1);
-                    $$ = &s; }
+expr: VALORINT  { Symbol s = createSymbol(INT, NULL, &$1);
+                    $$ = createNode(&s); }
 
-    | VALORBOOL { Symbol s = createSymbol(BOOL, NULL, $1);
-                    $$ = &s; }
+    | VALORBOOL { Symbol s = createSymbol(BOOL, NULL, &$1);
+                    $$ = createNode(&s); }
     
-    | ID { if (search(list, $1) == NULL) {
+    | ID { Symbol *s = search(list, $1);
+            if (s == NULL) {
                 printf("Undefined symbol %s\n", $1);
                 yyerror();
-            }}
+            }
+            $$ = createNode(s); }
 
-    | expr '+' expr { if ($1->info->value != INT || $3->info->value != INT) {
+    | expr '+' expr { if ($1->info->type != INT || $3->info->type != INT) {
                             printf("Incompatible types for + operation\nexpected: INT + INT\nfound:  %s + %s", enumToString($1->info->type), enumToString($3->info->type));
                             yyerror();
                         }
@@ -114,7 +116,7 @@ expr: VALORINT  { Symbol s = createSymbol(INT, NULL, $1);
                         struct TreeNode * newNode = createTree(&s, $1, $3);
                         $$ = newNode; }
     
-    | expr '*' expr { if ($1->info->value != INT || $3->info->value != INT) {
+    | expr '*' expr { if ($1->info->type != INT || $3->info->type != INT) {
                             printf("Incompatible types for * operation\nexpected: INT * INT\nfound:  %s * %s", enumToString($1->info->type), enumToString($3->info->type));
                             yyerror();
                         }
@@ -123,7 +125,7 @@ expr: VALORINT  { Symbol s = createSymbol(INT, NULL, $1);
                         struct TreeNode * newNode = createTree(&s, $1, $3);
                         $$ = newNode; }
 
-    | expr TMENOS expr { if ($1->info->value != INT || $3->info->value != INT) {
+    | expr TMENOS expr { if ($1->info->type != INT || $3->info->type != INT) {
                             printf("Incompatible types for - operation\nexpected: INT - INT\nfound:  %s - %s", enumToString($1->info->type), enumToString($3->info->type));
                             yyerror();
                         }
@@ -134,7 +136,7 @@ expr: VALORINT  { Symbol s = createSymbol(INT, NULL, $1);
 
     | '(' expr ')' { $$ = $2; }
 
-    | expr TOR expr { if ($1->info->value != BOOL || $3->info->value != BOOL) {
+    | expr TOR expr { if ($1->info->type != BOOL || $3->info->type != BOOL) {
                             printf("Incompatible types for || operation\nexpected: BOOL || BOOL\nfound:  %s || %s", enumToString($1->info->type), enumToString($3->info->type));
                             yyerror();
                         }
@@ -143,7 +145,7 @@ expr: VALORINT  { Symbol s = createSymbol(INT, NULL, $1);
                         struct TreeNode * newNode = createTree(&s, $1, $3);
                         $$ = newNode; }
     
-    | expr TAND expr { if ($1->info->value != BOOL && $3->info->value != BOOL) {
+    | expr TAND expr { if ($1->info->type != BOOL && $3->info->type != BOOL) {
                             printf("Incompatible types for && operation\nexpected: BOOL && BOOL\nfound:  %s && %s", enumToString($1->info->type), enumToString($3->info->type));
                             yyerror();
                         }
