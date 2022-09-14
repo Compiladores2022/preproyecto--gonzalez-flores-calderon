@@ -15,6 +15,6 @@ typedef struct {
 
 struct TreeNode * createNode(Symbol *symbol);
 
-SintacticAnalysisTree * createTree(Symbol *symbol, struct TreeNode *right, struct TreeNode *left);
+struct TreeNode * createTree(Symbol *symbol, struct TreeNode *right, struct TreeNode *left);
 
 #endif

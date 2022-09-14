@@ -40,17 +40,15 @@ struct TreeNode * createNode(Symbol *symbol) {
     return newNode;
 }
 
-SintacticAnalysisTree * createTree(Symbol *symbol, struct TreeNode *right, struct TreeNode *left) {
+struct TreeNode * createTree(Symbol *symbol, struct TreeNode *left, struct TreeNode *right) {
     
-    //Sintactic Analysis Tree (SAT)
-    SintacticAnalysisTree *sat = CreateEmptyTree();
-    sat->head = CrateEmptyNode();
-    sat->head->info = symbol;
+    struct TreeNode *newNode = CrateEmptyNode();
+    newNode->info = symbol;
     if(right == NULL){
         return NULL;
     }
-    sat->head->right = right;
-    sat->head->left = left;
+    newNode->right = right;
+    newNode->left = left;
 
-    return sat;
+    return newNode;
 }

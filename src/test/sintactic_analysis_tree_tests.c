@@ -26,18 +26,18 @@ int testCreateFullTree() {
     Symbol symbol2 = createSymbol(TYPEBOOL, "a", &b);
     int c = 2;
     Symbol symbol3 = createSymbol(TYPEBOOL, "a", &c);
-    struct Node *right = createNode(&symbol1);
-    struct Node *left = createNode(&symbol2);
-    SintacticAnalysisTree *tree = createTree(&symbol3, right, left);
+    struct TreeNode *right = createNode(&symbol1);
+    struct TreeNode *left = createNode(&symbol2);
+    struct TreeNode *tree = createTree(&symbol3, left, right);
 
     //printf("%d \n", *(int *)tree->head->right->info->value);
-    if(tree->head->right->info->value != symbol1.value){
+    if(tree->right->info->value != symbol1.value){
         return 0;
     }
-    if(tree->head->left->info->value != symbol2.value){
+    if(tree->left->info->value != symbol2.value){
        return 0; 
     }
-    if(tree->head->info->value != symbol3.value){
+    if(tree->info->value != symbol3.value){
         return 0;
     }
 
@@ -56,7 +56,7 @@ int testInvalidTree(){
 int testSingleLeaf(){
     int a = 0;
     Symbol symbol1 = createSymbol(TYPEBOOL, "a", &a);
-    struct Node *right = createNode(&symbol1);
+    struct TreeNode *right = createNode(&symbol1);
     int c = 2;
     Symbol symbol3 = createSymbol(TYPEBOOL, "a", &c);
     if(createTree(&symbol3, right, NULL) == NULL){
