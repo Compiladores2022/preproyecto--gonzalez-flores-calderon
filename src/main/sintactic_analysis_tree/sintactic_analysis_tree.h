@@ -15,6 +15,6 @@ typedef struct {
 
 struct TreeNode * createNode(Symbol *symbol);
 
-struct TreeNode * createTree(Symbol *symbol, struct TreeNode *right, struct TreeNode *left);
+struct TreeNode * createTree(Symbol *symbol, struct TreeNode *left, struct TreeNode *right);
 
 #endif
