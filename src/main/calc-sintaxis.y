@@ -8,10 +8,11 @@
 
 %{
 
-
+SymbolList *list;
 void yyerror();
 int yylex();
-SymbolList *list;
+
+
 
 
 %}
@@ -43,8 +44,6 @@ SymbolList *list;
 %type<i> VALORBOOL
 %type<t> type
 %type<s> ID
-%type<n> declList
-%type<n> decl
 
 %left '+' TMENOS 
 %left '*' 
@@ -121,10 +120,7 @@ expr: VALORINT  { Symbol s = createSymbol(INT, NULL, &$1);
             if (s == NULL) {
                 printf("Undefined symbol %s\n", $1);
                 yyerror();
-            }Symbol s = createSymbol(idSymbol->type, "=", $3->info->value);
-                            struct TreeNode * idNode = createNode(&s);
-                            struct TreeNode * newNode = createTree(&s, idNode, $3);
-                            $$ = newNode;
+            }
             $$ = createNode(s); }
 
     | expr '+' expr { if ($1->info->type != INT || $3->info->type != INT) {
