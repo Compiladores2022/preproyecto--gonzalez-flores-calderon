@@ -52,3 +52,13 @@ struct TreeNode * createTree(Symbol *symbol, struct TreeNode *left, struct TreeN
 
     return newNode;
 }
+
+void printTreeInOrder(SintacticAnalysisTree *sat) {
+    if(sat == NULL){
+        return;
+    }
+
+    printTreeInOrder(sat->head->left);
+    printf(sat->head->info->name);
+    printTreeInOrder(sat->head->right);
+}
