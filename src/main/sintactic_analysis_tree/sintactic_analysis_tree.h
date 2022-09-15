@@ -17,6 +17,6 @@ struct TreeNode * createNode(Symbol *symbol);
 
 struct TreeNode * createTree(Symbol *symbol, struct TreeNode *left, struct TreeNode *right);
 
-void printTreeInOrder(SintacticAnalysisTree *sat);
+void printTreeInOrder(struct TreeNode *tree);
 
 #endif
