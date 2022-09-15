@@ -14,19 +14,19 @@ struct levelNode {
     struct TableNode *levelSymbols;
 };
 
-typedef struct{
+struct SymbolList{
 	struct levelNode *head;
-}SymbolList;
+};
 
-void insert(SymbolList *symbolList, Symbol *symbol);
+void insert(struct SymbolList *symbolList, Symbol *symbol);
 
-Symbol * search(SymbolList *symbolList, char *name);
+Symbol * search(struct SymbolList *symbolList, char *name);
 
-void openLevel(SymbolList *symbolList);
+void openLevel(struct SymbolList *symbolList);
 
-void closeLevel(SymbolList *symbolList);
+void closeLevel(struct SymbolList *symbolList);
 
-void initialize(SymbolList *symbolList);
+void initialize(struct SymbolList *symbolList);
 
 #endif
 	

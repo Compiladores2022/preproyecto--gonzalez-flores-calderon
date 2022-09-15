@@ -2,7 +2,7 @@
 
 #include <stdio.h>
 
-int currentLevel(SymbolList *symbolList);
+int currentLevel(struct SymbolList *symbolList);
 
 int addOneSymbolAndSearchIt();
 int openAndCloseLevel();
@@ -26,7 +26,7 @@ int main(){
 }
 
 int addOneSymbolAndSearchIt() {
-    SymbolList list;
+    struct SymbolList list;
     initialize(&list);
     int i = 3;
     Symbol newSymbol = createSymbol(TYPEINT, "a", &i);
@@ -35,7 +35,7 @@ int addOneSymbolAndSearchIt() {
 }
 
 int openAndCloseLevel() {
-    SymbolList list;
+    struct SymbolList list;
     initialize(&list);
     int initialLevel = 1;
     openLevel(&list);
@@ -50,14 +50,14 @@ int openAndCloseLevel() {
 }
 
 int cannotCloseFinalLevel() {
-    SymbolList list;
+    struct SymbolList list;
     initialize(&list);
     closeLevel(&list);
     return list.head != NULL && list.head->level == 1;
 }
 
 int searchFindsSymbolInPreviousLevels() {
-    SymbolList list;
+    struct SymbolList list;
     initialize(&list);
 
     int a = 0;
@@ -80,7 +80,7 @@ int searchFindsSymbolInPreviousLevels() {
 }
 
 int searchFindsCorrectSymbol() {
-    SymbolList list;
+    struct SymbolList list;
     initialize(&list);
 
     int a = 3;
@@ -105,6 +105,6 @@ int searchFindsCorrectSymbol() {
     return search(&list, "a") == &symbol4;
 }
 
-int currentLevel(SymbolList *symbolList) {
+int currentLevel(struct SymbolList *symbolList) {
     return symbolList->head->level;
 }

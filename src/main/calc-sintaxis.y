@@ -1,6 +1,4 @@
 %code requires {
-    #include <stdlib.h>
-    #include <stdio.h>
     #include "sintactic_analysis_tree/sintactic_analysis_tree.h"
     #include "utils.h"
     #include "symbol_list/symbol_list.h"
@@ -8,11 +6,12 @@
 
 %{
 
-SymbolList *list;
+#include <stdlib.h>
+#include <stdio.h>
+
+struct SymbolList *list;
 void yyerror();
 int yylex();
-
-
 
 
 %}

@@ -6,7 +6,7 @@
 
 Symbol * searchInLevel(struct TableNode *nodeList, char *name);
 
-void initialize(SymbolList *symbolList) {
+void initialize(struct SymbolList *symbolList) {
     symbolList->head = NULL;
     openLevel(symbolList); 
 }
@@ -35,7 +35,7 @@ struct levelNode * CrateLevelNode() {
     }
 }
 
-void insert(SymbolList *symbolList, Symbol *symbol) {
+void insert(struct SymbolList *symbolList, Symbol *symbol) {
     struct TableNode *newNode;
     if (searchInLevel(symbolList->head->levelSymbols, symbol->name) != NULL){
         exit(0); //name already present
@@ -63,7 +63,7 @@ Symbol * searchInLevel(struct TableNode *nodeList, char *name) {
     return NULL;
 }
 
-Symbol * search(SymbolList *symbolList, char *name) {
+Symbol * search(struct SymbolList *symbolList, char *name) {
     if(symbolList == NULL){
         exit(EXIT_FAILURE);
     }
@@ -80,7 +80,7 @@ Symbol * search(SymbolList *symbolList, char *name) {
 }
 
 //Create new level
-void openLevel(SymbolList *symbolList) {
+void openLevel(struct SymbolList *symbolList) {
     struct levelNode *newLevelNode;
 
     newLevelNode = CrateLevelNode();
@@ -95,7 +95,7 @@ void openLevel(SymbolList *symbolList) {
 }
 
 //Delete current level
-void closeLevel(SymbolList *symbolList) {
+void closeLevel(struct SymbolList *symbolList) {
     struct TableNode *n; //node aux to free list
     while (symbolList->head->levelSymbols != NULL){
         n = symbolList->head->levelSymbols;
