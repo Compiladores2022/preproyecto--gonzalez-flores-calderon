@@ -57,8 +57,7 @@ void printTreeInOrder(struct TreeNode *tree) {
     if(tree == NULL){
         return;
     }
-
     printTreeInOrder(tree->left);
-    printf("%s", tree->info->name);
+    printf("%s ", tree->info->name);
     printTreeInOrder(tree->right);
 }
