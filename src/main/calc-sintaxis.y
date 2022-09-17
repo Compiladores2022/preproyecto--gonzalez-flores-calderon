@@ -1,15 +1,14 @@
 %code requires {
-    #include "sintactic_analysis_tree/sintactic_analysis_tree.h"
-    #include "utils.h"
-    #include "symbol_list/symbol_list.h"
 }
 
 %{
 
 #include <stdlib.h>
 #include <stdio.h>
-
-struct SymbolList *list;
+#include "sintactic_analysis_tree/sintactic_analysis_tree.h"
+#include "utils.h"
+#include "symbol_list/symbol_list.h"
+SymbolList *list;
 void yyerror();
 int yylex();
 
@@ -18,8 +17,7 @@ int yylex();
 
 %union {int i;
         char *s;
-        struct TreeNode *n;
-        types t;}
+        struct TreeNode *n;}
 
 %token<i> INT
 %token END
@@ -41,7 +39,7 @@ int yylex();
 %type<n> expr
 %type<i> VALORINT
 %type<i> VALORBOOL
-%type<t> type
+%type<i> type
 %type<s> ID
 
 %left '+' TMENOS 
