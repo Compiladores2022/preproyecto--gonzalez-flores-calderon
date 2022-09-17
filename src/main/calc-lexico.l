@@ -42,7 +42,7 @@ digito [0-9]
 							    printf("TBOOL : %s\n",yytext);
 								return TBOOL;}
 
-"//".*"\n"                 	{ }
+"//".*"\n"                 	; /* ignore comments */
 
 {minuscula}({letra}|{digito})* { 
 								printf("ID : %s\n",yytext);

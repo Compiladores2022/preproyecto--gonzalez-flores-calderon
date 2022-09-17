@@ -11,4 +11,9 @@ mv calc-sintaxis.tab.h script_generated/calc-sintaxis.tab.h
 mv a.out script_generated/a.out
 
 printf "\n\nWrite a program\n";
-./script_generated/a.out
+if [ $# -eq 1 ]
+then
+    ./script_generated/a.out $1
+else
+    ./script_generated/a.out
+fi

@@ -1,6 +1,3 @@
-%code requires {
-}
-
 %{
 
 #include <stdlib.h>
@@ -8,10 +5,9 @@
 #include "sintactic_analysis_tree/sintactic_analysis_tree.h"
 #include "utils.h"
 #include "symbol_list/symbol_list.h"
-SymbolList *list;
+SymbolList list;
 void yyerror();
 int yylex();
-
 
 %}
 
@@ -32,6 +28,8 @@ int yylex();
 %token TFALSE
 %token TReturn
 
+%type<n> inil
+%type<n> prog
 %type<n> declList
 %type<n> decl
 %type<n> sentList
@@ -50,127 +48,94 @@ int yylex();
 %%
 
 
-inil: prog {initialize(list);}
+inil: { initialize(&list);} prog { printTreeInOrder($2); }
     ;
  
 // SintacticAnalysisTree sat;
 
-prog: declList sentList
+prog: declList sentList {   Symbol s = createSymbol(UNDEFINED, "next", NULL);
+                            struct TreeNode * newTree = createTree(&s, $1, $2);
+                            $$ = newTree; }
     
-    | sentList
+    | sentList { $$ = $1; }
     ;
 
-declList: decl          {   Symbol s = createSymbol($1->info->type, "next", NULL);
-                            struct TreeNode * newNode = createTree(&s, NULL, $1);    
-                        }
+declList: decl          {   Symbol s = createSymbol(UNDEFINED, "next", NULL);
+                            struct TreeNode * newTree = createTree(&s, NULL, $1); }
 
-    | decl declList     {   Symbol s = createSymbol($1->info->type, "next", NULL);
-                            struct TreeNode * newNode = createTree(&s, $2, $1);    
-                        }
+    | decl declList     {   Symbol s = createSymbol(UNDEFINED, "next", NULL);
+                            struct TreeNode * newTree = createTree(&s, $3, $1); }
     ;
 
-decl: type ID '=' expr ';'  {   if (search(list, $2) != NULL) {
+decl: type ID '=' expr ';'  {   if (search(&list, $2) != NULL) {
                                     printf("Multiple definitions of: %s", $2);
                                     yyerror();
                                 }
-                                Symbol s = createSymbol($1, $2, NULL); insert(list, &s);
-                            }
+                                Symbol newID = createSymbol($1, $2, NULL); insert(&list, &newID);
+                                struct TreeNode * idNode = createNode(&newID);
+                                Symbol assignation = createSymbol(UNDEFINED, "=", NULL);
+                                struct TreeNode * newTree = createTree(&assignation, idNode, $4);
+                                $$ = newTree; }
     ;
 
 sentList: sent { $$ = $1; } 
     
-    | sent sentList     {   Symbol s = createSymbol($1->info->type, "next", NULL);
-                            struct TreeNode * newNode = createTree(&s, $2, $1);    
-                        }
+    | sent sentList     {   Symbol s = createSymbol(UNDEFINED, "next", NULL);
+                            struct TreeNode * newTree = createTree(&s, $2, $1);
+                            $$ = newTree; }
     ;
 
-sent: ID '=' expr ';'   {   Symbol * idSymbol = search(list, $1);
+sent: ID '=' expr ';'   {   Symbol * idSymbol = search(&list, $1);
                             if (idSymbol == NULL) { 
                                 printf("Undefined Symbol %s", $1);
                                 yyerror();
                             }
-                            if(idSymbol->type != $3->info->type){
-                                printf("Incompatible types");
-                                yyerror();
-                            }
-                            Symbol s = createSymbol(idSymbol->type, "=", $3->info->value);
+                            Symbol s = createSymbol(UNDEFINED, "=", NULL);
                             struct TreeNode * idNode = createNode(&s);
-                            struct TreeNode * newNode = createTree(&s, idNode, $3);
-                            $$ = newNode; 
-                        }
+                            struct TreeNode * newTree = createTree(&s, idNode, $3);
+                            $$ = newTree; }
 
     | expr ';' { $$ = $1; }
 
-    | TReturn expr ';'  {   Symbol s = createSymbol($2->info->type, "return", $2->info->value);
-                            struct TreeNode * newNode = createTree(&s, NULL, $2);
-                            $$ = newNode; 
-                        }
+    | TReturn expr ';'  {   Symbol s = createSymbol(UNDEFINED, "return", NULL);
+                            struct TreeNode * newTree = createTree(&s, NULL, $2);
+                            $$ = newTree; }
     ;
 
-expr: VALORINT  { Symbol s = createSymbol(INT, NULL, &$1);
+expr: VALORINT  {   Symbol s = createSymbol(INT, NULL, &$1);
                     $$ = createNode(&s); }
 
-    | VALORBOOL { Symbol s = createSymbol(BOOL, NULL, &$1);
+    | VALORBOOL {   Symbol s = createSymbol(BOOL, NULL, &$1);
                     $$ = createNode(&s); }
     
-    | ID { Symbol *s = search(list, $1);
+    | ID {  Symbol *s = search(&list, $1);
             if (s == NULL) {
                 printf("Undefined symbol %s\n", $1);
                 yyerror();
             }
             $$ = createNode(s); }
 
-    | expr '+' expr { if ($1->info->type != INT || $3->info->type != INT) {
-                            printf("Incompatible types for + operation\nexpected: INT + INT\nfound:  %s + %s", enumToString($1->info->type), enumToString($3->info->type));
-                            yyerror();
-                        }
-                        int sum = *(int *)$1->info->value + *(int *)$3->info->value;
-                        Symbol s = createSymbol(INT, "+", &sum);
-                        struct TreeNode * newNode = createTree(&s, $1, $3);
-                        $$ = newNode; 
-                    }
+    | expr '+' expr {   Symbol s = createSymbol(INT, "+", NULL);
+                        struct TreeNode * newTree = createTree(&s, $1, $3);
+                        $$ = newTree; }
     
-    | expr '*' expr { if ($1->info->type != INT || $3->info->type != INT) {
-                            printf("Incompatible types for * operation\nexpected: INT * INT\nfound:  %s * %s", enumToString($1->info->type), enumToString($3->info->type));
-                            yyerror();
-                        }
-                        int mult = *(int *)$1->info->value * *(int *)$3->info->value;
-                        Symbol s = createSymbol(INT, "*", &mult);
-                        struct TreeNode * newNode = createTree(&s, $1, $3);
-                        $$ = newNode; 
-                    }
+    | expr '*' expr {   Symbol s = createSymbol(INT, "*", NULL);
+                        struct TreeNode * newTree = createTree(&s, $1, $3);
+                        $$ = newTree; }
 
-    | expr TMENOS expr  {    if ($1->info->type != INT || $3->info->type != INT) {
-                                printf("Incompatible types for - operation\nexpected: INT - INT\nfound:  %s - %s", enumToString($1->info->type), enumToString($3->info->type));
-                                yyerror();
-                            }
-                            int subs = *(int *)$1->info->value - *(int *)$3->info->value;
-                            Symbol s = createSymbol(INT, "-", &subs);
-                            struct TreeNode * newNode = createTree(&s, $1, $3);
-                            $$ = newNode; 
-                        }
+    | expr TMENOS expr  {   Symbol s = createSymbol(INT, "-", NULL);
+                            struct TreeNode * newTree = createTree(&s, $1, $3);
+                            $$ = newTree; }
 
     | '(' expr ')' { $$ = $2; }
 
-    | expr TOR expr     {   if ($1->info->type != BOOL || $3->info->type != BOOL) {
-                                printf("Incompatible types for || operation\nexpected: BOOL || BOOL\nfound:  %s || %s", enumToString($1->info->type), enumToString($3->info->type));
-                                yyerror();
-                            }
-                            int orResult = *(int *)$1->info->value || *(int *)$3->info->value;
-                            Symbol s = createSymbol(BOOL, "||", &orResult);
-                            struct TreeNode * newNode = createTree(&s, $1, $3);
-                            $$ = newNode; 
-                        }
+    | expr TOR expr     {   Symbol s = createSymbol(BOOL, "||", NULL);
+                            struct TreeNode * newTree = createTree(&s, $1, $3);
+                            $$ = newTree; }
     
-    | expr TAND expr    {   if ($1->info->type != BOOL && $3->info->type != BOOL) {
-                                printf("Incompatible types for && operation\nexpected: BOOL && BOOL\nfound:  %s && %s", enumToString($1->info->type), enumToString($3->info->type));
-                                yyerror();
-                            }
-                            int andResult = *(int *)$1->info->value && *(int *)$3->info->value;
-                            Symbol s = createSymbol(BOOL, "&&", &andResult);
-                            struct TreeNode * newNode = createTree(&s, $1, $3);
-                            $$ = newNode; 
-                        }
+    | expr TAND expr    {   Symbol s = createSymbol(BOOL, "&&", NULL);
+                            struct TreeNode * newTree = createTree(&s, $1, $3);
+                            $$ = newTree; }
     ;   
 
 VALORINT: INT { $$ = $1; }
