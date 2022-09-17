@@ -11,10 +11,10 @@ int main(){
     int testsPassed = 0, totalTests = 0;
     
     testCreateFullTree() ? testsPassed++ : printf("test Create Full Tree failed \n"); totalTests++;
-    testInvalidTree() ? testsPassed++ : printf("test Create Full Tree failed \n"); totalTests++;
-    testSingleLeaf() ? testsPassed++ : printf("test Create Full Tree failed \n"); totalTests++;
+    testInvalidTree() ? testsPassed++ : printf("test invalid Tree failed \n"); totalTests++;
+    testSingleLeaf() ? testsPassed++ : printf("test single leaf failed \n"); totalTests++;
 
-    printf("tests passed: %d out of %d\n", testsPassed, totalTests);
+    printf("\ntests passed: %d out of %d\n", testsPassed, totalTests);
     return 0;
 }
 
@@ -23,9 +23,9 @@ int testCreateFullTree() {
     int a = 0;
     Symbol symbol1 = createSymbol(TYPEBOOL, "a", &a);
     int b = 1;
-    Symbol symbol2 = createSymbol(TYPEBOOL, "a", &b);
+    Symbol symbol2 = createSymbol(TYPEBOOL, "b", &b);
     int c = 2;
-    Symbol symbol3 = createSymbol(TYPEBOOL, "a", &c);
+    Symbol symbol3 = createSymbol(TYPEBOOL, "c", &c);
     struct TreeNode *right = createNode(&symbol1);
     struct TreeNode *left = createNode(&symbol2);
     struct TreeNode *tree = createTree(&symbol3, left, right);
@@ -40,7 +40,7 @@ int testCreateFullTree() {
     if(tree->info->value != symbol3.value){
         return 0;
     }
-
+    printTreeInOrder(tree);
     return 1;
 }
 
@@ -58,9 +58,11 @@ int testSingleLeaf(){
     Symbol symbol1 = createSymbol(TYPEBOOL, "a", &a);
     struct TreeNode *right = createNode(&symbol1);
     int c = 2;
-    Symbol symbol3 = createSymbol(TYPEBOOL, "a", &c);
-    if(createTree(&symbol3, right, NULL) == NULL){
+    Symbol symbol3 = createSymbol(TYPEBOOL, "b", &c);
+    struct TreeNode *tree = createTree(&symbol3, NULL,right);
+    if(tree == NULL){
         return 0;
     }
+    printTreeInOrder(tree);
     return 1;
 }
