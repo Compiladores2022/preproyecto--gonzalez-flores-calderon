@@ -8,6 +8,7 @@
 #include "sintactic_analysis_tree.h"
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 struct TreeNode * CrateEmptyNode() {
     struct TreeNode *newNode;
@@ -53,11 +54,12 @@ struct TreeNode * createTree(Symbol *symbol, struct TreeNode *left, struct TreeN
     return newNode;
 }
 
-void printTreeInOrder(struct TreeNode *tree) {
+void printTreeInOrder(struct TreeNode *tree, char * s) {
     if(tree == NULL){
         return;
     }
-    printTreeInOrder(tree->left);
-    printf("%s ", tree->info->name);
-    printTreeInOrder(tree->right);
+    printTreeInOrder(tree->left, s);
+    strcat(s, tree->info->name);
+    printTreeInOrder(tree->right, s);
+    
 }
