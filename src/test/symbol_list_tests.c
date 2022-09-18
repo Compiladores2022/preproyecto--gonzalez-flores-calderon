@@ -29,9 +29,9 @@ int addOneSymbolAndSearchIt() {
     SymbolList list;
     initialize(&list);
     int i = 3;
-    Symbol newSymbol = createSymbol(TYPEINT, "a", &i);
-    insert(&list, &newSymbol);
-    return search(&list, "a") == &newSymbol;
+    Symbol *newSymbol = createSymbol(TYPEINT, "a", &i);
+    insert(&list, newSymbol);
+    return search(&list, "a") == newSymbol;
 }
 
 int openAndCloseLevel() {
@@ -61,22 +61,22 @@ int searchFindsSymbolInPreviousLevels() {
     initialize(&list);
 
     int a = 0;
-    Symbol symbol1 = createSymbol(TYPEBOOL, "a", &a);
+    Symbol *symbol1 = createSymbol(TYPEBOOL, "a", &a);
     int b = 2;
-    Symbol symbol2 = createSymbol(TYPEINT, "dl", &b);
+    Symbol *symbol2 = createSymbol(TYPEINT, "dl", &b);
     int c = 0;
-    Symbol symbol3 = createSymbol(TYPEBOOL, "n", &c);
+    Symbol *symbol3 = createSymbol(TYPEBOOL, "n", &c);
     int d = 15;
-    Symbol symbol4 = createSymbol(TYPEINT, "i", &d);
+    Symbol *symbol4 = createSymbol(TYPEINT, "i", &d);
 
-    insert(&list, &symbol1);
-    insert(&list, &symbol2);
+    insert(&list, symbol1);
+    insert(&list, symbol2);
     openLevel(&list);
-    insert(&list, &symbol3);
-    insert(&list, &symbol4);
+    insert(&list, symbol3);
+    insert(&list, symbol4);
     openLevel(&list);
 
-    return search(&list, "a") == &symbol1;
+    return search(&list, "a") == symbol1;
 }
 
 int searchFindsCorrectSymbol() {
@@ -84,25 +84,25 @@ int searchFindsCorrectSymbol() {
     initialize(&list);
 
     int a = 3;
-    Symbol symbol1 = createSymbol(TYPEINT, "a", &a);
+    Symbol *symbol1 = createSymbol(TYPEINT, "a", &a);
     int b = 89;
-    Symbol symbol2 = createSymbol(TYPEINT, "dl", &b);
+    Symbol *symbol2 = createSymbol(TYPEINT, "dl", &b);
     int c = -4;
-    Symbol symbol3 = createSymbol(TYPEINT, "n", &c);
+    Symbol *symbol3 = createSymbol(TYPEINT, "n", &c);
     int d = 1;
-    Symbol symbol4 = createSymbol(TYPEBOOL, "a", &d);
+    Symbol *symbol4 = createSymbol(TYPEBOOL, "a", &d);
     int e = 1;
-    Symbol symbol5 = createSymbol(TYPEBOOL, "er", &e);
+    Symbol *symbol5 = createSymbol(TYPEBOOL, "er", &e);
 
-    insert(&list, &symbol1);
-    insert(&list, &symbol2);
+    insert(&list, symbol1);
+    insert(&list, symbol2);
     openLevel(&list);
-    insert(&list, &symbol3);
-    insert(&list, &symbol4);
+    insert(&list, symbol3);
+    insert(&list, symbol4);
     openLevel(&list);
-    insert(&list, &symbol5);
+    insert(&list, symbol5);
 
-    return search(&list, "a") == &symbol4;
+    return search(&list, "a") == symbol4;
 }
 
 int currentLevel(SymbolList *symbolList) {

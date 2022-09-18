@@ -1,7 +1,6 @@
 #!/bin/bash
 
-gcc ../main/types/symbol.h symbol_list_tests.c ../main/symbol_list/symbol_list.c ../main/symbol_list/symbol_list.h
+gcc ../main/types/symbol.c symbol_list_tests.c ../main/symbol_list/symbol_list.c ../main/symbol_list/symbol_list.h
 ./a.out
 rm a.out
 rm ../main/symbol_list/symbol_list.h.gch
-rm ../main/types/symbol.h.gch

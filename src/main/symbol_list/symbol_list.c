@@ -16,6 +16,7 @@ struct TableNode * CrateNode() {
 
     newNode = (struct TableNode *) malloc (sizeof(struct TableNode));
     if(newNode == NULL){
+        printf("couldn't create table node, exiting\n");
         exit(EXIT_FAILURE);
     }
     else{
@@ -28,6 +29,7 @@ struct levelNode * CrateLevelNode() {
 
     newNode = (struct levelNode *) malloc (sizeof(struct levelNode));
     if(newNode == NULL){
+        printf("couldn't create level node, exiting\n");
         exit(EXIT_FAILURE);
     }
     else{
@@ -38,6 +40,7 @@ struct levelNode * CrateLevelNode() {
 void insert(SymbolList *symbolList, Symbol *symbol) {
     struct TableNode *newNode;
     if (searchInLevel(symbolList->head->levelSymbols, symbol->name) != NULL){
+        printf("Cannot add symbol %s because is already present in this level\n", symbol->name);
         exit(0); //name already present
     }    
 
@@ -77,6 +80,16 @@ Symbol * search(SymbolList *symbolList, char *name) {
         ln = ln->next;
     }
     return NULL;
+}
+
+void printLevel(struct TableNode *nodeList) {
+    printf("printeando todo el nivel:\n");
+    struct TableNode *listPointer = nodeList;
+
+    while (listPointer != NULL) {
+        printf("item: %s\n", listPointer->info->name);
+        listPointer = listPointer->next;
+    }
 }
 
 //Create new level

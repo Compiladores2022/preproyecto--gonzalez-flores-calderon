@@ -22,6 +22,10 @@ void insert(SymbolList *symbolList, Symbol *symbol);
 
 Symbol * search(SymbolList *symbolList, char *name);
 
+Symbol * searchInLevel(struct TableNode *nodeList, char *name);
+
+void printLevel(struct TableNode *nodeList);
+
 void openLevel(SymbolList *symbolList);
 
 void closeLevel(SymbolList *symbolList);

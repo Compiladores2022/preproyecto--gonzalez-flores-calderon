@@ -15,6 +15,7 @@ struct TreeNode * CrateEmptyNode() {
 
     newNode = (struct TreeNode *) malloc (sizeof(struct TreeNode));
     if(newNode == NULL){
+        printf("couldn't create tree node, exiting\n");
         exit(EXIT_FAILURE);
     }
     else{
@@ -26,8 +27,13 @@ SintacticAnalysisTree * CreateEmptyTree() {
     SintacticAnalysisTree *newTree = NULL;
 
     newTree = (SintacticAnalysisTree *) malloc (sizeof(SintacticAnalysisTree));
-
-    return newTree;
+    if(newTree == NULL){
+        printf("couldn't create tree node, exiting\n");
+        exit(EXIT_FAILURE);
+    }
+    else{
+        return newTree;
+    }
 }
 
 struct TreeNode * createNode(Symbol *symbol) {

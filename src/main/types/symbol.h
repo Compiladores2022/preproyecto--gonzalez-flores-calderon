@@ -9,13 +9,6 @@ typedef struct {
     void *value;
 }Symbol;
 
-static Symbol createSymbol(types type, char *name, void *value) {
-    Symbol newSymbol;
-    newSymbol.type = type;
-    newSymbol.name = name;
-    newSymbol.value = value;
-
-    return newSymbol;
-}
+Symbol * createSymbol(types type, char *name, void *value);
 
 #endif

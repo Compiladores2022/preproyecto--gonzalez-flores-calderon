@@ -1,4 +1,5 @@
 #include "../main/sintactic_analysis_tree/sintactic_analysis_tree.h"
+#include "../main/types/symbol.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -26,23 +27,23 @@ int main(){
 int testCreateFullTree() {
     
     int a = 0;
-    Symbol symbol1 = createSymbol(TYPEBOOL, "a", &a);
+    Symbol *symbol1 = createSymbol(TYPEBOOL, "a", &a);
     int b = 1;
-    Symbol symbol2 = createSymbol(TYPEBOOL, "b", &b);
+    Symbol *symbol2 = createSymbol(TYPEBOOL, "b", &b);
     int c = 2;
-    Symbol symbol3 = createSymbol(TYPEBOOL, "c", &c);
-    struct TreeNode *right = createNode(&symbol1);
-    struct TreeNode *left = createNode(&symbol2);
-    struct TreeNode *tree = createTree(&symbol3, left, right);
+    Symbol *symbol3 = createSymbol(TYPEBOOL, "c", &c);
+    struct TreeNode *right = createNode(symbol1);
+    struct TreeNode *left = createNode(symbol2);
+    struct TreeNode *tree = createTree(symbol3, left, right);
 
     //printf("%d \n", *(int *)tree->head->right->info->value);
-    if(tree->right->info->value != symbol1.value){
+    if(tree->right->info->value != symbol1->value){
         return 0;
     }
-    if(tree->left->info->value != symbol2.value){
+    if(tree->left->info->value != symbol2->value){
        return 0; 
     }
-    if(tree->info->value != symbol3.value){
+    if(tree->info->value != symbol3->value){
         return 0;
     }
     return 1;
@@ -50,8 +51,8 @@ int testCreateFullTree() {
 
 int testInvalidTree(){
     int c = 2;
-    Symbol symbol3 = createSymbol(TYPEBOOL, "a", &c);
-    if(createTree(&symbol3, NULL, NULL) == NULL){
+    Symbol *symbol3 = createSymbol(TYPEBOOL, "a", &c);
+    if(createTree(symbol3, NULL, NULL) == NULL){
         return 1;
     }
     return 0;
@@ -59,11 +60,11 @@ int testInvalidTree(){
 
 int testSingleLeaf(){
     int a = 0;
-    Symbol symbol1 = createSymbol(TYPEBOOL, "a", &a);
-    struct TreeNode *right = createNode(&symbol1);
+    Symbol *symbol1 = createSymbol(TYPEBOOL, "a", &a);
+    struct TreeNode *right = createNode(symbol1);
     int c = 2;
-    Symbol symbol3 = createSymbol(TYPEBOOL, "b", &c);
-    struct TreeNode *tree = createTree(&symbol3, NULL,right);
+    Symbol *symbol3 = createSymbol(TYPEBOOL, "b", &c);
+    struct TreeNode *tree = createTree(symbol3, NULL,right);
     if(tree == NULL){
         return 0;
     }
@@ -73,14 +74,14 @@ int testSingleLeaf(){
 
 int testInorder(){
     int a = 0;
-    Symbol symbol1 = createSymbol(TYPEBOOL, "a", &a);
-    struct TreeNode *right = createNode(&symbol1);
+    Symbol *symbol1 = createSymbol(TYPEBOOL, "a", &a);
+    struct TreeNode *right = createNode(symbol1);
     int b = 1;
-    Symbol symbol2 = createSymbol(TYPEBOOL, "b", &b);
-    struct TreeNode *left = createNode(&symbol2);
+    Symbol *symbol2 = createSymbol(TYPEBOOL, "b", &b);
+    struct TreeNode *left = createNode(symbol2);
     int c = 2;
-    Symbol symbol3 = createSymbol(TYPEBOOL, "c", &c);
-    struct TreeNode *tree = createTree(&symbol3, left, right);
+    Symbol *symbol3 = createSymbol(TYPEBOOL, "c", &c);
+    struct TreeNode *tree = createTree(symbol3, left, right);
     
     char *p = malloc(sizeof(char));
     printTreeInOrder(tree, p);
