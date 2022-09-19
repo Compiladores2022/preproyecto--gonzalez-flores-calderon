@@ -5,9 +5,9 @@
 #include "sintactic_analysis_tree/sintactic_analysis_tree.h"
 #include "utils.h"
 #include "symbol_list/symbol_list.h"
+
 SymbolList list;
 SintacticAnalysisTree sat;
-char *treePrint;
 void yyerror();
 int yylex();
 
@@ -50,15 +50,11 @@ int yylex();
 %%
 
 
-inil: { initialize(&list);} prog { printTreeInOrder($2, treePrint); printf("tree in order: %s\n", treePrint); }
+inil: { initialize(&list);} prog {  printTree($2); }
     ;
  
 
-prog: declList sentList {   printf("aunq sea llegue al prog\n");
-                            treePrint = "";
-                            printTreeInOrder($2, treePrint);
-                            printf("fua alto arbolaso tengo aca padre: %s\n", treePrint);
-                            Symbol *s = createSymbol(UNDEFINED, "next", NULL);
+prog: declList sentList {   Symbol *s = createSymbol(UNDEFINED, "next", NULL);
                             struct TreeNode * newTree = createTree(s, $1, $2);
                             $$ = newTree; }
     
@@ -66,10 +62,12 @@ prog: declList sentList {   printf("aunq sea llegue al prog\n");
     ;
 
 declList: decl          {   Symbol *s = createSymbol(UNDEFINED, "next", NULL);
-                            struct TreeNode * newTree = createTree(s, NULL, $1); }
+                            struct TreeNode * newTree = createTree(s, NULL, $1);
+                            $$ = newTree; }
 
     | decl declList     {   Symbol *s = createSymbol(UNDEFINED, "next", NULL);
-                            struct TreeNode * newTree = createTree(s, $2, $1); }
+                            struct TreeNode * newTree = createTree(s, $2, $1);
+                            $$ = newTree; }
     ;
 
 decl: type ID '=' expr ';'  {   if (searchInLevel(list.head->levelSymbols, $2) != NULL) {
@@ -108,10 +106,15 @@ sent: ID '=' expr ';'   {   Symbol * idSymbol = search(&list, $1);
                             $$ = newTree; }
     ;
 
-expr: VALORINT  {   Symbol *s = createSymbol(INT, NULL, &$1);
-                    $$ = createNode(s); }
+expr: VALORINT  {   char *str = malloc(sizeof(char *));
+                    sprintf(str, "%d", $1);
+                    Symbol *s = createSymbol(INT, str, &$1);
+                    
+                    struct TreeNode *newNode = createNode(s);
+                    $$ = newNode; }
 
-    | VALORBOOL {   Symbol *s = createSymbol(BOOL, NULL, &$1);
+    | VALORBOOL {   char * boolValue = $1 == 1 ? "true" : "false";
+                    Symbol *s = createSymbol(BOOL, boolValue, &$1);
                     $$ = createNode(s); }
     
     | ID {  Symbol *s = search(&list, $1);
