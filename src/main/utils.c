@@ -11,3 +11,9 @@ char * enumToString(types type) {
         default : exit(0);
     }
 }
+
+void printTree(struct TreeNode *tree) {
+    char *treePrint = malloc(sizeof(char));
+    printTreeInOrder(tree, treePrint);
+    printf("\033[0;31mtree in order:\033[0m %s\n", treePrint);
+}
