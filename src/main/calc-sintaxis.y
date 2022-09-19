@@ -54,14 +54,14 @@ inil: { initialize(&list);} prog {  printTree($2); }
     ;
  
 
-prog: declList sentList { $$ = newDeclarationTree($1, $2); }
+prog: declList sentList { $$ = newOperationTree($1, $2, "next"); }
     
     | sentList { $$ = $1; }
     ;
 
-declList: decl          { $$ = newDeclarationTree(NULL, $1); }
+declList: decl          { $$ = newOperationTree(NULL, $1, "next"); }
 
-    | decl declList     { $$ = newDeclarationTree($2, $1); }
+    | decl declList     { $$ = newOperationTree($2, $1, "next"); }
     ;
 
 decl: type ID '=' expr ';'  {   if (searchInLevel(list.head->levelSymbols, $2) != NULL) {
@@ -71,16 +71,12 @@ decl: type ID '=' expr ';'  {   if (searchInLevel(list.head->levelSymbols, $2) !
                                 Symbol *newID = createSymbol($1, $2, NULL);
                                 insert(&list, newID);
                                 struct TreeNode * idNode = createNode(newID);
-                                Symbol *assignation = createSymbol(UNDEFINED, "=", NULL);
-                                struct TreeNode * newTree = createTree(assignation, idNode, $4);
-                                $$ = newTree; }
+                                $$ = newOperationTree(idNode, $4, "="); }
     ;
 
 sentList: sent { $$ = $1; } 
     
-    | sent sentList     {   Symbol *s = createSymbol(UNDEFINED, "next", NULL);
-                            struct TreeNode * newTree = createTree(s, $2, $1);
-                            $$ = newTree; }
+    | sent sentList     { $$ = newOperationTree($2, $1, "next"); }
     ;
 
 sent: ID '=' expr ';'   {   Symbol * idSymbol = search(&list, $1);
@@ -88,16 +84,12 @@ sent: ID '=' expr ';'   {   Symbol * idSymbol = search(&list, $1);
                                 printf("Undefined Symbol %s", $1);
                                 yyerror();
                             }
-                            Symbol *s = createSymbol(UNDEFINED, "=", NULL);
                             struct TreeNode * idNode = createNode(idSymbol);
-                            struct TreeNode * newTree = createTree(s, idNode, $3);
-                            $$ = newTree; }
+                            $$ = newOperationTree(idNode, $3,"="); }
 
     | expr ';' { $$ = $1; }
 
-    | TReturn expr ';'  {   Symbol *s = createSymbol(UNDEFINED, "return", NULL);
-                            struct TreeNode * newTree = createTree(s, NULL, $2);
-                            $$ = newTree; }
+    | TReturn expr ';'  { $$ = newOperationTree(NULL, $2, "return"); }
     ;
 
 expr: VALORINT  {   char *str = malloc(sizeof(char *));
@@ -118,27 +110,17 @@ expr: VALORINT  {   char *str = malloc(sizeof(char *));
             }
             $$ = createNode(s); }
 
-    | expr '+' expr {   Symbol *s = createSymbol(INT, "+", NULL);
-                        struct TreeNode * newTree = createTree(s, $1, $3);
-                        $$ = newTree; }
+    | expr '+' expr { $$ = newOperationTree($1, $3, "+"); }
     
-    | expr '*' expr {   Symbol *s = createSymbol(INT, "*", NULL);
-                        struct TreeNode * newTree = createTree(s, $1, $3);
-                        $$ = newTree; }
+    | expr '*' expr { $$ = newOperationTree($1, $3, "*"); }
 
-    | expr TMENOS expr  {   Symbol *s = createSymbol(INT, "-", NULL);
-                            struct TreeNode * newTree = createTree(s, $1, $3);
-                            $$ = newTree; }
+    | expr TMENOS expr  { $$ = newOperationTree($1, $3, "-"); }
 
     | '(' expr ')' { $$ = $2; }
 
-    | expr TOR expr     {   Symbol *s = createSymbol(BOOL, "||", NULL);
-                            struct TreeNode * newTree = createTree(s, $1, $3);
-                            $$ = newTree; }
+    | expr TOR expr     { $$ = newBoolOperationTree($1, $3, "||"); }
     
-    | expr TAND expr    {   Symbol *s = createSymbol(BOOL, "&&", NULL);
-                            struct TreeNode * newTree = createTree(s, $1, $3);
-                            $$ = newTree; }
+    | expr TAND expr    { $$ = $$ = newBoolOperationTree($1, $3, "&&"); }
     ;   
 
 VALORINT: INT { $$ = $1; }

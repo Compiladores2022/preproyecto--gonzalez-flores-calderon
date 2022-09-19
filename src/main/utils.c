@@ -20,8 +20,14 @@ void printTree(struct TreeNode *tree) {
     printf("\033[0;31mtree in order:\033[0m %s\n", treePrint);
 }
 
-struct TreeNode * newDeclarationTree(struct TreeNode *left, struct TreeNode *right) {
-    Symbol *s = createSymbol(UNDEFINED, "next", NULL);
+struct TreeNode * newOperationTree(struct TreeNode *left, struct TreeNode *right, char *operation ) {
+    Symbol *s = createSymbol(UNDEFINED, operation, NULL);
+    struct TreeNode * newTree = createTree(s, left, right);
+    return newTree;
+}
+
+struct TreeNode * newBoolOperationTree(struct TreeNode *left, struct TreeNode *right, char *operation ) {
+    Symbol *s = createSymbol(BOOL, operation, NULL);
     struct TreeNode * newTree = createTree(s, left, right);
     return newTree;
 }
