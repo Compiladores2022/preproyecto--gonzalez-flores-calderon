@@ -8,6 +8,8 @@ char * enumToString(types type) {
 
         case TYPEBOOL: return "BOOL";
 
+        case UNDEFINED: return "UNDEFINED";
+
         default : exit(0);
     }
 }
