@@ -10,7 +10,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-struct TreeNode * CrateEmptyNode() {
+struct TreeNode * CreateEmptyNode() {
     struct TreeNode *newNode;
 
     newNode = (struct TreeNode *) malloc (sizeof(struct TreeNode));
@@ -39,7 +39,7 @@ SintacticAnalysisTree * CreateEmptyTree() {
 struct TreeNode * createNode(Symbol *symbol) {
     struct TreeNode *newNode;
 
-    newNode = CrateEmptyNode();
+    newNode = CreateEmptyNode();
     newNode->info = symbol;
     newNode->left = NULL;
     newNode->right = NULL;
@@ -49,7 +49,7 @@ struct TreeNode * createNode(Symbol *symbol) {
 
 struct TreeNode * createTree(Symbol *symbol, struct TreeNode *left, struct TreeNode *right) {
     
-    struct TreeNode *newNode = CrateEmptyNode();
+    struct TreeNode *newNode = CreateEmptyNode();
     newNode->info = symbol;
     if(right == NULL){
         return NULL;

@@ -54,20 +54,14 @@ inil: { initialize(&list);} prog {  printTree($2); }
     ;
  
 
-prog: declList sentList {   Symbol *s = createSymbol(UNDEFINED, "next", NULL);
-                            struct TreeNode * newTree = createTree(s, $1, $2);
-                            $$ = newTree; }
+prog: declList sentList { $$ = newDeclarationTree($1, $2); }
     
     | sentList { $$ = $1; }
     ;
 
-declList: decl          {   Symbol *s = createSymbol(UNDEFINED, "next", NULL);
-                            struct TreeNode * newTree = createTree(s, NULL, $1);
-                            $$ = newTree; }
+declList: decl          { $$ = newDeclarationTree(NULL, $1); }
 
-    | decl declList     {   Symbol *s = createSymbol(UNDEFINED, "next", NULL);
-                            struct TreeNode * newTree = createTree(s, $2, $1);
-                            $$ = newTree; }
+    | decl declList     { $$ = newDeclarationTree($2, $1); }
     ;
 
 decl: type ID '=' expr ';'  {   if (searchInLevel(list.head->levelSymbols, $2) != NULL) {
