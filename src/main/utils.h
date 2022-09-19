@@ -8,6 +8,6 @@ char * enumToString(types type);
 
 void printTree(struct TreeNode *tree);
 
-struct TreeNode * newDeclarationTree(struct TreeNode *left, struct TreeNode *right);
+struct TreeNode * createNextTree(struct TreeNode *left, struct TreeNode *right);
 
 #endif

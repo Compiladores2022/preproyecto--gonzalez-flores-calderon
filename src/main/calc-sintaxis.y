@@ -54,14 +54,14 @@ inil: { initialize(&list);} prog {  printTree($2); }
     ;
  
 
-prog: declList sentList { $$ = newDeclarationTree($1, $2); }
+prog: declList sentList { $$ = createNextTree($1, $2); }
     
     | sentList { $$ = $1; }
     ;
 
-declList: decl          { $$ = newDeclarationTree(NULL, $1); }
+declList: decl          { $$ = createNextTree(NULL, $1); }
 
-    | decl declList     { $$ = newDeclarationTree($2, $1); }
+    | decl declList     { $$ = createNextTree($2, $1); }
     ;
 
 decl: type ID '=' expr ';'  {   if (searchInLevel(list.head->levelSymbols, $2) != NULL) {
