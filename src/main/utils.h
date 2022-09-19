@@ -12,4 +12,7 @@ struct TreeNode * newOperationTree(struct TreeNode *left, struct TreeNode *right
 
 struct TreeNode * newBoolOperationTree(struct TreeNode *left, struct TreeNode *right, char *operation );
 
+struct TreeNode * createNextTree(struct TreeNode *left, struct TreeNode *right);
+
+
 #endif
