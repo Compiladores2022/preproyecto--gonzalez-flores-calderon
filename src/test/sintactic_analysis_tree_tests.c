@@ -82,11 +82,11 @@ int testInorder(){
     int c = 2;
     Symbol *symbol3 = createSymbol(TYPEBOOL, "c", &c);
     struct TreeNode *tree = createTree(symbol3, left, right);
-    
     char *p = malloc(sizeof(char));
     printTreeInOrder(tree, p);
-    if(strcmp(p, "bca") == 0){
+    if(strcmp(p, " b c a") == 0){
         return 1;
     }
+    printf("expected: %s\nbut found: %s\n", p, " b c a");
     return 0;
 }

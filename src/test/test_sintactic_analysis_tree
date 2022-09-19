@@ -1,6 +1,5 @@
 #!/bin/bash
 
-gcc sintactic_analysis_tree_tests.c  ../main/types/symbol.c ../main/sintactic_analysis_tree/sintactic_analysis_tree.c ../main/sintactic_analysis_tree/sintactic_analysis_tree.h
+gcc sintactic_analysis_tree_tests.c  ../main/types/symbol.c ../main/sintactic_analysis_tree/sintactic_analysis_tree.c
 ./a.out
 rm a.out
-rm ../main/sintactic_analysis_tree/sintactic_analysis_tree.h.gch

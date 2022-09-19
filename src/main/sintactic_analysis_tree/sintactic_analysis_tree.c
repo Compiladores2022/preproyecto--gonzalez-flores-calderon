@@ -65,6 +65,7 @@ void printTreeInOrder(struct TreeNode *tree, char * s) {
         return;
     }
     printTreeInOrder(tree->left, s);
+    strcat(s, " ");
     strcat(s, tree->info->name);
     printTreeInOrder(tree->right, s);
     
