@@ -50,7 +50,7 @@ int yylex();
 %%
 
 
-inil: { initialize(&list);} prog {  printTree($2); }
+inil: { initialize(&list);} prog { printTree($2); checkTypeTree($2);}
     ;
  
 
