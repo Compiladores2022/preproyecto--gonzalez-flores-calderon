@@ -37,7 +37,7 @@ SintacticAnalysisTree * CreateEmptyTree() {
 struct TreeNode * createNode(Symbol *symbol) {
     struct TreeNode *newNode;
 
-    newNode = CrateEmptyNode();
+    newNode = CreateEmptyNode();
     newNode->info = symbol;
     newNode->left = NULL;
     newNode->right = NULL;
@@ -47,7 +47,7 @@ struct TreeNode * createNode(Symbol *symbol) {
 
 struct TreeNode * createTree(Symbol *symbol, struct TreeNode *left, struct TreeNode *right) {
     
-    struct TreeNode *newNode = CrateEmptyNode();
+    struct TreeNode *newNode = CreateEmptyNode();
     newNode->info = symbol;
     if(right == NULL){
         return NULL;

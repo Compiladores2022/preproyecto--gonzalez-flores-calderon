@@ -11,4 +11,8 @@ typedef struct {
 
 Symbol * createSymbol(types type, char *name, void *value);
 
+void addType(Symbol *symbol, types type);
+
+void addValue(Symbol *symbol, void *value);
+
 #endif
