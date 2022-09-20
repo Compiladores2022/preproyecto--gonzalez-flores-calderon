@@ -8,7 +8,7 @@ void operationType(char * operation, types type);
 int arithmeticOperation(char * operation);
 int booleanOperation(char * operation);
 
-struct TreeNode * CrateEmptyNode() {
+struct TreeNode * CreateEmptyNode() {
     struct TreeNode *newNode;
 
     newNode = (struct TreeNode *) malloc (sizeof(struct TreeNode));
@@ -35,9 +35,8 @@ SintacticAnalysisTree * CreateEmptyTree() {
 }
 
 struct TreeNode * createNode(Symbol *symbol) {
-    struct TreeNode *newNode;
 
-    newNode = CreateEmptyNode();
+    struct TreeNode *newNode = CreateEmptyNode();
     newNode->info = symbol;
     newNode->left = NULL;
     newNode->right = NULL;
