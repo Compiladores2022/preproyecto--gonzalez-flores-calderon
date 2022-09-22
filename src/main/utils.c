@@ -26,14 +26,8 @@ struct TreeNode * createNextTree(struct TreeNode *left, struct TreeNode *right) 
     return newTree;
 }
 
-struct TreeNode * newOperationTree(struct TreeNode *left, struct TreeNode *right, char *operation ) {
-    Symbol *s = createSymbol(TYPEINT, operation, NULL);
-    struct TreeNode * newTree = createTree(s, left, right);
-    return newTree;
-}
-
-struct TreeNode * newBoolOperationTree(struct TreeNode *left, struct TreeNode *right, char *operation ) {
-    Symbol *s = createSymbol(TYPEBOOL, operation, NULL);
+struct TreeNode * createNewTree(types symbolType, struct TreeNode *left, struct TreeNode *right, char *operation ) {
+    Symbol *s = createSymbol(symbolType, operation, NULL);
     struct TreeNode * newTree = createTree(s, left, right);
     return newTree;
 }
