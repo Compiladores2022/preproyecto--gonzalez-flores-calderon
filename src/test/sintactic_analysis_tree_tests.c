@@ -5,20 +5,27 @@
 #include <stdlib.h>
 #include <string.h>
 
-
 int testCreateFullTree();
 int testInvalidTree();
 int testSingleLeaf();
 int testInorder();
+int testCheckTypeTree();
+int testCheckTypeTreeInvalidType();
+int testOperationTypeAddition();
+int testOperationTypeOr();
 
 int main(){
     //total tests must be manually updated when adding a new test
     int testsPassed = 0, totalTests = 0;
     
-    testCreateFullTree() ? testsPassed++ : printf("test Create Full Tree failed \n"); totalTests++;
-    testInvalidTree() ? testsPassed++ : printf("test invalid Tree failed \n"); totalTests++;
-    testSingleLeaf() ? testsPassed++ : printf("test single leaf failed \n"); totalTests++;
-    testInorder() ? testsPassed++ : printf("test indorder failed \n"); totalTests++;
+    testCreateFullTree() ? testsPassed++ : printf("Test Create Full Tree failed \n"); totalTests++;
+    testInvalidTree() ? testsPassed++ : printf("Test invalid Tree failed \n"); totalTests++;
+    testSingleLeaf() ? testsPassed++ : printf("Test single leaf failed \n"); totalTests++;
+    testInorder() ? testsPassed++ : printf("Test indorder failed \n"); totalTests++;
+    testCheckTypeTree() ? testsPassed++ : printf("Test check type failed \n"); totalTests++;
+    testCheckTypeTreeInvalidType() ? testsPassed++ : printf("test check type failed \n"); totalTests++;
+    testOperationTypeAddition() ? testsPassed++ : printf("Test checking the partner type for the operation arithmetic failed \n"); totalTests++;
+    testOperationTypeOr() ? testsPassed++ : printf("Test checking the partner type for the operation boolean failed \n"); totalTests++;
 
     printf("tests passed: %d out of %d\n", testsPassed, totalTests);
     return 0;
@@ -89,4 +96,52 @@ int testInorder(){
     }
     printf("expected: %s\nbut found: %s\n", p, " b c a");
     return 0;
+}
+
+int testCheckTypeTree(){
+    int a = 3;
+    Symbol *symbol1 = createSymbol(TYPEINT, "3", &a);
+    struct TreeNode *right = createNode(symbol1);
+    int b = 5;
+    Symbol *symbol2 = createSymbol(TYPEINT, "5", &b);
+    struct TreeNode *left = createNode(symbol2);
+    Symbol *plus = createSymbol(UNDEFINED, "+", NULL);
+    struct TreeNode *tree = createTree(plus, left, right);
+    checkTypeTree(tree);
+}
+
+int testCheckTypeTreeInvalidType(){
+    int a = 0;
+    Symbol *symbol1 = createSymbol(TYPEBOOL, "False", &a);
+    struct TreeNode *right = createNode(symbol1);
+    int b = 34;
+    Symbol *symbol2 = createSymbol(TYPEINT, "34", &b);
+    struct TreeNode *left = createNode(symbol2);
+    Symbol *plus = createSymbol(UNDEFINED, "+", NULL);
+    struct TreeNode *tree = createTree(plus, left, right);
+    checkTypeTree(tree);
+}
+
+int testOperationTypeAddition(){
+    int a = 1;
+    Symbol *symbol1 = createSymbol(TYPEBOOL, "TRUE", &a);
+    struct TreeNode *right = createNode(symbol1);
+    int b = 0;
+    Symbol *symbol2 = createSymbol(TYPEBOOL, "FALSE", &b);
+    struct TreeNode *left = createNode(symbol2);
+    Symbol *plus = createSymbol(UNDEFINED, "+", NULL);
+    struct TreeNode *tree = createTree(plus, left, right);
+    checkTypeTree(tree);
+}
+
+int testOperationTypeOr(){
+    int a = 45;
+    Symbol *symbol1 = createSymbol(TYPEINT, "45", &a);
+    struct TreeNode *right = createNode(symbol1);
+    int b = 30;
+    Symbol *symbol2 = createSymbol(TYPEINT, "30", &b);
+    struct TreeNode *left = createNode(symbol2);
+    Symbol *or = createSymbol(UNDEFINED, "||", NULL);
+    struct TreeNode *tree = createTree(or, left, right);
+    checkTypeTree(tree);
 }
