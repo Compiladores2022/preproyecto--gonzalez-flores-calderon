@@ -31,3 +31,11 @@ struct TreeNode * createNewTree(types symbolType, struct TreeNode *left, struct 
     struct TreeNode * newTree = createTree(s, left, right);
     return newTree;
 }
+
+int arithmeticOperation(char * operation) {
+    return !(strcmp(operation, "+") && strcmp(operation, "-") && strcmp(operation, "*"));
+}
+
+int booleanOperation(char * operation) {
+    return !(strcmp(operation, "&&") && strcmp(operation, "||"));
+}

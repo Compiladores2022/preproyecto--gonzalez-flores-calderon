@@ -68,14 +68,6 @@ void printTreeInOrder(struct TreeNode *tree, char * s) {
     
 }
 
-int arithmeticOperation(char * operation) {
-    return !(strcmp(operation, "+") && strcmp(operation, "-") && strcmp(operation, "*"));
-}
-
-int booleanOperation(char * operation) {
-    return !(strcmp(operation, "&&") && strcmp(operation, "||"));
-}
-
 void operationType(char * operation, types type) {
 
     switch (type)
