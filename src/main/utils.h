@@ -12,5 +12,8 @@ struct TreeNode * createNextTree(struct TreeNode *left, struct TreeNode *right);
 
 struct TreeNode * createNewTree(types symbolType, struct TreeNode *left, struct TreeNode *right, char *operation );
 
+int arithmeticOperation(char * operation);
+
+int booleanOperation(char * operation);
 
 #endif
