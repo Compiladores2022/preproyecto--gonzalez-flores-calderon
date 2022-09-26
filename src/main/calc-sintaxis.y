@@ -63,7 +63,7 @@ declList: decl          { $$ = createNextTree(NULL, $1); }
 
     | decl declList     { $$ = createNextTree($2, $1); }
     ;
-//check
+
 decl: type ID '=' expr ';'  {   if (searchInLevel(list.head->levelSymbols, $2) != NULL) {
                                     printf("Multiple definitions of: %s", $2);
                                     yyerror();
