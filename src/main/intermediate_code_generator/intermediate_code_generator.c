@@ -5,7 +5,7 @@ int variableNumber = 1;
 typedef enum {ADD,SUB,MUL,DIV,AND,OR} operations;
 
 /*
- * takes a decorated tree and returns an equivalent three address code program
+ * takes a decorated tree and returns an equivalent three address code program as a list of instructions
 */
 struct InstructionNode * generateIntermediateCode(struct TreeNode *tree) {
     struct InstructionNode * code;
@@ -45,87 +45,44 @@ int isOperationSymbol(char *symbolName) {
     return arithmeticOperation(symbolName) || booleanOperation(symbolName);
 }
 
-addCurrentInstruction(struct TreeNode *tree, struct InstructionNode * codeList, Symbol * temp1, Symbol * temp2){
+Symbol * addCurrentInstruction(struct TreeNode *tree, struct InstructionNode * codeList, Symbol * temp1, Symbol * temp2) {
+    if(temp1 == NULL){
+        temp1 = tree->left->info;    
+    }
+    if(temp2 == NULL){
+        temp2 = tree->right->info;       
+    }
+    char *varNum = malloc(sizeof(char *));
+    sprintf(varNum, "%d", variableNumber);
+    
+    Symbol * temp3;
+    struct InstructionNode * instruction;
     switch (tree->info->name) {
         case "+":
-            if(temp1 == NULL){
-                temp1 = tree->left->info;   
-            }
-            if(temp2 == NULL){
-                temp2 = tree->right->info;  
-            }
-            char *str = malloc(sizeof(char *));
-            sprintf(str, "%d", variableNumber);
-            Symbol * temp3 = createSymbol(temp1->type, "temp" + str, (*(int *)temp1->value + *(int *)temp2->value);
-            struct InstructionNode *instruct = createInstructition("ADD", temp1, temp2, temp3);
-            insert(codeList, instruct);
+            temp3 = createSymbol(temp1->type, "temp" + varNum, (*(int *)temp1->value + *(int *)temp2->value);
+            instruction = createInstructitionNode("ADD", temp1, temp2, temp3);
             break;
-        case "-": 
-            if(temp1 == NULL){
-                temp1 = tree->left->info;    
-            }
-            if(temp2 == NULL){
-                temp2 = tree->right->info;       
-            }
-            char *str = malloc(sizeof(char *));
-            sprintf(str, "%d", variableNumber);
-            Symbol * temp3 = createSymbol(temp1->type, "temp" + str, (*(int *)temp1->value + *(int *)temp2->value);
-            struct InstructionNode *instruct = createInstructition("SUB", temp1, temp2, temp3);
-            insert(codeList, instruct);
+        case "-":
+            temp3 = createSymbol(temp1->type, "temp" + varNum, (*(int *)temp1->value - *(int *)temp2->value);
+            instruction = createInstructitionNode("SUB", temp1, temp2, temp3);
             break;
-        case "*": 
-            if(temp1 == NULL){
-                temp1 = tree->left->info;    
-            }
-            if(temp2 == NULL){
-                temp2 = tree->right->info;       
-            }
-            char *str = malloc(sizeof(char *));
-            sprintf(str, "%d", variableNumber);
-            Symbol * temp3 = createSymbol(temp1->type, "temp" + str, (*(int *)temp1->value + *(int *)temp2->value);
-            struct InstructionNode *instruct = createInstructition("MULT", temp1, temp2, temp3);
-            insert(codeList, instruct);
+        case "*":
+            temp3 = createSymbol(temp1->type, "temp" + varNum, (*(int *)temp1->value * *(int *)temp2->value);
+            instruction = createInstructitionNode("MULT", temp1, temp2, temp3);
             break;
-        case "&&": 
-            if(temp1 == NULL){
-                temp1 = tree->left->info;    
-            }
-            if(temp2 == NULL){
-                temp2 = tree->right->info;       
-            }
-            char *str = malloc(sizeof(char *));
-            sprintf(str, "%d", variableNumber);
-            Symbol * temp3 = createSymbol(temp1->type, "temp" + str, (*(int *)temp1->value + *(int *)temp2->value);
-            struct InstructionNode *instruct = createInstructition("AND", temp1, temp2, temp3);
-            insert(codeList, instruct);
+        case "&&":
+            temp3 = createSymbol(temp1->type, "temp" + varNum, (*(int *)temp1->value && *(int *)temp2->value);
+            instruction = createInstructitionNode("AND", temp1, temp2, temp3);
             break;
-        case "||": 
-            if(temp1 == NULL){
-                temp1 = tree->left->info;    
-            }
-            if(temp2 == NULL){
-                temp2 = tree->right->info;       
-            }
-            char *str = malloc(sizeof(char *));
-            sprintf(str, "%d", variableNumber);
-            Symbol * temp3 = createSymbol(temp1->type, "temp" + str, (*(int *)temp1->value + *(int *)temp2->value);
-            struct InstructionNode *instruct = createInstructition("OR", temp1, temp2, temp3);
-            insert(codeList, instruct);
+        case "||":
+            temp3 = createSymbol(temp1->type, "temp" + varNum, (*(int *)temp1->value || *(int *)temp2->value);
+            instruction = createInstructitionNode("OR", temp1, temp2, temp3);
             break;
-        case "return": 
-            if(temp1 == NULL){
-                temp1 = tree->left->info;    
-            }
-            if(temp2 == NULL){
-                temp2 = tree->right->info;       
-            }
-            char *str = malloc(sizeof(char *));
-            sprintf(str, "%d", variableNumber);
-            Symbol * temp3 = createSymbol(temp1->type, "temp" + str, (*(int *)temp1->value + *(int *)temp2->value);
-            struct InstructionNode *instruct = createInstructition("RETURN", temp1, temp2, temp3);
-            insert(codeList, instruct);
-            break;
-        default : printf("%s is not an operator\n", tree->info->name);
+        default: printf("%s is not an operator\n", tree->info->name);
             exit(0);
+            break;
     }
+    
+    insert(codeList, instruction);
+    return temp3;
 }
