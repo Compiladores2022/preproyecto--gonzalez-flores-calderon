@@ -63,20 +63,20 @@ declList: decl          { $$ = createNextTree(NULL, $1); }
 
     | decl declList     { $$ = createNextTree($2, $1); }
     ;
-
+//check
 decl: type ID '=' expr ';'  {   if (searchInLevel(list.head->levelSymbols, $2) != NULL) {
                                     printf("Multiple definitions of: %s", $2);
                                     yyerror();
                                 }
+
                                 Symbol *newID = createSymbol($1, $2, NULL);
                                 insert(&list, newID);
                                 struct TreeNode * idNode = createNode(newID);
-                                $$ = newOperationTree(idNode, $4, "="); }
+                                $$ = createNewTree(UNDEFINED, idNode, $4, "="); }
     ;
 
 sentList: sent { $$ = $1; } 
-    
-    | sent sentList     { $$ = newOperationTree($2, $1, "next"); }
+    |  sent sentList     {   $$ = createNextTree($2, $1); }
     ;
 
 sent: ID '=' expr ';'   {   Symbol * idSymbol = search(&list, $1);
@@ -85,11 +85,11 @@ sent: ID '=' expr ';'   {   Symbol * idSymbol = search(&list, $1);
                                 yyerror();
                             }
                             struct TreeNode * idNode = createNode(idSymbol);
-                            $$ = newOperationTree(idNode, $3,"="); }
+                            $$ = createNewTree(UNDEFINED, idNode, $3, "="); }
 
     | expr ';' { $$ = $1; }
 
-    | TReturn expr ';'  { $$ = newOperationTree(NULL, $2, "return"); }
+    | TReturn expr ';'  { $$ = createNewTree(UNDEFINED, NULL, $2, "return"); }
     ;
 
 expr: VALORINT  {   char *str = malloc(sizeof(char *));
@@ -110,17 +110,17 @@ expr: VALORINT  {   char *str = malloc(sizeof(char *));
             }
             $$ = createNode(s); }
 
-    | expr '+' expr { $$ = newOperationTree($1, $3, "+"); }
+    | expr '+' expr { $$ = createNewTree(TYPEINT, $1, $3, "+"); }
     
-    | expr '*' expr { $$ = newOperationTree($1, $3, "*"); }
+    | expr '*' expr { $$ = createNewTree(TYPEINT, $1, $3, "*"); }
 
-    | expr TMENOS expr  { $$ = newOperationTree($1, $3, "-"); }
+    | expr TMENOS expr  { $$ = createNewTree(TYPEINT, $1, $3, "-"); }
 
     | '(' expr ')' { $$ = $2; }
 
-    | expr TOR expr     { $$ = newBoolOperationTree($1, $3, "||"); }
+    | expr TOR expr     { $$ = createNewTree(TYPEBOOL, $1, $3, "||"); }
     
-    | expr TAND expr    { $$ = $$ = newBoolOperationTree($1, $3, "&&"); }
+    | expr TAND expr    { $$ = $$ = createNewTree(TYPEBOOL, $1, $3, "&&"); }
     ;   
 
 VALORINT: INT { $$ = $1; }
