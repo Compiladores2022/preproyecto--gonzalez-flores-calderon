@@ -69,27 +69,11 @@ void printTreeInOrder(struct TreeNode *tree, char * s) {
 }
 
 int arithmeticOperation(char * operation) {
-    if(strcmp(operation, "+") == 0){
-        return 1;
-    }
-    if(strcmp(operation, "-") == 0){
-        return 1;
-    }
-    if(strcmp(operation, "*") == 0){
-        return 1;
-    }
-    
-    return  0;
+    return !(strcmp(operation, "+") && strcmp(operation, "-") && strcmp(operation, "*"));
 }
 
 int booleanOperation(char * operation) {
-    if(strcmp(operation, "&&") == 0){
-        return 1;
-    }
-    if(strcmp(operation, "||") == 0){
-        return 1;
-    }
-    return 0;
+    return !(strcmp(operation, "&&") && strcmp(operation, "||"));
 }
 
 void operationType(char * operation, types type) {
