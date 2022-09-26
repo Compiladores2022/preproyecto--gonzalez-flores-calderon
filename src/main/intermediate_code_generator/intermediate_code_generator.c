@@ -44,3 +44,88 @@ Symbol * generateSentenceCode(struct TreeNode *tree, struct InstructionNode * co
 int isOperationSymbol(char *symbolName) {
     return arithmeticOperation(symbolName) || booleanOperation(symbolName);
 }
+
+addCurrentInstruction(struct TreeNode *tree, struct InstructionNode * codeList, Symbol * temp1, Symbol * temp2){
+    switch (tree->info->name) {
+        case "+":
+            if(temp1 == NULL){
+                temp1 = tree->left->info;   
+            }
+            if(temp2 == NULL){
+                temp2 = tree->right->info;  
+            }
+            char *str = malloc(sizeof(char *));
+            sprintf(str, "%d", variableNumber);
+            Symbol * temp3 = createSymbol(temp1->type, "temp" + str, (*(int *)temp1->value + *(int *)temp2->value);
+            struct InstructionNode *instruct = createInstructition("ADD", temp1, temp2, temp3);
+            insert(codeList, instruct);
+            break;
+        case "-": 
+            if(temp1 == NULL){
+                temp1 = tree->left->info;    
+            }
+            if(temp2 == NULL){
+                temp2 = tree->right->info;       
+            }
+            char *str = malloc(sizeof(char *));
+            sprintf(str, "%d", variableNumber);
+            Symbol * temp3 = createSymbol(temp1->type, "temp" + str, (*(int *)temp1->value + *(int *)temp2->value);
+            struct InstructionNode *instruct = createInstructition("SUB", temp1, temp2, temp3);
+            insert(codeList, instruct);
+            break;
+        case "*": 
+            if(temp1 == NULL){
+                temp1 = tree->left->info;    
+            }
+            if(temp2 == NULL){
+                temp2 = tree->right->info;       
+            }
+            char *str = malloc(sizeof(char *));
+            sprintf(str, "%d", variableNumber);
+            Symbol * temp3 = createSymbol(temp1->type, "temp" + str, (*(int *)temp1->value + *(int *)temp2->value);
+            struct InstructionNode *instruct = createInstructition("MULT", temp1, temp2, temp3);
+            insert(codeList, instruct);
+            break;
+        case "&&": 
+            if(temp1 == NULL){
+                temp1 = tree->left->info;    
+            }
+            if(temp2 == NULL){
+                temp2 = tree->right->info;       
+            }
+            char *str = malloc(sizeof(char *));
+            sprintf(str, "%d", variableNumber);
+            Symbol * temp3 = createSymbol(temp1->type, "temp" + str, (*(int *)temp1->value + *(int *)temp2->value);
+            struct InstructionNode *instruct = createInstructition("AND", temp1, temp2, temp3);
+            insert(codeList, instruct);
+            break;
+        case "||": 
+            if(temp1 == NULL){
+                temp1 = tree->left->info;    
+            }
+            if(temp2 == NULL){
+                temp2 = tree->right->info;       
+            }
+            char *str = malloc(sizeof(char *));
+            sprintf(str, "%d", variableNumber);
+            Symbol * temp3 = createSymbol(temp1->type, "temp" + str, (*(int *)temp1->value + *(int *)temp2->value);
+            struct InstructionNode *instruct = createInstructition("OR", temp1, temp2, temp3);
+            insert(codeList, instruct);
+            break;
+        case "return": 
+            if(temp1 == NULL){
+                temp1 = tree->left->info;    
+            }
+            if(temp2 == NULL){
+                temp2 = tree->right->info;       
+            }
+            char *str = malloc(sizeof(char *));
+            sprintf(str, "%d", variableNumber);
+            Symbol * temp3 = createSymbol(temp1->type, "temp" + str, (*(int *)temp1->value + *(int *)temp2->value);
+            struct InstructionNode *instruct = createInstructition("RETURN", temp1, temp2, temp3);
+            insert(codeList, instruct);
+            break;
+        default : printf("%s is not an operator\n", tree->info->name);
+            exit(0);
+    }
+}
