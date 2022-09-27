@@ -8,10 +8,10 @@ void initialize(InstructionList *list) {
     list->head = NULL;
 }
 
-struct Instruction createInstruction(char *name, Symbol *fstOp, Symbol *sndOp, Symbol *result) {
-    Instruction newInstruction;
+struct Instruction * createInstruction(char *name, Symbol *fstOp, Symbol *sndOp, Symbol *result) {
+    struct Instruction * newInstruction;
 
-    newInstruction = (Instruction *) malloc (sizeof(Instruction));
+    newInstruction = (struct Instruction *) malloc (sizeof(struct Instruction));
     if(newInstruction == NULL){
         printf("couldn't create instruction, exiting\n");
         exit(EXIT_FAILURE);
@@ -25,7 +25,7 @@ struct Instruction createInstruction(char *name, Symbol *fstOp, Symbol *sndOp, S
     return newInstruction;
 }
 
-struct InstructionNode createInstructionNode(char *name, Symbol *fstOp, Symbol *sndOp, Symbol *result) {
+struct InstructionNode * createInstructionNode(char *name, Symbol *fstOp, Symbol *sndOp, Symbol *result) {
     struct InstructionNode *newInstructionNode;
 
     newInstructionNode = (struct InstructionNode *) malloc (sizeof(struct InstructionNode));
@@ -41,9 +41,11 @@ struct InstructionNode createInstructionNode(char *name, Symbol *fstOp, Symbol *
 }
 
 
-void insertInstructionNode(struct InstructionList *list, struct InstructionNode *newInstructionNode) {
-
-    if (list->head == NULL) list->head = newInstructionNode;
-    else list->last->next = newInstructionNode;
+void insertInstructionNode(InstructionList *list, struct InstructionNode *newInstructionNode) {
+    if (list->head == NULL) 
+        list->head = newInstructionNode;
+    else
+        list->last->next = newInstructionNode;
+        
     list->last = newInstructionNode;
 }
