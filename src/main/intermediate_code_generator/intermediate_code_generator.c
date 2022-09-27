@@ -82,8 +82,9 @@ Symbol * addCurrentInstruction(struct TreeNode *tree, struct InstructionNode * c
             instruction = createInstructitionNode("MOV", temp1, NULL, temp2);
             break;
         case "return":
-            temp3 = NULL;
-            instruction = createInstructitionNode("RET", NULL, NULL, temp2);
+            if (temp3 == NULL)
+            temp3 = temp2
+            instruction = createInstructitionNode("RET", NULL, NULL, temp3);
             break;
         default: printf("%s is not an operator\n", tree->info->name);
             exit(0);
