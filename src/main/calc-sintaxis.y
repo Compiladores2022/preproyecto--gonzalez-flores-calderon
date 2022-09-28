@@ -92,8 +92,7 @@ sent: ID '=' expr ';'   {   Symbol * idSymbol = search(&list, $1);
     | TReturn expr ';'  { $$ = createNewTree(UNDEFINED, NULL, $2, "return"); }
     ;
 
-expr: VALORINT  {   char *str = malloc(sizeof(char *));
-                    sprintf(str, "%d", $1);
+expr: VALORINT  {   char *str = intToString($1);
                     Symbol *s = createSymbol(INT, str, &$1);
                     
                     struct TreeNode *newNode = createNode(s);

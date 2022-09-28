@@ -39,3 +39,10 @@ int arithmeticOperation(char * operation) {
 int booleanOperation(char * operation) {
     return !(strcmp(operation, "&&") && strcmp(operation, "||"));
 }
+
+char * intToString(int source) {
+    char *dest = malloc(sizeof(char *));
+    sprintf(dest, "%d", source);
+
+    return dest;
+}

@@ -16,4 +16,6 @@ int arithmeticOperation(char * operation);
 
 int booleanOperation(char * operation);
 
+char * intToString(int source);
+
 #endif
