@@ -1,5 +1,8 @@
 #include "../types/symbol.h"
 
+#ifndef INSTRUCTION_H
+#define INSTRUCTION_H
+
 struct Instruction {
     char *name;
     Symbol *fstOp;
@@ -22,3 +25,5 @@ struct Instruction * createInstruction(char *name, Symbol *fstOp, Symbol *sndOp,
 struct InstructionNode * createInstructionNode(char *name, Symbol *fstOp, Symbol *sndOp, Symbol *result);
 
 void insertInstructionNode(InstructionList *list, struct InstructionNode *newInstructionNode);
+
+#endif
