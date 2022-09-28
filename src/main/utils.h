@@ -10,10 +10,12 @@ void printTree(struct TreeNode *tree);
 
 struct TreeNode * createNextTree(struct TreeNode *left, struct TreeNode *right);
 
-struct TreeNode * createNewTree(types symbolType, struct TreeNode *left, struct TreeNode *right, char *operation );
+struct TreeNode * createNewTree(types symbolType, struct TreeNode *left, struct TreeNode *right, char *operation, int offset);
 
 int arithmeticOperation(char * operation);
 
 int booleanOperation(char * operation);
+
+int stringToChar(char *string);
 
 #endif

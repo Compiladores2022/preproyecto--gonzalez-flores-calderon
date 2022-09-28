@@ -21,13 +21,13 @@ void printTree(struct TreeNode *tree) {
 }
 
 struct TreeNode * createNextTree(struct TreeNode *left, struct TreeNode *right) {
-    Symbol *s = createSymbol(UNDEFINED, "next", NULL);
+    Symbol *s = createSymbol(UNDEFINED, "next", NULL, NULL);
     struct TreeNode * newTree = createTree(s, left, right);
     return newTree;
 }
 
-struct TreeNode * createNewTree(types symbolType, struct TreeNode *left, struct TreeNode *right, char *operation ) {
-    Symbol *s = createSymbol(symbolType, operation, NULL);
+struct TreeNode * createNewTree(types symbolType, struct TreeNode *left, struct TreeNode *right, char *operation, int offset) {
+    Symbol *s = createSymbol(symbolType, operation, NULL, offset);
     struct TreeNode * newTree = createTree(s, left, right);
     return newTree;
 }
@@ -38,4 +38,32 @@ int arithmeticOperation(char * operation) {
 
 int booleanOperation(char * operation) {
     return !(strcmp(operation, "&&") && strcmp(operation, "||"));
+}
+
+//Only used to check operation to intermediate code generator 
+int stringToInt(char *string) {
+
+    if(strcmp(string, "+")){
+        return 0;
+    }
+    else if (strcmp(string, "-")){
+        return 1; 
+    }
+    else if (strcmp(string, "*")){
+        return 2;
+    }
+    else if (strcmp(string, "&&")){
+        return 3; 
+    }
+    else if (strcmp(string, "||")){
+        return 4; 
+    }
+    else if (strcmp(string, "=")){
+        return 5; 
+    }
+    else if (strcmp(string, "return")){
+        return 6; 
+    }    
+
+    return -1;
 }
