@@ -1,6 +1,7 @@
 #include "utils.h"
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 char * enumToString(types type) {
     switch (type) {
@@ -21,7 +22,7 @@ void printTree(struct TreeNode *tree) {
 }
 
 struct TreeNode * createNextTree(struct TreeNode *left, struct TreeNode *right) {
-    Symbol *s = createSymbol(UNDEFINED, "next", NULL, NULL);
+    Symbol *s = createSymbol(UNDEFINED, "next", NULL, 0);
     struct TreeNode * newTree = createTree(s, left, right);
     return newTree;
 }
