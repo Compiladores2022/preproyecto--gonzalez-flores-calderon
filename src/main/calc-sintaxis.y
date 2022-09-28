@@ -8,6 +8,7 @@
 
 SymbolList list;
 SintacticAnalysisTree sat;
+int offset = 0;
 void yyerror();
 int yylex();
 
@@ -68,8 +69,8 @@ decl: type ID '=' expr ';'  {   if (searchInLevel(list.head->levelSymbols, $2) !
                                     printf("Multiple definitions of: %s", $2);
                                     yyerror();
                                 }
-
-                                Symbol *newID = createSymbol($1, $2, NULL);
+                                offset += -8;
+                                Symbol *newID = createSymbol($1, $2, NULL, offset);
                                 insert(&list, newID);
                                 struct TreeNode * idNode = createNode(newID);
                                 $$ = createNewTree(UNDEFINED, idNode, $4, "="); }
@@ -110,17 +111,22 @@ expr: VALORINT  {   char *str = malloc(sizeof(char *));
             }
             $$ = createNode(s); }
 
-    | expr '+' expr { $$ = createNewTree(TYPEINT, $1, $3, "+"); }
+    | expr '+' expr {   offset += -8;
+                        $$ = createNewTree(TYPEINT, $1, $3, "+", offset); }
     
-    | expr '*' expr { $$ = createNewTree(TYPEINT, $1, $3, "*"); }
+    | expr '*' expr {   offset += -8;
+                        $$ = createNewTree(TYPEINT, $1, $3, "*", offset); }
 
-    | expr TMENOS expr  { $$ = createNewTree(TYPEINT, $1, $3, "-"); }
+    | expr TMENOS expr  {   offset += -8;
+                            $$ = createNewTree(TYPEINT, $1, $3, "-", offset); }
 
     | '(' expr ')' { $$ = $2; }
 
-    | expr TOR expr     { $$ = createNewTree(TYPEBOOL, $1, $3, "||"); }
+    | expr TOR expr     {   offset += -8;
+                            $$ = createNewTree(TYPEBOOL, $1, $3, "||", offset); }
     
-    | expr TAND expr    { $$ = $$ = createNewTree(TYPEBOOL, $1, $3, "&&"); }
+    | expr TAND expr    {   offset += -8;
+                            $$ = $$ = createNewTree(TYPEBOOL, $1, $3, "&&", offset); }
     ;   
 
 VALORINT: INT { $$ = $1; }
