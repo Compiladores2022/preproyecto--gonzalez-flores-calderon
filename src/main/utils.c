@@ -1,5 +1,4 @@
 #include "utils.h"
-#include "assembler_code_generator/assembler_generator.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -50,27 +49,27 @@ char * intToString(int source) {
 }
 
 //Only used to check operation to intermediate code generator 
-int stringToInt(char *string) {
+int stringToOperation(char *string) {
     if(strcmp(string, "+")){
-        return 0;
+        return ADD;
     }
     else if (strcmp(string, "-")){
-        return 1; 
+        return SUB; 
     }
     else if (strcmp(string, "*")){
-        return 2;
+        return MULT;
     }
     else if (strcmp(string, "&&")){
-        return 3; 
+        return AND; 
     }
     else if (strcmp(string, "||")){
-        return 4; 
+        return OR; 
     }
     else if (strcmp(string, "=")){
-        return 5; 
+        return ASSIG; 
     }
     else if (strcmp(string, "return")){
-        return 6; 
+        return RET; 
     }    
 
     return -1;
