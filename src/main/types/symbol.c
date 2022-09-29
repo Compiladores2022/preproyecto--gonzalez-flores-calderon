@@ -4,7 +4,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-Symbol * createSymbol(types type, char *name, void *value) {
+Symbol * createSymbol(types type, char *name, void *value, int offset) {
     Symbol * newSymbol;
 
     newSymbol = (Symbol *) malloc (sizeof(Symbol));
@@ -16,6 +16,7 @@ Symbol * createSymbol(types type, char *name, void *value) {
     newSymbol->type = type;
     newSymbol->name = name;
     newSymbol->value = value;
+    newSymbol->offset = offset;
 
     return newSymbol;
 }

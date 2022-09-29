@@ -7,9 +7,10 @@ typedef struct {
     types type;
     char *name;
     void *value;
+    int offset;
 }Symbol;
 
-Symbol * createSymbol(types type, char *name, void *value);
+Symbol * createSymbol(types type, char *name, void *value, int offset);
 
 void addType(Symbol *symbol, types type);
 

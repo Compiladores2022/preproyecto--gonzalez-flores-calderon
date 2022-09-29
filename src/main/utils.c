@@ -1,6 +1,8 @@
 #include "utils.h"
+#include "assembler_code_generator/assembler_generator.h"
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 char * enumToString(types type) {
     switch (type) {
@@ -21,13 +23,13 @@ void printTree(struct TreeNode *tree) {
 }
 
 struct TreeNode * createNextTree(struct TreeNode *left, struct TreeNode *right) {
-    Symbol *s = createSymbol(UNDEFINED, "next", NULL);
+    Symbol *s = createSymbol(UNDEFINED, "next", NULL, 0);
     struct TreeNode * newTree = createTree(s, left, right);
     return newTree;
 }
 
-struct TreeNode * createNewTree(types symbolType, struct TreeNode *left, struct TreeNode *right, char *operation ) {
-    Symbol *s = createSymbol(symbolType, operation, NULL);
+struct TreeNode * createNewTree(types symbolType, struct TreeNode *left, struct TreeNode *right, char *operation, int offset) {
+    Symbol *s = createSymbol(symbolType, operation, NULL, offset);
     struct TreeNode * newTree = createTree(s, left, right);
     return newTree;
 }
@@ -45,4 +47,31 @@ char * intToString(int source) {
     sprintf(dest, "%d", source);
 
     return dest;
+}
+
+//Only used to check operation to intermediate code generator 
+int stringToInt(char *string) {
+    if(strcmp(string, "+")){
+        return 0;
+    }
+    else if (strcmp(string, "-")){
+        return 1; 
+    }
+    else if (strcmp(string, "*")){
+        return 2;
+    }
+    else if (strcmp(string, "&&")){
+        return 3; 
+    }
+    else if (strcmp(string, "||")){
+        return 4; 
+    }
+    else if (strcmp(string, "=")){
+        return 5; 
+    }
+    else if (strcmp(string, "return")){
+        return 6; 
+    }    
+
+    return -1;
 }

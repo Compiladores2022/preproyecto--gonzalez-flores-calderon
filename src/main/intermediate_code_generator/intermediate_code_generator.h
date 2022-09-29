@@ -4,6 +4,6 @@
 #ifndef INTERMEDIATE_CODE_GENERATOR_H
 #define INTERMEDIATE_CODE_GENERATOR_H
 
-struct InstructionNode * generateIntermediateCode(struct TreeNode *tree);
+InstructionList * generateIntermediateCode(struct TreeNode *tree);
 
 #endif
