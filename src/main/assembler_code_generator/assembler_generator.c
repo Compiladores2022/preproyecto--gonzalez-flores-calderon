@@ -3,20 +3,20 @@
 #include "stdio.h"
 
 char * generateAssemblerCode(InstructionList * intermediateCode) {
-    int localVarAmount = calculateFrameSpace(intermediateCode);
-    if (localVarAmount % 2 == 1) {  //make it pair to ensure required space is multiple of 16
-        localVarAmount++;
+    int requiredFrameSpace = calculateFrameSpace(intermediateCode);
+    if (requiredFrameSpace % 2 == 1) {  //make it pair to ensure required space is multiple of 16
+        requiredFrameSpace++;
     }
     
-    char * code = "enter $(8 * ";
-    code = strcat(code, intToString(localVarAmount));
+    char * code = "";
+    char * requiredSpace = strcat("$(8 * ", intToString(requiredFrameSpace));
 
-    code = strcat(code, "), $0\n");
-    code = strcat(code, "MOV -8(%rbp), %rdi\n");
+    generateInstructionCode(code, "enter", strcat(requiredSpace, ")"), "$0");
+    generateInstructionCode(code, "MOV", "-8(%rbp)", "%rdi");
 
     struct InstructionNode * currentNode = intermediateCode->head;
     while(currentNode != NULL) {
-        generateInstruction(currentNode->instruction, code);
+        processThreeAddressCode(currentNode->instruction, code);
         currentNode = currentNode->next;
     }
 
@@ -25,27 +25,39 @@ char * generateAssemblerCode(InstructionList * intermediateCode) {
     return code;
 }
 
-void generateInstruction(struct Instruction * instruction, char * code) {
+/*
+ * given a three address code instruction, an equivalent assembler program is generated
+ * instruction is the three address code instruction
+ * code is the string where the generated code will be added
+*/
+void processThreeAddressCode(struct Instruction * instruction, char * code) {
     switch(stringToOperation(instruction->name)) {
         case ADD:
-            generateSimpleArithmeticCode(instruction, code, "ADD");
+            generateSimpleLogicArithmeticCode(instruction, code, "ADD");
             break;
             
         case SUB:
-            generateSimpleArithmeticCode(instruction, code, "SUB");
+            generateSimpleLogicArithmeticCode(instruction, code, "SUB");
             break;
             
         case MULT:
-            generateSimpleArithmeticCode(instruction, code, "IMUL");
+            generateSimpleLogicArithmeticCode(instruction, code, "IMUL");
             break;
             
         case AND:
+            generateSimpleLogicArithmeticCode(instruction, code, "AND");
             break;
             
         case OR:
+            generateSimpleLogicArithmeticCode(instruction, code, "OR");
             break;
             
         case ASSIG:
+            char * location = getSymbolLocation(instruction->fstOp);
+            generateInstructionCode(code, "MOV", "%r10", location);
+
+            char * location = getSymbolLocation(instruction->result);
+            generateInstructionCode(code, "MOV", location, "%r10");
             break;
             
         case RET:
@@ -57,23 +69,37 @@ void generateInstruction(struct Instruction * instruction, char * code) {
     }
 }
 
-void generateSimpleArithmeticCode(struct Instruction * instruction, char * code, char * operation) {
+/*
+ * generates the assembler code for a given three address code logic/arithmetic operation
+ * instruction is the three address code instruction
+ * code is the string where the generated instruction will be added
+ * operation is the operation that wants to be performed
+*/
+void generateSimpleLogicArithmeticCode(struct Instruction * instruction, char * code, char * operation) {
     //first symbol
     char * location = getSymbolLocation(instruction->fstOp);
-    code = strcat(code, "MOV %r10, ");
-    code = strcat(code, location);
-    code = strcat(code, "\n");
+    generateInstructionCode(code, "MOV", "%r10", location);
 
-    //second symbol and addition
+    //second symbol and operation
     location = getSymbolLocation(instruction->sndOp);
-    code = strcat(code, operation);
-    code = strcat(code, " %r10, ");
-    code = strcat(code, location);
-    code = strcat(code, "\n");
+    generateInstructionCode(code, operation, "%r10", location);
 
     //moving result to the third symbol
     location = getSymbolLocation(instruction->result);
-    code = strcat(code, "MOV ");
-    code = strcat(code, location);
-    code = strcat(code, ", %r10\n");
+    generateInstructionCode(code, "MOV", location, "%r10");
+}
+
+/*
+ * generates an assembler instruction for a given operation
+ * code is the string where the instruction will be added
+ * dest is the first parameter of the operation and where the result will be stored
+ * value is the second parameter
+*/
+void generateInstructionCode(char * code, char * operation, char * dest, char * value) {
+    code = strcat(code, operation);
+    code = strcat(code, " ");
+    code = strcat(code, dest);
+    code = strcat(code, ", ");
+    code = strcat(code, value);
+    code = strcat(code, "\n");
 }
