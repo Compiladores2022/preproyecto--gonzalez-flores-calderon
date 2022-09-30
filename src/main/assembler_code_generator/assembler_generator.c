@@ -12,7 +12,7 @@ char * generateAssemblerCode(InstructionList * intermediateCode) {
     code = strcat(code, intToString(localVarAmount));
 
     code = strcat(code, "), $0\n");
-    code = strcat(code, "mov %rdi, -8(%rbp)\n");
+    code = strcat(code, "MOV -8(%rbp), %rdi\n");
 
     struct InstructionNode * currentNode = intermediateCode->head;
     while(currentNode != NULL) {
@@ -28,29 +28,15 @@ char * generateAssemblerCode(InstructionList * intermediateCode) {
 void generateInstruction(struct Instruction * instruction, char * code) {
     switch(stringToOperation(instruction->name)) {
         case ADD:
-            //first symbol
-            char * location = getSymbolLocation(instruction->fstOp);
-            code = strcat(code, "MOV ");
-            code = strcat(code, location);
-            code = strcat(code, " %r10\n");
-
-            //second symbol and addition
-            location = getSymbolLocation(instruction->sndOp);
-            code = strcat(code, "ADD ");
-            code = strcat(code, location);
-            code = strcat(code, "%r10\n");
-
-            //moving result to the third symbol
-            location = getSymbolLocation(instruction->result);
-            code = strcat(code, "MOV %r10");
-            code = strcat(code, location);
-            code = strcat(code, "\n");
+            generateSimpleArithmeticCode(instruction, code, "ADD");
             break;
             
         case SUB:
+            generateSimpleArithmeticCode(instruction, code, "SUB");
             break;
             
         case MULT:
+            generateSimpleArithmeticCode(instruction, code, "IMUL");
             break;
             
         case AND:
@@ -69,4 +55,25 @@ void generateInstruction(struct Instruction * instruction, char * code) {
             printf("\nunrecognized operation: %s\n", instruction->name);
             break;
     }
+}
+
+void generateSimpleArithmeticCode(struct Instruction * instruction, char * code, char * operation) {
+    //first symbol
+    char * location = getSymbolLocation(instruction->fstOp);
+    code = strcat(code, "MOV %r10, ");
+    code = strcat(code, location);
+    code = strcat(code, "\n");
+
+    //second symbol and addition
+    location = getSymbolLocation(instruction->sndOp);
+    code = strcat(code, operation);
+    code = strcat(code, " %r10, ");
+    code = strcat(code, location);
+    code = strcat(code, "\n");
+
+    //moving result to the third symbol
+    location = getSymbolLocation(instruction->result);
+    code = strcat(code, "MOV ");
+    code = strcat(code, location);
+    code = strcat(code, ", %r10\n");
 }
