@@ -5,8 +5,6 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-int variableNumber = 1;
-
 void generateIntermediateCode2(struct TreeNode *tree, InstructionList * codeList);
 Symbol * generateSentenceCode(struct TreeNode *tree, InstructionList * codeList);
 int isOperationSymbol(char *symbolName);
@@ -84,7 +82,7 @@ Symbol * addCurrentInstruction(struct TreeNode *tree, InstructionList * codeList
             temp3 = tree->info;
             instruction = createInstructionNode("OR", temp1, temp2, temp3);
             break;
-        case MOV:
+        case ASSIG:
             temp3 = NULL;
             instruction = createInstructionNode("MOV", temp1, NULL, temp2);
             break;
