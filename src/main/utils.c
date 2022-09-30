@@ -41,29 +41,35 @@ int booleanOperation(char * operation) {
     return !(strcmp(operation, "&&") && strcmp(operation, "||"));
 }
 
-//Only used to check operation to intermediate code generator 
-int stringToInt(char *string) {
+char * intToString(int source) {
+    char *dest = malloc(sizeof(char *));
+    sprintf(dest, "%d", source);
 
+    return dest;
+}
+
+//Only used to check operation to intermediate code generator 
+int stringToOperation(char *string) {
     if(strcmp(string, "+")){
-        return 0;
+        return ADD;
     }
     else if (strcmp(string, "-")){
-        return 1; 
+        return SUB; 
     }
     else if (strcmp(string, "*")){
-        return 2;
+        return MULT;
     }
     else if (strcmp(string, "&&")){
-        return 3; 
+        return AND; 
     }
     else if (strcmp(string, "||")){
-        return 4; 
+        return OR; 
     }
     else if (strcmp(string, "=")){
-        return 5; 
+        return ASSIG; 
     }
     else if (strcmp(string, "return")){
-        return 6; 
+        return RET; 
     }    
 
     return -1;

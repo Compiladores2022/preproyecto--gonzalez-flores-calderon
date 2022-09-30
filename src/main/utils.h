@@ -4,6 +4,8 @@
 #ifndef UTILS_H
 #define UTILS_H
 
+typedef enum {ADD, SUB, MULT, AND, OR, ASSIG, RET} operations;
+
 char * enumToString(types type);
 
 void printTree(struct TreeNode *tree);
@@ -16,7 +18,9 @@ int arithmeticOperation(char * operation);
 
 int booleanOperation(char * operation);
 
-int stringToInt(char *string);
+char * intToString(int source);
+
+int stringToOperation(char *string);
 
 struct TreeNode * linkTreeRight(struct TreeNode * tree1, struct TreeNode * tree2);
 

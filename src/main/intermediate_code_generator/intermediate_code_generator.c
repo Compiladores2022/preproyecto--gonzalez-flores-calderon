@@ -5,9 +5,6 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-int variableNumber = 1;
-typedef enum {ADD,SUB,MUL,DIV,AND,OR} operations;
-
 void generateIntermediateCode2(struct TreeNode *tree, InstructionList * codeList);
 Symbol * generateSentenceCode(struct TreeNode *tree, InstructionList * codeList);
 int isOperationSymbol(char *symbolName);
@@ -64,32 +61,32 @@ Symbol * addCurrentInstruction(struct TreeNode *tree, InstructionList * codeList
     
     Symbol * temp3;
     struct InstructionNode * instruction;
-    switch (stringToInt(tree->info->name)) { //creates the instruction
-        case 0:
+    switch (stringToOperation(tree->info->name)) { //creates the instruction
+        case ADD:
             temp3 = tree->info;
             instruction = createInstructionNode("ADD", temp1, temp2, temp3);
             break;
-        case 1:
+        case SUB:
             temp3 = tree->info;
             instruction = createInstructionNode("SUB", temp1, temp2, temp3);
             break;
-        case 2:
+        case MULT:
             temp3 = tree->info;
             instruction = createInstructionNode("MULT", temp1, temp2, temp3);
             break;
-        case 3:
+        case AND:
             temp3 = tree->info;
             instruction = createInstructionNode("AND", temp1, temp2, temp3);
             break;
-        case 4:
+        case OR:
             temp3 = tree->info;
             instruction = createInstructionNode("OR", temp1, temp2, temp3);
             break;
-        case 5:
+        case ASSIG:
             temp3 = NULL;
             instruction = createInstructionNode("MOV", temp1, NULL, temp2);
             break;
-        case 6:
+        case RET:
             if (temp3 == NULL)
             temp3 = temp2;
             instruction = createInstructionNode("RET", NULL, NULL, temp3);
