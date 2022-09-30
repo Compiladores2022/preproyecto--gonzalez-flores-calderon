@@ -18,4 +18,6 @@ int booleanOperation(char * operation);
 
 int stringToInt(char *string);
 
+struct TreeNode * linkTreeRight(struct TreeNode * tree1, struct TreeNode * tree2);
+
 #endif
