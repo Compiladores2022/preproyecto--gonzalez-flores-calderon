@@ -55,7 +55,10 @@ inil: { initialize(&list);} prog { printTree($2); checkTypeTree($2);}
     ;
  
 
-prog: declList sentList { $$ = createNextTree($1, $2); }
+prog: declList sentList {   
+                            $$ = linkTreeRight($1, $2);
+                            //$$ = createNextTree($1, $2); 
+                        }
 
     | sentList { $$ = $1; }
     ;
@@ -73,7 +76,9 @@ decl: type ID '=' expr ';'  {   if (searchInLevel(list.head->levelSymbols, $2) !
                                 Symbol *newID = createSymbol($1, $2, NULL, offset);
                                 insert(&list, newID);
                                 struct TreeNode * idNode = createNode(newID);
-                                $$ = createNewTree(UNDEFINED, idNode, $4, "="); }
+                                offset += 8;
+                                $$ = createNewTree(UNDEFINED, idNode, $4, "=", offset); 
+                            }
     ;
 
 sentList: sent { $$ = $1; } 
@@ -86,21 +91,24 @@ sent: ID '=' expr ';'   {   Symbol * idSymbol = search(&list, $1);
                                 yyerror();
                             }
                             struct TreeNode * idNode = createNode(idSymbol);
-                            $$ = createNewTree(UNDEFINED, idNode, $3, "="); }
+                            offset += 8;
+                            $$ = createNewTree(UNDEFINED, idNode, $3, "=", offset); }
 
     | expr ';' { $$ = $1; }
 
-    | TReturn expr ';'  { $$ = createNewTree(UNDEFINED, NULL, $2, "return"); }
+    | TReturn expr ';'  {   offset += 8;
+                            $$ = createNewTree(UNDEFINED, NULL, $2, "return", offset); }
     ;
 
 expr: VALORINT  {   char *str = intToString($1);
-                    Symbol *s = createSymbol(INT, str, &$1);
-                    
+                    offset += 8;
+                    Symbol *s = createSymbol(INT, str, &$1, offset);
                     struct TreeNode *newNode = createNode(s);
                     $$ = newNode; }
 
     | VALORBOOL {   char * boolValue = $1 == 1 ? "true" : "false";
-                    Symbol *s = createSymbol(BOOL, boolValue, &$1);
+                    offset += 8;
+                    Symbol *s = createSymbol(BOOL, boolValue, &$1, offset);
                     $$ = createNode(s); }
     
     | ID {  Symbol *s = search(&list, $1);

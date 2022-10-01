@@ -26,4 +26,6 @@ struct InstructionNode * createInstructionNode(char *name, Symbol *fstOp, Symbol
 
 void insertInstructionNode(InstructionList *list, struct InstructionNode *newInstructionNode);
 
+void printInstructionList(InstructionList *list);
+
 #endif

@@ -74,3 +74,13 @@ int stringToOperation(char *string) {
 
     return -1;
 }
+
+struct TreeNode * linkTreeRight(struct TreeNode * tree1, struct TreeNode * tree2){
+
+    if(tree1->right == NULL){
+        tree1->right = tree2;
+        return tree1;
+    }
+    
+    linkTreeRight(tree1->right, tree2);
+}

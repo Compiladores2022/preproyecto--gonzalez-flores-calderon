@@ -21,8 +21,10 @@ int main(){
 
 int intermediteCodeGenerator(){
 
+    //arbol decorado con los tipos y los offsets
     struct TreeNode *treeDecorator =  defaultTree();
-
+    InstructionList *intructList = generateIntermediateCode(treeDecorator);
+    printInstructionList(intructList);
 }
 
 struct TreeNode * defaultTree(){

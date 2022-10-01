@@ -6,6 +6,7 @@
 
 void initialize(InstructionList *list) {
     list->head = NULL;
+    list->last = NULL;
 }
 
 struct Instruction * createInstruction(char *name, Symbol *fstOp, Symbol *sndOp, Symbol *result) {
@@ -40,12 +41,20 @@ struct InstructionNode * createInstructionNode(char *name, Symbol *fstOp, Symbol
     }
 }
 
-
 void insertInstructionNode(InstructionList *list, struct InstructionNode *newInstructionNode) {
-    if (list->head == NULL) 
+    if (list->head == NULL){ 
         list->head = newInstructionNode;
-    else
+    }
+    else{
         list->last->next = newInstructionNode;
-        
+    }
     list->last = newInstructionNode;
+}
+
+void printInstructionList(InstructionList *list) {
+
+    while (list != NULL){
+        printf("name: %s" ,list->head->instruction->name);
+        list->head = list->head->next;
+    }
 }
