@@ -61,6 +61,8 @@ void processThreeAddressCode(struct Instruction * instruction, char * code) {
             break;
             
         case RET:
+            char * location = getSymbolLocation(instruction->result);
+            generateInstructionCode(code, "MOV", "%rax", location);
             break;
         
         default:
