@@ -101,14 +101,12 @@ sent: ID '=' expr ';'   {   Symbol * idSymbol = search(&list, $1);
     ;
 
 expr: VALORINT  {   char *str = intToString($1);
-                    offset += 8;
-                    Symbol *s = createSymbol(INT, str, &$1, offset);
+                    Symbol *s = createSymbol(INT, str, &$1, 0);
                     struct TreeNode *newNode = createNode(s);
                     $$ = newNode; }
 
     | VALORBOOL {   char * boolValue = $1 == 1 ? "true" : "false";
-                    offset += 8;
-                    Symbol *s = createSymbol(BOOL, boolValue, &$1, offset);
+                    Symbol *s = createSymbol(BOOL, boolValue, &$1, 0);
                     $$ = createNode(s); }
     
     | ID {  Symbol *s = search(&list, $1);
