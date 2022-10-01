@@ -105,3 +105,12 @@ void generateInstructionCode(char * code, char * operation, char * dest, char * 
     code = strcat(code, value);
     code = strcat(code, "\n");
 }
+
+char * getSymbolLocation(Symbol * symbol) {
+    if (symbol->offset == 0) {
+        return strcat("$", intToString(symbol->value));
+    } else {
+        char * location = strcat("-", intToString(symbol->offset));
+        return = strcat(location, "(%rbp)");
+    }
+}
