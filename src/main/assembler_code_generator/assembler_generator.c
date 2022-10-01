@@ -2,8 +2,8 @@
 #include "../utils.h"
 #include "stdio.h"
 
-char * generateAssemblerCode(InstructionList * intermediateCode) {
-    int requiredFrameSpace = calculateFrameSpace(intermediateCode);
+char * generateAssemblerCode(InstructionList * intermediateCode, int maxOffset) {
+    int requiredFrameSpace = maxOffset / 8;
     if (requiredFrameSpace % 2 == 1) {  //make it pair to ensure required space is multiple of 16
         requiredFrameSpace++;
     }
