@@ -39,7 +39,7 @@ function checkAllTestsPassed {
 
 flex calc-lexico.l 
 bison -d calc-sintaxis.y
-gcc lex.yy.c calc-sintaxis.tab.c types/symbol.c symbol_list/symbol_list.c sintactic_analysis_tree/sintactic_analysis_tree.c utils.c
+gcc lex.yy.c calc-sintaxis.tab.c types/symbol.c symbol_list/symbol_list.c sintactic_analysis_tree/sintactic_analysis_tree.c utils.c intermediate_code_generator/intermediate_code_generator.c intermediate_code_generator/instruction.c assembler_code_generator/assembler_generator.c
 
 mv lex.yy.c script_generated/lex.yy.c
 mv calc-sintaxis.tab.c script_generated/calc-sintaxis.tab.c
