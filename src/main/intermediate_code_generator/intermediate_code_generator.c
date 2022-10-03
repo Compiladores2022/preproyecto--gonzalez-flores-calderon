@@ -64,7 +64,6 @@ int isOperationSymbol(char *symbolName) {
 }
 
 Symbol * addCurrentInstruction(struct TreeNode *tree, InstructionList * codeList, Symbol * temp1, Symbol * temp2) {
-    
     if(temp1 == NULL && tree->left != NULL) {
         temp1 = tree->left->info;
     }
@@ -73,19 +72,13 @@ Symbol * addCurrentInstruction(struct TreeNode *tree, InstructionList * codeList
         temp2 = tree->right->info;
     }
     Symbol * temp3;
+    int *operationResult = (int*) malloc(sizeof(int));
     struct Instruction * instruction;
     switch (stringToOperation(tree->info->name)) { //creates the instruction
         case ADD:
-            int t1 = temp1->value;
-            int t2 = temp2->value;
-            printf("temp1 %d, temp2 %d\n", t1, t2);
             temp3 = tree->info;
-            temp3->value = (int*) malloc(sizeof(int));
-            int a = *(int*)temp1->value + *(int*)temp2->value;
-            printf("a: %d", a);
-            
-            *(int*) (temp3->value) = a;
-
+            *operationResult = *(int*)temp1->value + *(int*)temp2->value;
+            temp3->value = operationResult;
             instruction = createInstruction("ADD", temp1, temp2, temp3);
             //instruction = createInstructionNode("ADD", temp1, temp2, temp3);
             break;

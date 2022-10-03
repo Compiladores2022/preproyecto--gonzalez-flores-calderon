@@ -24,8 +24,8 @@ int intermediteCodeGenerator(){
     struct TreeNode *treeDecorator =  defaultTree();
     InstructionList *instructList = generateIntermediateCode(treeDecorator);
     printf("Code List: \n");
-    //printInstructionList(instructList);
-    //printf("%d\n", *(int*) instructList->head->instruction->fstOp->value);    
+    printInstructionList(instructList);
+    printf("%d\n", *(int*) instructList->head->instruction->result->value);
     if(sizeList(instructList) == 2){
          return 1;
     }
