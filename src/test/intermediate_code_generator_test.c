@@ -15,7 +15,7 @@ int main(){
     //Total tests must be manually updated when adding a new test
     int testsPassed = 0, totalTests = 0;
     
-    //intermediteCodeGeneratorAdd() ? testsPassed++ : printf("Test intermediate code failed \n"); totalTests++;
+    intermediteCodeGeneratorAdd() ? testsPassed++ : printf("Test intermediate code failed \n"); totalTests++;
     intermediteCodeGeneratorSub() ? testsPassed++ : printf("Test intermediate code failed \n"); totalTests++;
 
     printf("tests passed: %d out of %d\n", testsPassed, totalTests);
