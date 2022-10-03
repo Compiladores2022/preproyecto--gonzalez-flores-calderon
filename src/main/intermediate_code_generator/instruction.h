@@ -24,8 +24,16 @@ struct Instruction * createInstruction(char *name, Symbol *fstOp, Symbol *sndOp,
 
 struct InstructionNode * createInstructionNode(char *name, Symbol *fstOp, Symbol *sndOp, Symbol *result);
 
-void insertInstructionNode(InstructionList *list, struct InstructionNode *newInstructionNode);
+struct InstructionNode * createInstructionNodeEmpty();
+
+void insertInstructionNode(InstructionList *list, struct Instruction *Instruction);
 
 void printInstructionList(InstructionList *list);
+
+int sizeList(InstructionList * list);
+
+void initialize(InstructionList *list);
+
+int listEmpty(InstructionList *list);
 
 #endif
