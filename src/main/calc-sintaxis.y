@@ -101,7 +101,9 @@ sent: ID '=' expr ';'   {   Symbol * idSymbol = search(&list, $1);
     ;
 
 expr: VALORINT  {   char *str = intToString($1);
-                    Symbol *s = createSymbol(INT, str, &$1, 0);
+                    int * a = (int*) malloc(sizeof(int));
+                    *a = $1;  
+                    Symbol *s = createSymbol(INT, str, a, 0);
                     struct TreeNode *newNode = createNode(s);
                     $$ = newNode; }
 

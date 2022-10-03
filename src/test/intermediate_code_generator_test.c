@@ -10,7 +10,7 @@ struct TreeNode * defaultTree();
 int intermediteCodeGenerator();
 
 int main(){
-    //total tests must be manually updated when adding a new test
+    //Total tests must be manually updated when adding a new test
     int testsPassed = 0, totalTests = 0;
     
     intermediteCodeGenerator() ? testsPassed++ : printf("Test intermediate code failed \n"); totalTests++;
@@ -21,24 +21,31 @@ int main(){
 
 int intermediteCodeGenerator(){
 
-    //arbol decorado con los tipos y los offsets
     struct TreeNode *treeDecorator =  defaultTree();
-    InstructionList *intructList = generateIntermediateCode(treeDecorator);
-    printInstructionList(intructList);
+    InstructionList *instructList = generateIntermediateCode(treeDecorator);
+    printf("Code List: \n");
+    //printInstructionList(instructList);
+    //printf("%d\n", *(int*) instructList->head->instruction->fstOp->value);    
+    if(sizeList(instructList) == 2){
+         return 1;
+    }
+    return 0;   
 }
 
 struct TreeNode * defaultTree(){
     int offset = 0;
-
-    int tre = 3;
-    Symbol *tres = createSymbol(TYPEINT, "3", &tre, 0);
-    int cua = 4;
-    Symbol *cuatro = createSymbol(TYPEINT, "4", &cua, 0);
+    int* tre = (int*) malloc(sizeof(int));
+    *tre = 3;
+    Symbol *tres = createSymbol(TYPEINT, "3", tre, 0);
+    int* cua = (int*) malloc(sizeof(int));
+    *cua = 4;
+    Symbol *cuatro = createSymbol(TYPEINT, "4", cua, 0);
     offset += 8;
     Symbol *suma = createSymbol(TYPEINT, "+", NULL, offset);
-    int exis = 7;
+    int* exis = (int*) malloc(sizeof(int));
+    *exis = 7;    
     offset += 8;
-    Symbol *x = createSymbol(TYPEINT, "x", &exis, offset);
+    Symbol *x = createSymbol(TYPEINT, "x", exis, offset);
     offset += 8;
     Symbol *assignacion = createSymbol(TYPEINT, "=", NULL, offset);
     
@@ -48,16 +55,15 @@ struct TreeNode * defaultTree(){
     struct TreeNode *treeSuma = createTree(suma, treeTres, treeCuatro);
     
     // x = 3 + 4;
-
-    //           =
-    //      x           +
-    //              3       4
     struct TreeNode *treeX = createNode(x);
     struct TreeNode *treeAssignacion = createTree(assignacion, treeX, treeSuma);
 
-    //char *p = malloc(sizeof(char));
-    //printTreeInOrder(treeAssignacion, p);
-    //printf("%s\n",p);
+    Symbol *pyc = createSymbol(UNDEFINED, "next", NULL, 0);
 
-    return treeAssignacion;
+    struct TreeNode *prog = createTree(pyc, treeAssignacion, NULL);
+    
+    // char *p = malloc(sizeof(char));
+    // printTreeInOrder(prog, p);
+        
+    return prog;
 }

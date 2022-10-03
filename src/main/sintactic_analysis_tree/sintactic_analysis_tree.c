@@ -46,11 +46,15 @@ struct TreeNode * createNode(Symbol *symbol) {
 
 struct TreeNode * createTree(Symbol *symbol, struct TreeNode *left, struct TreeNode *right) {
     
-    struct TreeNode *newNode = CreateEmptyNode();
-    newNode->info = symbol;
-    if(right == NULL){
+    if(right == NULL && left == NULL){
         return NULL;
     }
+    
+    struct TreeNode *newNode = CreateEmptyNode();
+    newNode->info = symbol;
+    // if(right == NULL){
+    //     return NULL;
+    // }
     newNode->right = right;
     newNode->left = left;
 
