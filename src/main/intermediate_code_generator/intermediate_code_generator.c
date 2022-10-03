@@ -80,32 +80,42 @@ Symbol * addCurrentInstruction(struct TreeNode *tree, InstructionList * codeList
             *operationResult = *(int*)temp1->value + *(int*)temp2->value;
             temp3->value = operationResult;
             instruction = createInstruction("ADD", temp1, temp2, temp3);
-            //instruction = createInstructionNode("ADD", temp1, temp2, temp3);
             break;
         case SUB:
             temp3 = tree->info;
+            *operationResult = *(int*)temp1->value - *(int*)temp2->value;
+            temp3->value = operationResult;            
             instruction = createInstruction("SUB", temp1, temp2, temp3);
-            //instruction = createInstructionNode("SUB", temp1, temp2, temp3);
             break;
         case MULT:
             temp3 = tree->info;
+            *operationResult = *(int*)temp1->value * *(int*)temp2->value;
+            temp3->value = operationResult;            
             instruction = createInstruction("MULT", temp1, temp2, temp3);
-            //instruction = createInstructionNode("MULT", temp1, temp2, temp3);
             break;
         case AND:
             temp3 = tree->info;
+            if(*(int*)temp1->value != 0 && *(int*)temp2->value != 0){
+                *operationResult = 1;
+                temp3->value = operationResult;            
+            }
+            *operationResult = 0;
+            temp3->value = operationResult;            
             instruction = createInstruction("AND", temp1, temp2, temp3);
-            //instruction = createInstructionNode("AND", temp1, temp2, temp3);
             break;
         case OR:
             temp3 = tree->info;
+            if(*(int*)temp1->value == 0 && *(int*)temp2->value == 0){
+                *operationResult = 0;
+                temp3->value = operationResult;            
+            }            
+            *operationResult = 1;
+            temp3->value = operationResult;            
             instruction = createInstruction("OR", temp1, temp2, temp3);
-            //instruction = createInstructionNode("OR", temp1, temp2, temp3);
             break;
         case ASSIG:
             temp3 = NULL;
             instruction = createInstruction("MOV", temp1, NULL, temp2);
-            //instruction = createInstructionNode("MOV", temp1, NULL, temp2);
             break;
         case RET:
             if (temp3 == NULL)
