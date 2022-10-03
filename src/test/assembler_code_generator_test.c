@@ -38,5 +38,5 @@ int oneInstructionTest(){
 
     InstructionList *intructList = generateIntermediateCode(treeNext);
     char * assemblerCode = generateIntermediateCode(treeNext);
-    return strcmp(assemblerCode, "	.globl	main\n	.type	main, @function\nmain:\n.LFB0:\nenter $(8 * 2), $0\nMOV -8(%rbp), %rdi\nMOV %r10, $3\nADD %r10, $4\nMOV -16(%rbp), %r10\nleave\nret\n") == 0;
+    return strcmp(assemblerCode, "	.globl	main\n	.type	main, @function\nmain:\n.LFB0:\ENTER $(8 * 2), $0\nMOV $3, %r10\nADD $4, %r10\nMOV %r10, -16(%rbp)\nLEAVE\nRET\n") == 0;
 }

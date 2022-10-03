@@ -14,11 +14,10 @@ char * generateAssemblerCode(InstructionList * intermediateCode, int maxOffset) 
         requiredFrameSpace++;
     }
     
-    char * code = "";
+    char * code = "	.globl	main\n	.type	main, @function\nmain:\n.LFB0:\n";
     char * requiredSpace = strcat("$(8 * ", intToString(requiredFrameSpace));
 
-    generateInstructionCode(code, "enter", strcat(requiredSpace, ")"), "$0");
-    generateInstructionCode(code, "MOV", "-8(%rbp)", "%rdi");
+    generateInstructionCode(code, "ENTER", strcat(requiredSpace, ")"), "$0");
 
     struct InstructionNode * currentNode = intermediateCode->head;
     while(currentNode != NULL) {
@@ -26,7 +25,7 @@ char * generateAssemblerCode(InstructionList * intermediateCode, int maxOffset) 
         currentNode = currentNode->next;
     }
 
-    code = strcat(code, "leave\nret\n");
+    code = strcat(code, "LEAVE\nRET\n");
 
     return code;
 }
@@ -60,15 +59,15 @@ void processThreeAddressCode(struct Instruction * instruction, char * code) {
             
         case ASSIG: {
             char * location = getSymbolLocation(instruction->fstOp);
-            generateInstructionCode(code, "MOV", "%r10", location);
+            generateInstructionCode(code, "MOV", location, "%r10");
 
             location = getSymbolLocation(instruction->result);
-            generateInstructionCode(code, "MOV", location, "%r10");
+            generateInstructionCode(code, "MOV", "%r10", location);
             break;
         }    
         case RET: {
             char * location = getSymbolLocation(instruction->result);
-            generateInstructionCode(code, "MOV", "%rax", location);
+            generateInstructionCode(code, "MOV", location, "%rax");
             break;
         }        
         default:
@@ -86,15 +85,15 @@ void processThreeAddressCode(struct Instruction * instruction, char * code) {
 void generateSimpleLogicArithmeticCode(struct Instruction * instruction, char * code, char * operation) {
     //first symbol
     char * location = getSymbolLocation(instruction->fstOp);
-    generateInstructionCode(code, "MOV", "%r10", location);
+    generateInstructionCode(code, "MOV", location, "%r10");
 
     //second symbol and operation
     location = getSymbolLocation(instruction->sndOp);
-    generateInstructionCode(code, operation, "%r10", location);
+    generateInstructionCode(code, operation, location, "%r10");
 
     //moving result to the third symbol
     location = getSymbolLocation(instruction->result);
-    generateInstructionCode(code, "MOV", location, "%r10");
+    generateInstructionCode(code, "MOV", "%r10", location);
 }
 
 /*
