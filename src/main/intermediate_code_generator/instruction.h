@@ -20,6 +20,8 @@ typedef struct {
     struct InstructionNode *last;
 }InstructionList;
 
+void initializeInstructionList(InstructionList *list);
+
 struct Instruction * createInstruction(char *name, Symbol *fstOp, Symbol *sndOp, Symbol *result);
 
 struct InstructionNode * createInstructionNode(char *name, Symbol *fstOp, Symbol *sndOp, Symbol *result);

@@ -4,7 +4,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-void initialize(InstructionList *list) {
+void initializeInstructionList(InstructionList *list) {
     list->head = NULL;
     list->head = NULL;
 }

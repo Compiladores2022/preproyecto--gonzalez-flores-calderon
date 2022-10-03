@@ -1,6 +1,12 @@
 #include "assembler_generator.h"
 #include "../utils.h"
 #include "stdio.h"
+#include <string.h>
+
+void processThreeAddressCode(struct Instruction * instruction, char * code);
+void generateSimpleLogicArithmeticCode(struct Instruction * instruction, char * code, char * operation);
+void generateInstructionCode(char * code, char * operation, char * dest, char * value);
+char * getSymbolLocation(Symbol * symbol);
 
 char * generateAssemblerCode(InstructionList * intermediateCode, int maxOffset) {
     int requiredFrameSpace = maxOffset / 8;
@@ -52,19 +58,19 @@ void processThreeAddressCode(struct Instruction * instruction, char * code) {
             generateSimpleLogicArithmeticCode(instruction, code, "OR");
             break;
             
-        case ASSIG:
+        case ASSIG: {
             char * location = getSymbolLocation(instruction->fstOp);
             generateInstructionCode(code, "MOV", "%r10", location);
 
-            char * location = getSymbolLocation(instruction->result);
+            location = getSymbolLocation(instruction->result);
             generateInstructionCode(code, "MOV", location, "%r10");
             break;
-            
-        case RET:
+        }    
+        case RET: {
             char * location = getSymbolLocation(instruction->result);
             generateInstructionCode(code, "MOV", "%rax", location);
             break;
-        
+        }        
         default:
             printf("\nunrecognized operation: %s\n", instruction->name);
             break;
@@ -108,9 +114,9 @@ void generateInstructionCode(char * code, char * operation, char * dest, char * 
 
 char * getSymbolLocation(Symbol * symbol) {
     if (symbol->offset == 0) {
-        return strcat("$", intToString(symbol->value));
+        return strcat("$", intToString(*(int*)symbol->value));
     } else {
         char * location = strcat("-", intToString(symbol->offset));
-        return = strcat(location, "(%rbp)");
+        return strcat(location, "(%rbp)");
     }
 }
