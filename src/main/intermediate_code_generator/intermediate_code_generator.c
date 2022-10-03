@@ -16,7 +16,7 @@ Symbol * addCurrentInstruction(struct TreeNode *tree, InstructionList * codeList
 InstructionList * generateIntermediateCode(struct TreeNode *tree) {
     InstructionList * codeList;
     codeList = (InstructionList *) malloc (sizeof(InstructionList));
-    initialize(codeList);
+    //initialize(codeList);
     
     generateIntermediateCode2(tree, codeList);   //left part cannot be a 'next' symbol, must be sentence or declaration
     return codeList;   
@@ -39,15 +39,20 @@ Symbol * generateSentenceCode(struct TreeNode *tree, InstructionList * codeList)
     Symbol * temp2 = NULL;
     if (tree->left != NULL) {
         if(isOperationSymbol(tree->left->info->name)){
-        temp1 = generateSentenceCode(tree->left, codeList);   //generate left sentence if left is an operator            
+            temp1 = generateSentenceCode(tree->left, codeList);   //generate left sentence if left is an operator            
         }
-        temp1 = tree->left->info;
+        else{
+            temp1 = tree->left->info;
+        }   
     }
     if (tree->right != NULL) {
         if(isOperationSymbol(tree->right->info->name)){
-        temp2 = generateSentenceCode(tree->right, codeList);   //generate right sentence if right is an operator
+            temp2 = generateSentenceCode(tree->right, codeList);   //generate right sentence if right is an operator
         }
-        temp2 = tree->right->info;
+        else{
+            temp2 = tree->right->info;
+        }
+
     }
     Symbol * temp3 = addCurrentInstruction(tree, codeList, temp1, temp2);
     
@@ -59,9 +64,11 @@ int isOperationSymbol(char *symbolName) {
 }
 
 Symbol * addCurrentInstruction(struct TreeNode *tree, InstructionList * codeList, Symbol * temp1, Symbol * temp2) {
+    
     if(temp1 == NULL && tree->left != NULL) {
         temp1 = tree->left->info;
     }
+    
     if(temp2 == NULL && tree->right != NULL) {
         temp2 = tree->right->info;
     }
@@ -69,7 +76,16 @@ Symbol * addCurrentInstruction(struct TreeNode *tree, InstructionList * codeList
     struct Instruction * instruction;
     switch (stringToOperation(tree->info->name)) { //creates the instruction
         case ADD:
+            int t1 = temp1->value;
+            int t2 = temp2->value;
+            printf("temp1 %d, temp2 %d\n", t1, t2);
             temp3 = tree->info;
+            temp3->value = (int*) malloc(sizeof(int));
+            int a = *(int*)temp1->value + *(int*)temp2->value;
+            printf("a: %d", a);
+            
+            *(int*) (temp3->value) = a;
+
             instruction = createInstruction("ADD", temp1, temp2, temp3);
             //instruction = createInstructionNode("ADD", temp1, temp2, temp3);
             break;
@@ -110,6 +126,6 @@ Symbol * addCurrentInstruction(struct TreeNode *tree, InstructionList * codeList
     }
     
     insertInstructionNode(codeList, instruction);
-    
+    //printf("%d\n", *(int *)temp3->value);
     return temp3;
 }
