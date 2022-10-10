@@ -41,8 +41,22 @@ int booleanOperation(char * operation) {
     return !(strcmp(operation, "&&") && strcmp(operation, "||"));
 }
 
+int digitLength(int number) {
+    int temp = number, length = 1;
+    if (temp < 0) temp *= -1;
+    temp -= temp % 10; //taking out the remainder
+    
+    while (temp >= 10) {
+        temp /= 10;
+        length += 1;
+    }
+
+    return length;
+}
+
 char * intToString(int source) {
-    char *dest = malloc(sizeof(char *));
+    int length = digitLength(source);
+    char *dest = malloc(length * sizeof(char *));
     sprintf(dest, "%d", source);
 
     return dest;
