@@ -1,6 +1,7 @@
 #include "assembler_generator.h"
 #include "../utils.h"
 #include "stdio.h"
+#include <stdlib.h>
 #include <string.h>
 
 void processThreeAddressCode(struct Instruction * instruction, char * code);
@@ -13,20 +14,23 @@ char * generateAssemblerCode(InstructionList * intermediateCode, int maxOffset) 
     if (requiredFrameSpace % 2 == 1) {  //make it pair to ensure required space is multiple of 16
         requiredFrameSpace++;
     }
-    
-    char * code = "	.globl	main\n	.type	main, @function\nmain:\n.LFB0:\n";
-    char * requiredSpace = strcat("$(8 * ", intToString(requiredFrameSpace));
+    char * code = (char *) malloc(50 * sizeof(char *)); //50 is the amount of characters in the below string + \0
+    strcpy(code, "	.globl	main\n	.type	main, @function\nmain:\n.LFB0:\n");
 
+    char * transformed = intToString(requiredFrameSpace);
+    char * requiredSpace = malloc(sizeof(char *));
+    strcpy(requiredSpace, "$(8 * ");
+    strcat(requiredSpace, transformed);
     generateInstructionCode(code, "ENTER", strcat(requiredSpace, ")"), "$0");
-
     struct InstructionNode * currentNode = intermediateCode->head;
     while(currentNode != NULL) {
         processThreeAddressCode(currentNode->instruction, code);
         currentNode = currentNode->next;
     }
-
     code = strcat(code, "LEAVE\nRET\n");
 
+    free(transformed);
+    free(requiredSpace);
     return code;
 }
 
@@ -71,7 +75,8 @@ void processThreeAddressCode(struct Instruction * instruction, char * code) {
             break;
         }        
         default:
-            printf("\nunrecognized operation: %s\n", instruction->name);
+            printf("\nunrecognized operation: %s\nprocess terminated\n", instruction->name);
+            exit(0);
             break;
     }
 }
@@ -86,14 +91,15 @@ void generateSimpleLogicArithmeticCode(struct Instruction * instruction, char * 
     //first symbol
     char * location = getSymbolLocation(instruction->fstOp);
     generateInstructionCode(code, "MOV", location, "%r10");
-
     //second symbol and operation
+    free(location);
     location = getSymbolLocation(instruction->sndOp);
     generateInstructionCode(code, operation, location, "%r10");
-
     //moving result to the third symbol
+    free(location);
     location = getSymbolLocation(instruction->result);
     generateInstructionCode(code, "MOV", "%r10", location);
+    free(location);
 }
 
 /*
@@ -103,19 +109,23 @@ void generateSimpleLogicArithmeticCode(struct Instruction * instruction, char * 
  * value is the second parameter
 */
 void generateInstructionCode(char * code, char * operation, char * dest, char * value) {
-    code = strcat(code, operation);
-    code = strcat(code, " ");
-    code = strcat(code, dest);
-    code = strcat(code, ", ");
-    code = strcat(code, value);
-    code = strcat(code, "\n");
+    strcat(code, operation);
+    strcat(code, " ");
+    strcat(code, dest);
+    strcat(code, ", ");
+    strcat(code, value);
+    strcat(code, "\n");
 }
 
 char * getSymbolLocation(Symbol * symbol) {
+    char * location = (char *) malloc(10 * sizeof(char *));
     if (symbol->offset == 0) {
-        return strcat("$", intToString(*(int*)symbol->value));
+        strcpy(location, "$");
+        strcat(location, intToString(*(int*)symbol->value));
     } else {
-        char * location = strcat("-", intToString(symbol->offset));
-        return strcat(location, "(%rbp)");
+        strcpy(location, "-");
+        strcat(location, intToString(symbol->offset));
+        strcat(location, "(%rbp)");
     }
+    return location;
 }
