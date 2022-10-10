@@ -50,25 +50,25 @@ char * intToString(int source) {
 
 //Only used to check operation to intermediate code generator 
 int stringToOperation(char *string) {
-    if(strcmp(string, "+") == 0){
+    if(strcmp(string, "+") == 0 || strcmp(string, "ADD") == 0){
         return ADD;
     }
-    else if (strcmp(string, "-") == 0){
+    else if (strcmp(string, "-") == 0 || strcmp(string, "SUB") == 0){
         return SUB; 
     }
-    else if (strcmp(string, "*") == 0){
+    else if (strcmp(string, "*") == 0 || strcmp(string, "MULT") == 0){
         return MULT;
     }
-    else if (strcmp(string, "&&") == 0){
+    else if (strcmp(string, "&&") == 0 || strcmp(string, "AND") == 0){
         return AND; 
     }
-    else if (strcmp(string, "||") == 0){
+    else if (strcmp(string, "||") == 0 || strcmp(string, "OR") == 0){
         return OR; 
     }
-    else if (strcmp(string, "=") == 0){
+    else if (strcmp(string, "=") == 0 || strcmp(string, "ASSIG") == 0){
         return ASSIG; 
     }
-    else if (strcmp(string, "return") == 0){
+    else if (strcmp(string, "return") == 0 || strcmp(string, "RET") == 0){
         return RET; 
     }    
 

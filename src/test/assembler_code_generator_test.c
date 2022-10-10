@@ -36,7 +36,7 @@ int oneInstructionTest(){
     struct TreeNode *tree = createTree(symbol3, left, right);
     struct TreeNode *treeNext = createTree(symbol4, tree, NULL);
 
-    InstructionList *intructList = generateIntermediateCode(treeNext);
-    char * assemblerCode = generateIntermediateCode(treeNext);
+    InstructionList *instructList = generateIntermediateCode(treeNext);
+    char * assemblerCode = generateAssemblerCode(instructList, 8);
     return strcmp(assemblerCode, "	.globl	main\n	.type	main, @function\nmain:\n.LFB0:\ENTER $(8 * 2), $0\nMOV $3, %r10\nADD $4, %r10\nMOV %r10, -16(%rbp)\nLEAVE\nRET\n") == 0;
 }
