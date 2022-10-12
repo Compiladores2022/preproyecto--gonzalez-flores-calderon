@@ -115,13 +115,12 @@ Symbol * addCurrentInstruction(struct TreeNode *tree, InstructionList * codeList
             break;
         case ASSIG:
             temp3 = NULL;
-            instruction = createInstruction("MOV", temp1, NULL, temp2);
+            instruction = createInstruction("ASSIG", temp2, NULL, temp1);
             break;
         case RET:
             if (temp3 == NULL)
             temp3 = temp2;
             instruction = createInstruction("RET", NULL, NULL, temp3);
-            //instruction = createInstructionNode("RET", NULL, NULL, temp3);
             break;
         default: printf("%s is not an operator\n", tree->info->name);
             exit(0);
@@ -129,6 +128,5 @@ Symbol * addCurrentInstruction(struct TreeNode *tree, InstructionList * codeList
     }
     
     insertInstructionNode(codeList, instruction);
-    //printf("%d\n", *(int *)temp3->value);
     return temp3;
 }

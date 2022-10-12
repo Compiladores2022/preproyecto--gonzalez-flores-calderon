@@ -8,12 +8,14 @@
 #include <string.h>
 
 int oneInstructionTest();
+int instructionWithIdTest();
 
 int main(){
     //total tests must be manually updated when adding a new test
     int testsPassed = 0, totalTests = 0;
     
     oneInstructionTest() ? testsPassed++ : printf("Test single instruction test failed \n"); totalTests++;
+    singleAssignmentInstructionTest() ? testsPassed++ : printf("Test single assignment instruction test failed \n"); totalTests++;
 
     printf("tests passed: %d out of %d\n", testsPassed, totalTests);
     return 0;
@@ -42,5 +44,31 @@ int oneInstructionTest(){
     char * assemblerCode = generateAssemblerCode(instructList, 8);
     char * expected = "	.globl	main\n	.type	main, @function\nmain:\n.LFB0:\nENTER $(8 * 2), $0\nMOV $3, %r10\nADD $4, %r10\nMOV %r10, -8(%rbp)\nLEAVE\nRET\n";
     
+    return strcmp(expected, assemblerCode) == 0;
+}
+
+int singleAssignmentInstructionTest(){
+    int offset = 8;
+
+    Symbol *symbol1 = createSymbol(TYPEBOOL, "x", NULL, offset);
+    int *b = (int *)malloc(sizeof(int));
+    *b = 0;
+    Symbol *symbol2 = createSymbol(TYPEBOOL, "false", b, 0);
+    offset += 8;
+    Symbol *symbol3 = createSymbol(TYPEBOOL, "=", NULL, offset);
+    Symbol *symbol4 = createSymbol(UNDEFINED, "next", NULL, 0);
+    
+    // x = false;
+    struct TreeNode *left = createNode(symbol1);
+    struct TreeNode *right = createNode(symbol2);
+    struct TreeNode *tree = createTree(symbol3, left, right);
+    struct TreeNode *treeNext = createTree(symbol4, tree, NULL);
+
+    InstructionList *instructList = generateIntermediateCode(treeNext);
+    char * assemblerCode = generateAssemblerCode(instructList, 8);
+    char * expected = "	.globl	main\n	.type	main, @function\nmain:\n.LFB0:\nENTER $(8 * 2), $0\nMOV $0, %r10\nMOV %r10, -8(%rbp)\nLEAVE\nRET\n";
+    
+    printf("expected: \n%s\nactual: \n%s\n", expected, assemblerCode);
+
     return strcmp(expected, assemblerCode) == 0;
 }
