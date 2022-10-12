@@ -34,8 +34,6 @@ void printInstructionList(InstructionList *list);
 
 int sizeList(InstructionList * list);
 
-void initialize(InstructionList *list);
-
 int listEmpty(InstructionList *list);
 
 #endif

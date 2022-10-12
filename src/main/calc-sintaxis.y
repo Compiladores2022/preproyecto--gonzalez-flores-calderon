@@ -3,11 +3,14 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include "sintactic_analysis_tree/sintactic_analysis_tree.h"
+#include "intermediate_code_generator/instruction.h"
+#include "intermediate_code_generator/intermediate_code_generator.h"
 #include "utils.h"
 #include "symbol_list/symbol_list.h"
 
 SymbolList list;
 SintacticAnalysisTree sat;
+InstructionList instructionlist;
 int offset = 0;
 void yyerror();
 int yylex();
@@ -51,10 +54,12 @@ int yylex();
 %%
 
 
-inil: { initialize(&list);} prog { printTree($2); checkTypeTree($2);}
+inil: { initialize(&list);} prog { printTree($2); checkTypeTree($2); 
+    printf("Tree padre $2: %s\n", $2->info->name);
+    InstructionList *list = generateIntermediateCode($2);
+    printInstructionList(list);}
     ;
  
-
 prog: declList sentList {   
                             $$ = linkTreeRight($1, $2);
                             //$$ = createNextTree($1, $2); 
