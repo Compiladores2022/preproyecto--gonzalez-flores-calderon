@@ -74,8 +74,7 @@ void printTreeInOrder(struct TreeNode *tree, char * s) {
 
 void operationType(char * operation, types type) {
 
-    switch (type)
-    {
+    switch (type){
     case TYPEINT:
         if(arithmeticOperation(operation) == 0){
             printf("Incompatible operation types for %s\nexpected: BOOL %s BOOL\n", operation, operation);
@@ -87,24 +86,31 @@ void operationType(char * operation, types type) {
         }
         break;
     }
+    
 }
 
 void checkTypeTree(struct TreeNode *tree) {
     if(tree == NULL){
         return;
     }
-    if(tree->left != NULL && tree->left->info->type == UNDEFINED){
+
+    if(tree->right != NULL && strcmp(tree->right->info->name, "next") == 0){
+        checkTypeTree(tree->right);
+    }
+
+    if(tree->left->left != NULL && tree->left->left->info->type == UNDEFINED){
         checkTypeTree(tree->left);
     }
-    if(tree->right != NULL && tree->right->info->type == UNDEFINED){
+    if(tree->left->right != NULL && tree->left->right->info->type == UNDEFINED){                
         checkTypeTree(tree->right);
     }
     
     //checking the partner type for the operation
-    operationType(tree->info->name, tree->left->info->type);
-
-    if(tree->left->info->type != tree->right->info->type){
-        printf("Incompatible types for %s operation\nexpected: %s +  %s \nfound:  %s + %s\n",tree->info->name,enumToString(tree->left->info->type) ,enumToString(tree->left->info->type), enumToString(tree->left->info->type), enumToString(tree->right->info->type));
+    operationType(tree->left->info->name, tree->left->left->info->type);
+    
+    if(tree->left->left->info->type != tree->left->right->info->type){
+        printf("Incompatible types for %s operation\nexpected: %s +  %s \nfound:  %s + %s\n", tree->info->name, enumToString(tree->left->info->type), enumToString(tree->left->info->type), enumToString(tree->left->info->type), enumToString(tree->right->info->type));
     }
+    
     tree->info->type = tree->left->info->type;
 }   
