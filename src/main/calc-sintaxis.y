@@ -54,21 +54,24 @@ int yylex();
 %%
 
 
-inil: { initialize(&list);} prog { printTree($2); checkTypeTree($2); 
-    printf("Tree padre $2: %s\n", $2->info->name);
-    InstructionList *list = generateIntermediateCode($2);
-    printInstructionList(list);}
+inil: { initialize(&list);} prog { printTree($2); //checkTypeTree($2); 
+        printf("Tree padre $2: %s\n", $2->info->name);
+        InstructionList *instructList = generateIntermediateCode($2);
+        //printInstructionList(instructList);
+        //printf("first: %d operation: %s secod: %d result: %d\n",*(int*) instructList->head->instruction->fstOp->value, instructList->head->instruction->result->name, *(int*) instructList->head->instruction->sndOp->value, *(int*)instructList->head->instruction->result->value);
+        }
     ;
  
 prog: declList sentList {   
+                            printf("$1: %s $2: %s \n", $1->info->name, $2->info->name);
                             $$ = linkTreeRight($1, $2);
-                            //$$ = createNextTree($1, $2); 
                         }
 
     | sentList { $$ = $1; }
     ;
 
-declList: decl          { $$ = createNextTree(NULL, $1); }
+declList: decl          {   //printf("$1: %s \n", $1->info->name);
+                            $$ = createNextTree($1, NULL); }
 
     | decl declList     { $$ = createNextTree($2, $1); }
     ;
@@ -86,7 +89,7 @@ decl: type ID '=' expr ';'  {   if (searchInLevel(list.head->levelSymbols, $2) !
                             }
     ;
 
-sentList: sent { $$ = $1; } 
+sentList: sent { $$ = createNextTree($1, NULL); } 
     |  sent sentList     {   $$ = createNextTree($2, $1); }
     ;
 
@@ -99,7 +102,10 @@ sent: ID '=' expr ';'   {   Symbol * idSymbol = search(&list, $1);
                             offset += 8;
                             $$ = createNewTree(UNDEFINED, idNode, $3, "=", offset); }
 
-    | expr ';' { $$ = $1; }
+    | expr ';' {     
+                    $$ = createNextTree($1, NULL);
+                    //$$ = $1; 
+                    }
 
     | TReturn expr ';'  {   offset += 8;
                             $$ = createNewTree(UNDEFINED, NULL, $2, "return", offset); }
@@ -108,12 +114,12 @@ sent: ID '=' expr ';'   {   Symbol * idSymbol = search(&list, $1);
 expr: VALORINT  {   char *str = intToString($1);
                     int * a = (int*) malloc(sizeof(int));
                     *a = $1;  
-                    Symbol *s = createSymbol(INT, str, a, 0);
+                    Symbol *s = createSymbol(TYPEINT, str, a, 0);
                     struct TreeNode *newNode = createNode(s);
                     $$ = newNode; }
 
     | VALORBOOL {   char * boolValue = $1 == 1 ? "true" : "false";
-                    Symbol *s = createSymbol(BOOL, boolValue, &$1, 0);
+                    Symbol *s = createSymbol(TYPEBOOL, boolValue, &$1, 0);
                     $$ = createNode(s); }
     
     | ID {  Symbol *s = search(&list, $1);
@@ -123,14 +129,15 @@ expr: VALORINT  {   char *str = intToString($1);
             }
             $$ = createNode(s); }
 
-    | expr '+' expr {   offset += 8;
-                        $$ = createNewTree(TYPEINT, $1, $3, "+", offset); }
+    | expr '+' expr {   
+                        offset += 8;
+                        $$ = createNewTree(UNDEFINED, $1, $3, "+", offset); }
     
     | expr '*' expr {   offset += 8;
-                        $$ = createNewTree(TYPEINT, $1, $3, "*", offset); }
+                        $$ = createNewTree(UNDEFINED, $1, $3, "*", offset); }
 
     | expr TMENOS expr  {   offset += 8;
-                            $$ = createNewTree(TYPEINT, $1, $3, "-", offset); }
+                            $$ = createNewTree(UNDEFINED, $1, $3, "-", offset); }
 
     | '(' expr ')' { $$ = $2; }
 
