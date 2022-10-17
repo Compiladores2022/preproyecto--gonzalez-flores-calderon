@@ -135,10 +135,10 @@ expr: VALORINT  {   char *str = intToString($1);
                         $$ = createNewTree(UNDEFINED, $1, $3, "*", offset); }
 
     | expr TOR expr     {   offset += 8;
-                            $$ = createNewTree(TYPEBOOL, $1, $3, "||", offset); }
+                            $$ = createNewTree(UNDEFINED, $1, $3, "||", offset); }
     
     | expr TAND expr    {   offset += 8;
-                            $$ = $$ = createNewTree(TYPEBOOL, $1, $3, "&&", offset); }
+                            $$ = $$ = createNewTree(UNDEFINED, $1, $3, "&&", offset); }
     ;   
 
 VALORINT: INT { $$ = $1; }
