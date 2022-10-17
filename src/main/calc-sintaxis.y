@@ -5,6 +5,7 @@
 #include "sintactic_analysis_tree/sintactic_analysis_tree.h"
 #include "intermediate_code_generator/instruction.h"
 #include "intermediate_code_generator/intermediate_code_generator.h"
+#include "assembler_code_generator/assembler_generator.h"
 #include "utils.h"
 #include "symbol_list/symbol_list.h"
 
@@ -56,7 +57,8 @@ int yylex();
 
 inil: { initialize(&list);} prog { printTree($2); checkTypeTree($2); 
         InstructionList *instructList = generateIntermediateCode($2);
-        char* assemblerCode = generateAssemblerCode(instructionlist, offset);
+        char *assemblerCode = generateAssemblerCode(instructList, offset);
+        printf("%s",assemblerCode);
         }
     ;
  
