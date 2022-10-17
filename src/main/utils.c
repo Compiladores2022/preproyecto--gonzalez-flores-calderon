@@ -34,11 +34,11 @@ struct TreeNode * createNewTree(types symbolType, struct TreeNode *left, struct 
 }
 
 int arithmeticOperation(char * operation) {
-    return !(strcmp(operation, "+") && strcmp(operation, "-") && strcmp(operation, "*"));
+    return !(strcmp(operation, "+") && strcmp(operation, "-") && strcmp(operation, "*") && strcmp(operation, "="));
 }
 
 int booleanOperation(char * operation) {
-    return !(strcmp(operation, "&&") && strcmp(operation, "||"));
+    return !(strcmp(operation, "&&") && strcmp(operation, "||") && strcmp(operation, "="));
 }
 
 int digitLength(int number) {
