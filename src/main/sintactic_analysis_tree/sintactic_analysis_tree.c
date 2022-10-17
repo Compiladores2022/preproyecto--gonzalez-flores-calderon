@@ -52,9 +52,6 @@ struct TreeNode * createTree(Symbol *symbol, struct TreeNode *left, struct TreeN
     
     struct TreeNode *newNode = CreateEmptyNode();
     newNode->info = symbol;
-    // if(right == NULL){
-    //     return NULL;
-    // }
     newNode->right = right;
     newNode->left = left;
 
@@ -73,7 +70,6 @@ void printTreeInOrder(struct TreeNode *tree, char * s) {
 }
 
 void operationType(char * operation, types type) {
-
     switch (type){
     case TYPEINT:
         if(arithmeticOperation(operation) == 0){
@@ -82,7 +78,7 @@ void operationType(char * operation, types type) {
         break;
     case TYPEBOOL:
         if(booleanOperation(operation) == 0){
-            printf("Incompatible operation types for %s\nexpected: INT %s INT\nfound: ", operation, operation);
+            printf("Incompatible operation types for %s\nexpected: INT %s INT\n", operation, operation);
         }
         break;
     }
@@ -94,23 +90,23 @@ void checkTypeTree(struct TreeNode *tree) {
         return;
     }
 
+    if(tree->right != NULL && tree->right->info->type == UNDEFINED && strcmp(tree->right->info->name, "next") != 0){                
+        checkTypeTree(tree->right);
+    }
+    
+    if(tree->left != NULL && tree->left->info->type == UNDEFINED){
+        checkTypeTree(tree->left);  
+    }
+    
+    //checking the partner type for the operation    
+    if(strcmp(tree->info->name, "next") != 0 ){
+        operationType(tree->info->name, tree->left->info->type);
+        if(tree->left->info->type != tree->right->info->type){
+            printf("Incompatible types for %s operation\nexpected: %s %s %s \nfound:  %s %s %s\n", tree->info->name, enumToString(tree->left->info->type), tree->info->name, enumToString(tree->left->info->type), enumToString(tree->left->info->type), tree->info->name, enumToString(tree->right->info->type));
+        }
+        tree->info->type = tree->left->info->type;
+    }
     if(tree->right != NULL && strcmp(tree->right->info->name, "next") == 0){
         checkTypeTree(tree->right);
     }
-
-    if(tree->left->left != NULL && tree->left->left->info->type == UNDEFINED){
-        checkTypeTree(tree->left);
-    }
-    if(tree->left->right != NULL && tree->left->right->info->type == UNDEFINED){                
-        checkTypeTree(tree->right);
-    }
-    
-    //checking the partner type for the operation
-    operationType(tree->left->info->name, tree->left->left->info->type);
-    
-    if(tree->left->left->info->type != tree->left->right->info->type){
-        printf("Incompatible types for %s operation\nexpected: %s +  %s \nfound:  %s + %s\n", tree->info->name, enumToString(tree->left->info->type), enumToString(tree->left->info->type), enumToString(tree->left->info->type), enumToString(tree->right->info->type));
-    }
-    
-    tree->info->type = tree->left->info->type;
 }   
