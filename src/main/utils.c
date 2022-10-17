@@ -19,6 +19,7 @@ void printTree(struct TreeNode *tree) {
     char *treePrint = malloc(sizeof(char));
     printTreeInOrder(tree, treePrint);
     printf("\033[0;31mtree in order:\033[0m %s\n", treePrint);
+    free(treePrint);
 }
 
 struct TreeNode * createNextTree(struct TreeNode *left, struct TreeNode *right) {
@@ -89,12 +90,12 @@ int stringToOperation(char *string) {
     return -1;
 }
 
-struct TreeNode * linkTreeRight(struct TreeNode * tree1, struct TreeNode * tree2){
+void linkTreeRight(struct TreeNode * tree1, struct TreeNode * tree2){
 
     if(tree1->right == NULL){
         tree1->right = tree2;
-        return tree1;
+    } else {
+        linkTreeRight(tree1->right, tree2);
     }
-    
-    linkTreeRight(tree1->right, tree2);
+
 }

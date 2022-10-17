@@ -22,6 +22,6 @@ char * intToString(int source);
 
 int stringToOperation(char *string);
 
-struct TreeNode * linkTreeRight(struct TreeNode * tree1, struct TreeNode * tree2);
+void linkTreeRight(struct TreeNode * tree1, struct TreeNode * tree2);
 
 #endif
