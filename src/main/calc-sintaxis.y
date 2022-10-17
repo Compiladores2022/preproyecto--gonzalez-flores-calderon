@@ -63,7 +63,8 @@ inil: { initialize(&list);} prog { printTree($2); checkTypeTree($2);
     ;
  
 prog: declList sentList {   
-                            $$ = linkTreeRight($1, $2);
+                            linkTreeRight($1, $2);
+                            $$ = $1;
                         }
 
     | sentList { $$ = $1; }
@@ -71,7 +72,7 @@ prog: declList sentList {
 
 declList: decl          { $$ = createNextTree($1, NULL); }
 
-    | decl declList     { $$ = createNextTree($2, $1); }
+    | decl declList     { $$ = createNextTree($1, $2); }
     ;
 
 decl: type ID '=' expr ';'  {   if (searchInLevel(list.head->levelSymbols, $2) != NULL) {
