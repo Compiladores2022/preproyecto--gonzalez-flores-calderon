@@ -98,7 +98,7 @@ sent: ID '=' expr ';'   {   Symbol * idSymbol = search(&list, $1);
                             struct TreeNode * idNode = createNode(idSymbol);
                             $$ = createNewTree(UNDEFINED, idNode, $3, "=", 0); }
 
-    | expr ';' { $$ = createNextTree($1, NULL); }
+    | expr ';' { $$ = $1; }
 
     | TReturn expr ';'  {   $$ = createNewTree(UNDEFINED, NULL, $2, "return", 0); }
     ;
@@ -121,17 +121,17 @@ expr: VALORINT  {   char *str = intToString($1);
             }
             $$ = createNode(s); }
 
+    | '(' expr ')' { $$ = $2; }
+
     | expr '+' expr {   
                         offset += 8;
                         $$ = createNewTree(UNDEFINED, $1, $3, "+", offset); }
     
-    | expr '*' expr {   offset += 8;
-                        $$ = createNewTree(UNDEFINED, $1, $3, "*", offset); }
-
     | expr TMENOS expr  {   offset += 8;
                             $$ = createNewTree(UNDEFINED, $1, $3, "-", offset); }
 
-    | '(' expr ')' { $$ = $2; }
+    | expr '*' expr {   offset += 8;
+                        $$ = createNewTree(UNDEFINED, $1, $3, "*", offset); }
 
     | expr TOR expr     {   offset += 8;
                             $$ = createNewTree(TYPEBOOL, $1, $3, "||", offset); }
