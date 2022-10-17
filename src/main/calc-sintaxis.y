@@ -56,8 +56,7 @@ int yylex();
 
 inil: { initialize(&list);} prog { printTree($2); checkTypeTree($2); 
         InstructionList *instructList = generateIntermediateCode($2);
-        //printInstructionList(instructList);
-        //printf("first: %d operation: %s secod: %d result: %d\n",*(int*) instructList->head->instruction->fstOp->value, instructList->head->instruction->result->name, *(int*) instructList->head->instruction->sndOp->value, *(int*)instructList->head->instruction->result->value);
+        char* assemblerCode = generateAssemblerCode(instructionlist, offset);
         }
     ;
  
