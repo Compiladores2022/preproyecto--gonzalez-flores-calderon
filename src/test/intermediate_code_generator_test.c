@@ -12,12 +12,14 @@ struct TreeNode * defaultTreeMult();
 struct TreeNode * defaultTreeAnd();
 struct TreeNode * defaultTreeOr();
 struct TreeNode * defaultTreeRet();
+struct TreeNode * defaultTree();
 int intermediteCodeGeneratorAdd();
 int intermediteCodeGeneratorSub();
 int intermediteCodeGeneratorMult();
 int intermediteCodeGeneratorAnd();
 int intermediteCodeGeneratorOr();
 int intermediteCodeGeneratorRet();
+int intermediteCodeGenerator();
 
 int main(){
     int testsPassed = 0, totalTests = 0;
@@ -28,8 +30,9 @@ int main(){
     intermediteCodeGeneratorAnd() ? testsPassed++ : printf("Test intermediate code and failed \n"); totalTests++;
     intermediteCodeGeneratorOr() ? testsPassed++ : printf("Test intermediate code or failed \n"); totalTests++;
     intermediteCodeGeneratorRet() ? testsPassed++ : printf("Test intermediate code ret failed \n"); totalTests++;
+    intermediteCodeGenerator() ? testsPassed++ : printf("Test intermediate code mega failed \n"); totalTests++;    
 
-    printf("tests passed: %d out of %d\n", testsPassed, totalTests);
+    printf("Tests passed: %d out of %d\n", testsPassed, totalTests);
     return 0;
 }
 
@@ -37,10 +40,6 @@ int intermediteCodeGeneratorAdd(){
 
     struct TreeNode *treeDecorator =  defaultTreeAdd();
     InstructionList *instructList = generateIntermediateCode(treeDecorator);
-    printf("Code List add: \n");
-    printInstructionList(instructList);
-    //printf("first: %d operation: %s secod: %d result: %d\n",*(int*) instructList->head->instruction->fstOp->value, instructList->head->instruction->result->name, *(int*) instructList->head->instruction->sndOp->value, *(int*)instructList->head->instruction->result->value);
-    //printf("first: %s operation: %s result: %d\n", instructList->last->instruction->fstOp->name, instructList->last->instruction->result->name, *(int*)instructList->last->instruction->result->value);
     if(sizeList(instructList) == 2){
          return 1;
     }
@@ -51,10 +50,6 @@ int intermediteCodeGeneratorSub(){
     
     struct TreeNode *treeDecorator =  defaultTreeSub();
     InstructionList *instructList = generateIntermediateCode(treeDecorator);
-    printf("Code List sub: \n");
-    printInstructionList(instructList);
-    //printf("first: %d operation: %s secod: %d result: %d\n",*(int*) instructList->head->instruction->fstOp->value, instructList->head->instruction->result->name, *(int*) instructList->head->instruction->sndOp->value, *(int*)instructList->head->instruction->result->value);
-    //printf("first: %s operation: %s result: %d\n", instructList->last->instruction->fstOp->name, instructList->last->instruction->result->name, *(int*)instructList->last->instruction->result->value);
     if(sizeList(instructList) == 2){
          return 1;
     }
@@ -65,10 +60,6 @@ int intermediteCodeGeneratorMult(){
     
     struct TreeNode *treeDecorator =  defaultTreeMult();
     InstructionList *instructList = generateIntermediateCode(treeDecorator);
-    printf("Code List mult: \n");
-    printInstructionList(instructList);
-    //printf("first: %d operation: %s secod: %d result: %d\n",*(int*) instructList->head->instruction->fstOp->value, instructList->head->instruction->result->name, *(int*) instructList->head->instruction->sndOp->value, *(int*)instructList->head->instruction->result->value);
-    //printf("first: %s operation: %s result: %d\n", instructList->last->instruction->fstOp->name, instructList->last->instruction->result->name, *(int*)instructList->last->instruction->result->value);
     if(sizeList(instructList) == 2){
          return 1;
     }
@@ -79,10 +70,6 @@ int intermediteCodeGeneratorAnd(){
     
     struct TreeNode *treeDecorator =  defaultTreeAnd();
     InstructionList *instructList = generateIntermediateCode(treeDecorator);
-    printf("Code List and: \n");
-    printInstructionList(instructList);
-    //printf("first: %d operation: %s secod: %d result: %d\n",*(int*) instructList->head->instruction->fstOp->value, instructList->head->instruction->result->name, *(int*) instructList->head->instruction->sndOp->value, *(int*)instructList->head->instruction->result->value);
-    //printf("first: %s operation: %s result: %d\n", instructList->last->instruction->fstOp->name, instructList->last->instruction->result->name, *(int*)instructList->last->instruction->result->value);
     if(sizeList(instructList) == 2){
          return 1;
     }
@@ -93,10 +80,6 @@ int intermediteCodeGeneratorOr(){
     
     struct TreeNode *treeDecorator =  defaultTreeOr();
     InstructionList *instructList = generateIntermediateCode(treeDecorator);
-    printf("Code List or: \n");
-    printInstructionList(instructList);
-    //printf("first: %d operation: %s secod: %d result: %d\n",*(int*) instructList->head->instruction->fstOp->value, instructList->head->instruction->result->name, *(int*) instructList->head->instruction->sndOp->value, *(int*)instructList->head->instruction->result->value);
-    //printf("first: %s operation: %s result: %d\n", instructList->last->instruction->fstOp->name, instructList->last->instruction->result->name, *(int*)instructList->last->instruction->result->value);
     if(sizeList(instructList) == 2){
          return 1;
     }
@@ -107,14 +90,67 @@ int intermediteCodeGeneratorRet(){
     
     struct TreeNode *treeDecorator =  defaultTreeRet();
     InstructionList *instructList = generateIntermediateCode(treeDecorator);
-    printf("Code List ret: \n");
-    printInstructionList(instructList);
-    //printf("first: %d operation: %s secod: %d result: %d\n",*(int*) instructList->head->instruction->fstOp->value, instructList->head->instruction->result->name, *(int*) instructList->head->instruction->sndOp->value, *(int*)instructList->head->instruction->result->value);
-    //printf("first: %s operation: %s result: %d\n", instructList->last->instruction->fstOp->name, instructList->last->instruction->result->name, *(int*)instructList->last->instruction->result->value);
     if(sizeList(instructList) == 2){
          return 1;
     }
     return 0;   
+}
+
+int intermediteCodeGenerator(){
+    
+    struct TreeNode *treeDecorator =  defaultTree();
+    InstructionList *instructList = generateIntermediateCode(treeDecorator);
+    if(sizeList(instructList) == 4){
+         return 1;
+    }
+    return 0;   
+}
+
+struct TreeNode * defaultTree(){
+int offset = 8;
+
+    Symbol *symbolX = createSymbol(TYPEINT, "x", NULL, offset);
+    offset += 8;
+    Symbol *symbolY = createSymbol(TYPEINT, "y", NULL, offset);
+    offset += 8;
+    Symbol *symbol1 = createSymbol(TYPEINT, "*", NULL, offset);
+    
+    Symbol *symbol2 = createSymbol(UNDEFINED, "return", NULL, 0);
+    Symbol *symbol3 = createSymbol(UNDEFINED, "next", NULL, 0);
+    
+    // return x * y;
+    struct TreeNode *left = createNode(symbolX);
+    struct TreeNode *right = createNode(symbolY);
+    struct TreeNode *tree = createTree(symbol1, left, right);
+    tree = createTree(symbol2, NULL, tree);
+    struct TreeNode *treeNext = createTree(symbol3, tree, NULL);
+    
+
+    int *b = (int *)malloc(sizeof(int));
+    *b = 10;
+    symbol1 = createSymbol(TYPEINT, "10", b, 0);
+    symbol2 = createSymbol(TYPEINT, "=", NULL, 0);
+    symbol3 = createSymbol(UNDEFINED, "next", NULL, 0);
+    
+    // y = 10;
+    left = createNode(symbolY);
+    right = createNode(symbol1);
+    tree = createTree(symbol2, left, right);
+    treeNext = createTree(symbol3, tree, treeNext);
+
+    
+    int *a = (int *)malloc(sizeof(int));
+    *a = 5;
+    symbol1 = createSymbol(TYPEINT, "5", a, 0);
+    symbol2 = createSymbol(TYPEINT, "=", NULL, 0);
+    symbol3 = createSymbol(UNDEFINED, "next", NULL, 0);
+
+    // x = 5;
+    left = createNode(symbolX);
+    right = createNode(symbol1);
+    tree = createTree(symbol2, left, right);
+    treeNext = createTree(symbol3, tree, treeNext);
+    return treeNext;
 }
 
 struct TreeNode * defaultTreeRet(){
