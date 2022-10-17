@@ -24,13 +24,13 @@ int intermediteCodeGenerator();
 int main(){
     int testsPassed = 0, totalTests = 0;
     
-    intermediteCodeGeneratorAdd() ? testsPassed++ : printf("Test intermediate code add failed \n"); totalTests++;
-    intermediteCodeGeneratorSub() ? testsPassed++ : printf("Test intermediate code sub failed \n"); totalTests++;
-    intermediteCodeGeneratorMult() ? testsPassed++ : printf("Test intermediate code mult failed \n"); totalTests++;
-    intermediteCodeGeneratorAnd() ? testsPassed++ : printf("Test intermediate code and failed \n"); totalTests++;
-    intermediteCodeGeneratorOr() ? testsPassed++ : printf("Test intermediate code or failed \n"); totalTests++;
-    intermediteCodeGeneratorRet() ? testsPassed++ : printf("Test intermediate code ret failed \n"); totalTests++;
-    intermediteCodeGenerator() ? testsPassed++ : printf("Test intermediate code mega failed \n"); totalTests++;    
+    intermediteCodeGeneratorAdd() ? testsPassed++ : printf("\033[0;31mTest intermediate code add failed\033[0m \n"); totalTests++;
+    intermediteCodeGeneratorSub() ? testsPassed++ : printf("\033[0;31mTest intermediate code sub failed\033[0m \n"); totalTests++;
+    intermediteCodeGeneratorMult() ? testsPassed++ : printf("\033[0;31mTest intermediate code mult failed\033[0m \n"); totalTests++;
+    intermediteCodeGeneratorAnd() ? testsPassed++ : printf("\033[0;31mTest intermediate code and failed\033[0m \n"); totalTests++;
+    intermediteCodeGeneratorOr() ? testsPassed++ : printf("\033[0;31mTest intermediate code or failed\033[0m \n"); totalTests++;
+    intermediteCodeGeneratorRet() ? testsPassed++ : printf("\033[0;31mTest intermediate code ret failed\033[0m \n"); totalTests++;
+    intermediteCodeGenerator() ? testsPassed++ : printf("\033[0;31mTest intermediate code mega failed\033[0m \n"); totalTests++;    
 
     printf("Tests passed: %d out of %d\n", testsPassed, totalTests);
     return 0;

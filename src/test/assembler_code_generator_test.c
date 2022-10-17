@@ -14,9 +14,9 @@ int singleAssignmentInstructionTest();
 int main(){
     int testsPassed = 0, totalTests = 0;
     
-    oneInstructionTest() ? testsPassed++ : printf("Test single instruction test failed \n"); totalTests++;
-    singleAssignmentInstructionTest() ? testsPassed++ : printf("Test single assignment instruction test failed \n"); totalTests++;
-    multipleInstructionWithIdTest() ? testsPassed++ : printf("Test instruction with identifiers test failed \n"); totalTests++;
+    oneInstructionTest() ? testsPassed++ : printf("\033[0;31mTest single instruction test failed\033[0m \n"); totalTests++;
+    singleAssignmentInstructionTest() ? testsPassed++ : printf("\033[0;31mTest single assignment instruction test failed\033[0m \n"); totalTests++;
+    multipleInstructionWithIdTest() ? testsPassed++ : printf("\033[0;31mTest instruction with identifiers test failed\033[0m \n"); totalTests++;
 
     printf("tests passed: %d out of %d\n", testsPassed, totalTests);
     return 0;

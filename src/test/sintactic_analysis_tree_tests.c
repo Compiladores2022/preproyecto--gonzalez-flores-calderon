@@ -18,14 +18,14 @@ int main(){
     //total tests must be manually updated when adding a new test
     int testsPassed = 0, totalTests = 0;
     
-    testCreateFullTree() ? testsPassed++ : printf("Test Create Full Tree failed \n"); totalTests++;
-    testInvalidTree() ? testsPassed++ : printf("Test invalid Tree failed \n"); totalTests++;
-    testSingleLeaf() ? testsPassed++ : printf("Test single leaf failed \n"); totalTests++;
-    testInorder() ? testsPassed++ : printf("Test indorder failed \n"); totalTests++;
-    testCheckTypeTree() ? testsPassed++ : printf("Test check type failed \n"); totalTests++;
-    testCheckTypeTreeInvalidType() ? testsPassed++ : printf("test check type failed \n"); totalTests++;
-    testOperationTypeAddition() ? testsPassed++ : printf("Test checking the partner type for the operation arithmetic failed \n"); totalTests++;
-    testOperationTypeOr() ? testsPassed++ : printf("Test checking the partner type for the operation boolean failed \n"); totalTests++;
+    testCreateFullTree() ? testsPassed++ : printf("\033[0;31mTest Create Full Tree failed\033[0m \n"); totalTests++;
+    testInvalidTree() ? testsPassed++ : printf("\033[0;31mTest invalid Tree failed\033[0m \n"); totalTests++;
+    testSingleLeaf() ? testsPassed++ : printf("\033[0;31mTest single leaf failed\033[0m \n"); totalTests++;
+    testInorder() ? testsPassed++ : printf("\033[0;31mTest indorder failed\033[0m \n"); totalTests++;
+    testCheckTypeTree() ? testsPassed++ : printf("\033[0;31mTest check type failed\033[0m \n"); totalTests++;
+    testCheckTypeTreeInvalidType() ? testsPassed++ : printf("\033[0;31mtest check type failed\033[0m \n"); totalTests++;
+    testOperationTypeAddition() ? testsPassed++ : printf("\033[0;31mTest checking the partner type for the operation arithmetic failed\033[0m \n"); totalTests++;
+    testOperationTypeOr() ? testsPassed++ : printf("\033[0;31mTest checking the partner type for the operation boolean failed\033[0m \n"); totalTests++;
 
     printf("tests passed: %d out of %d\n", testsPassed, totalTests);
     return 0;
