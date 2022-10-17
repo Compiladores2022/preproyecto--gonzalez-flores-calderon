@@ -71,7 +71,7 @@ Symbol * addCurrentInstruction(struct TreeNode *tree, InstructionList * codeList
     if(temp2 == NULL && tree->right != NULL) {
         temp2 = tree->right->info;
     }
-    Symbol * temp3;
+    Symbol * temp3 = NULL;
     int *operationResult = (int*) malloc(sizeof(int));
     struct Instruction * instruction;
     switch (stringToOperation(tree->info->name)) { //creates the instruction
@@ -84,41 +84,41 @@ Symbol * addCurrentInstruction(struct TreeNode *tree, InstructionList * codeList
         case SUB:
             temp3 = tree->info;
             *operationResult = *(int*)temp1->value - *(int*)temp2->value;
-            temp3->value = operationResult;            
+            temp3->value = operationResult;
             instruction = createInstruction("SUB", temp1, temp2, temp3);
             break;
         case MULT:
             temp3 = tree->info;
             *operationResult = *(int*)temp1->value * *(int*)temp2->value;
-            temp3->value = operationResult;            
+            temp3->value = operationResult;
             instruction = createInstruction("MULT", temp1, temp2, temp3);
             break;
         case AND:
             temp3 = tree->info;
             if(*(int*)temp1->value != 0 && *(int*)temp2->value != 0){
                 *operationResult = 1;
-                temp3->value = operationResult;            
+                temp3->value = operationResult;
             }
             *operationResult = 0;
-            temp3->value = operationResult;            
+            temp3->value = operationResult;
             instruction = createInstruction("AND", temp1, temp2, temp3);
             break;
         case OR:
             temp3 = tree->info;
             if(*(int*)temp1->value == 0 && *(int*)temp2->value == 0){
                 *operationResult = 0;
-                temp3->value = operationResult;            
+                temp3->value = operationResult;
             }            
             *operationResult = 1;
-            temp3->value = operationResult;            
+            temp3->value = operationResult;
             instruction = createInstruction("OR", temp1, temp2, temp3);
             break;
         case ASSIG:
             temp3 = NULL;
             instruction = createInstruction("ASSIG", temp2, NULL, temp1);
+            temp1->value = temp2->value;
             break;
         case RET:
-            if (temp3 == NULL)
             temp3 = temp2;
             instruction = createInstruction("RET", NULL, NULL, temp3);
             break;
