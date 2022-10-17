@@ -76,8 +76,7 @@ decl: type ID '=' expr ';'  {   if (searchInLevel(list.head->levelSymbols, $2) !
                                 Symbol *newID = createSymbol($1, $2, NULL, offset);
                                 insert(&list, newID);
                                 struct TreeNode * idNode = createNode(newID);
-                                offset += 8;
-                                $$ = createNewTree(UNDEFINED, idNode, $4, "=", offset); 
+                                $$ = createNewTree(UNDEFINED, idNode, $4, "=", 0); 
                             }
     ;
 
@@ -91,13 +90,11 @@ sent: ID '=' expr ';'   {   Symbol * idSymbol = search(&list, $1);
                                 yyerror();
                             }
                             struct TreeNode * idNode = createNode(idSymbol);
-                            offset += 8;
-                            $$ = createNewTree(UNDEFINED, idNode, $3, "=", offset); }
+                            $$ = createNewTree(UNDEFINED, idNode, $3, "=", 0); }
 
     | expr ';' { $$ = $1; }
 
-    | TReturn expr ';'  {   offset += 8;
-                            $$ = createNewTree(UNDEFINED, NULL, $2, "return", offset); }
+    | TReturn expr ';'  {   $$ = createNewTree(UNDEFINED, NULL, $2, "return", 0); }
     ;
 
 expr: VALORINT  {   char *str = intToString($1);
