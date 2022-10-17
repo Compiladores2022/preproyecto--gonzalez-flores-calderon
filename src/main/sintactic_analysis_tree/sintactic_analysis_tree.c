@@ -100,11 +100,15 @@ void checkTypeTree(struct TreeNode *tree) {
     
     //checking the partner type for the operation    
     if(strcmp(tree->info->name, "next") != 0 ){
-        operationType(tree->info->name, tree->left->info->type);
-        if(tree->left->info->type != tree->right->info->type){
-            printf("Incompatible types for %s operation\nexpected: %s %s %s \nfound:  %s %s %s\n", tree->info->name, enumToString(tree->left->info->type), tree->info->name, enumToString(tree->left->info->type), enumToString(tree->left->info->type), tree->info->name, enumToString(tree->right->info->type));
+        if(tree->left != NULL && tree->left != NULL){
+            operationType(tree->info->name, tree->left->info->type);
+            if(tree->left->info->type != tree->right->info->type){
+                printf("Incompatible types for %s operation\nexpected: %s %s %s \nfound: %s %s %s\n", tree->info->name, enumToString(tree->left->info->type), tree->info->name, enumToString(tree->left->info->type), enumToString(tree->left->info->type), tree->info->name, enumToString(tree->right->info->type));
+            }
+            else{
+                tree->info->type = tree->left->info->type;
+            }
         }
-        tree->info->type = tree->left->info->type;
     }
     if(tree->right != NULL && strcmp(tree->right->info->name, "next") == 0){
         checkTypeTree(tree->right);
