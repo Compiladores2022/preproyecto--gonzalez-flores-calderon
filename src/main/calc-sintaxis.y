@@ -89,8 +89,13 @@ decl: type ID '=' expr ';'  {   if (searchInLevel(list.head->levelSymbols, $2) !
                             }
     ;
 
-sentList: sent { $$ = createNextTree($1, NULL); } 
-    |  sent sentList     {   $$ = createNextTree($2, $1); }
+sentList: sent { struct TreeNode * tree = createNextTree($1, NULL);
+                    printTree(tree);
+                    $$ = tree; }
+    
+    |  sent sentList     {   struct TreeNode * tree = createNextTree($1, $2);
+                                printTree(tree);
+                                $$ = tree; }
     ;
 
 sent: ID '=' expr ';'   {   Symbol * idSymbol = search(&list, $1);
