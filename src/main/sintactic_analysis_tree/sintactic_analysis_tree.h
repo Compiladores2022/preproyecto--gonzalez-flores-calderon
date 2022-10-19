@@ -17,7 +17,9 @@ struct TreeNode * createNode(Symbol *symbol);
 
 struct TreeNode * createTree(Symbol *symbol, struct TreeNode *left, struct TreeNode *right);
     
-void printTreeInOrder(struct TreeNode *tree, char * s);
+void getTreeInOrder(struct TreeNode *tree, char * s);
+
+void printTreeInOrder(struct TreeNode *tree);
 
 void checkTypeTree(struct TreeNode *tree);
 
