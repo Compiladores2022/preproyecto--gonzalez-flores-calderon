@@ -55,10 +55,12 @@ int yylex();
 %%
 
 
-inil: { initialize(&list);} prog { printTree($2); checkTypeTree($2); 
-        InstructionList *instructList = generateIntermediateCode($2);
-        char *assemblerCode = generateAssemblerCode(instructList, offset);
-        printf("%s",assemblerCode);
+inil:   {   initialize(&list);} prog { printTree($2); 
+            if(checkTypeTree($2) == 1){         
+                InstructionList *instructList = generateIntermediateCode($2);
+                char *assemblerCode = generateAssemblerCode(instructList, offset);
+                printf("%s",assemblerCode);
+           }
         }
     ;
  

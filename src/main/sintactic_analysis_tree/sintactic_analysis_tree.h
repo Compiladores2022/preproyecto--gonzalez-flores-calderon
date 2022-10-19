@@ -21,6 +21,6 @@ void getTreeInOrder(struct TreeNode *tree, char * s);
 
 void printTreeInOrder(struct TreeNode *tree);
 
-void checkTypeTree(struct TreeNode *tree);
+int checkTypeTree(struct TreeNode *tree);
 
 #endif
