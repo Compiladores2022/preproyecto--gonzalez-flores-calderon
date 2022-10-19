@@ -89,7 +89,7 @@ int testInorder(){
     int c = 2;
     Symbol *symbol3 = createSymbol(TYPEBOOL, "c", &c, 0);
     struct TreeNode *tree = createTree(symbol3, left, right);
-    char *p = malloc(sizeof(char));
+    char *p = malloc(50 * sizeof(char));
     getTreeInOrder(tree, p);
     if(strcmp(p, " b c a") == 0){
         return 1;
