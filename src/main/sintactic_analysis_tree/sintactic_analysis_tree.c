@@ -85,6 +85,7 @@ void printTreeInOrder(struct TreeNode *tree) {
 int asignType(char * operation, types typeL, types typeR){
     if(typeL != typeR){
         printf("\033[0;31merror:\033[0m Conflicting types for: =\nexpected: %s = %s\nfound: %s = %s \n", enumToString(typeL), enumToString(typeL), enumToString(typeL), enumToString(typeR));
+        exit(0);
         return 0;
     }
     return 1;
@@ -95,6 +96,7 @@ int operationType(char * operation, types typeL, types typeR) {
     case TYPEINT:
         if(arithmeticOperation(operation) == 0){
             printf("\033[0;31merror:\033[0m Incompatible operation types for %s\nexpected: BOOL %s BOOL\nfound: %s %s %s \n", operation, operation, enumToString(typeR), operation, enumToString(typeL));
+            exit(0);
             return 0;
         }
         break;
@@ -102,6 +104,7 @@ int operationType(char * operation, types typeL, types typeR) {
         if(booleanOperation(operation) == 0){
             typeErrors++;
             printf("\033[0;31merror:\033[0m Incompatible operation types for %s\nexpected: INT %s INT\n", operation, operation);
+            exit(0);
             return 0;
         }
         break;
@@ -137,10 +140,12 @@ int checkTypeTree(struct TreeNode *tree) {
             if(booleanOperation(tree->info->name)){
                 validTree = validTree && 0;
                 printf("\033[0;31merror:\033[0m Incompatible types for %s operation\nexpected: BOOL %s BOOL \nfound:  %s %s %s\n", tree->info->name, tree->info->name, enumToString(tree->left->info->type), tree->info->name, enumToString(tree->right->info->type));
+                exit(0);
             }
             else if (arithmeticOperation(tree->info->name)){
                 validTree = validTree && 0;
                 printf("\033[0;31merror:\033[0m Incompatible types for %s operation\nexpected: INT %s INT \nfound:  %s %s %s\n", tree->info->name, tree->info->name, enumToString(tree->left->info->type), tree->info->name, enumToString(tree->right->info->type));                
+                exit(0);
             }
             
         }
