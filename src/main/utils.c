@@ -16,7 +16,7 @@ char * enumToString(types type) {
 }
 
 void printTree(struct TreeNode *tree) {
-    printf("\033[0;31mtree in order:\033[0m");
+    printf("\033[0;32mtree in order:\033[0m");
     printTreeInOrder(tree);
     printf("\n");
 }
@@ -34,11 +34,11 @@ struct TreeNode * createNewTree(types symbolType, struct TreeNode *left, struct 
 }
 
 int arithmeticOperation(char * operation) {
-    return !(strcmp(operation, "+") && strcmp(operation, "-") && strcmp(operation, "*") && strcmp(operation, "="));
+    return !(strcmp(operation, "+") && strcmp(operation, "-") && strcmp(operation, "*"));
 }
 
 int booleanOperation(char * operation) {
-    return !(strcmp(operation, "&&") && strcmp(operation, "||") && strcmp(operation, "="));
+    return !(strcmp(operation, "&&") && strcmp(operation, "||"));
 }
 
 int digitLength(int number) {
