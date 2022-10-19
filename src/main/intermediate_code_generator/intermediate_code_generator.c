@@ -1,7 +1,7 @@
 #include "instruction.h"
 #include "intermediate_code_generator.h"
 
-#include "../utils.h"
+#include "../utils/utils.h"
 #include <stdlib.h>
 #include <stdio.h>
 

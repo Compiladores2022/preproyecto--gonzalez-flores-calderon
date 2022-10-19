@@ -1,5 +1,5 @@
 #include "sintactic_analysis_tree.h"
-#include "../utils.h"
+#include "../utils/utils.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>

@@ -1,5 +1,5 @@
 #!/bin/bash
 
-gcc ../main/sintactic_analysis_tree/sintactic_analysis_tree.c ../main/utils.c ../main/types/symbol.c symbol_list_tests.c ../main/symbol_list/symbol_list.c
+gcc ../main/sintactic_analysis_tree/sintactic_analysis_tree.c ../main/utils/utils.c ../main/types/symbol.c symbol_list_tests.c ../main/symbol_list/symbol_list.c
 ./a.out
 rm a.out

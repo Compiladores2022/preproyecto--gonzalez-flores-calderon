@@ -1,5 +1,5 @@
 #!/bin/bash
 
-gcc assembler_code_generator_test.c  ../main/types/symbol.c ../main/sintactic_analysis_tree/sintactic_analysis_tree.c ../main/intermediate_code_generator/intermediate_code_generator.c ../main/intermediate_code_generator/instruction.c ../main/utils.c ../main/assembler_code_generator/assembler_generator.c
+gcc assembler_code_generator_test.c  ../main/types/symbol.c ../main/sintactic_analysis_tree/sintactic_analysis_tree.c ../main/intermediate_code_generator/intermediate_code_generator.c ../main/intermediate_code_generator/instruction.c ../main/utils/utils.c ../main/assembler_code_generator/assembler_generator.c
 ./a.out
 rm a.out
