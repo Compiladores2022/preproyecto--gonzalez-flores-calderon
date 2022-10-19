@@ -55,12 +55,12 @@ int yylex();
 %%
 
 
-inil:   {   initialize(&list);} prog { printTree($2); 
-            if(checkTypeTree($2) == 1){         
+inil:   {   initialize(&list); } prog { printTree($2); 
+            if(checkTypeTree($2) == 1) {
                 InstructionList *instructList = generateIntermediateCode($2);
                 char *assemblerCode = generateAssemblerCode(instructList, offset);
                 printf("%s",assemblerCode);
-           }
+            }
         }
     ;
  
@@ -89,13 +89,9 @@ decl: type ID '=' expr ';'  {   if (searchInLevel(list.head->levelSymbols, $2) !
                             }
     ;
 
-sentList: sent { struct TreeNode * tree = createNextTree($1, NULL);
-                    printTree(tree);
-                    $$ = tree; }
+sentList: sent { $$ = createNextTree($1, NULL); }
     
-    |  sent sentList     {   struct TreeNode * tree = createNextTree($1, $2);
-                                printTree(tree);
-                                $$ = tree; }
+    |  sent sentList     {   $$ = createNextTree($1, $2); }
     ;
 
 sent: ID '=' expr ';'   {   Symbol * idSymbol = search(&list, $1);
