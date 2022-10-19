@@ -57,14 +57,14 @@ error_message="(-> ERROR|Incompatible types|Aborted|Segmentation fault)"
 
 declare -i file_number=1
 printf "Testing valid programs\n";
-for file in ../test/resources/testSintaxis/acceptedPrograms/*; do
+for file in ../test/resources/testCompiler/acceptedPrograms/*; do
     testValidProgram
 done
 checkAllTestsPassed $total_tests $passed_tests failed_tests "All valid program tests passed"
 
 file_number=1
 printf "\n\n\nTesting Invalid programs\n";
-for file in ../test/resources/testSintaxis/invalidPrograms/*; do
+for file in ../test/resources/testCompiler/invalidPrograms/*; do
     testInvalidProgram    
 done
 checkAllTestsPassed $total_tests $passed_tests failed_tests "All invalid program tests passed"

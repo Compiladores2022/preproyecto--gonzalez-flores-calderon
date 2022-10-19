@@ -1,0 +1,5 @@
+int  nombreVar1 = 5;
+bool b1 = true;
+
+nombreVar1 = 55;
+retornar nombreVar1 + 1;

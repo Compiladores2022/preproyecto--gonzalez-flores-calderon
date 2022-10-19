@@ -1,0 +1,6 @@
+int  nombre!var1 = 45;
+
+b1 = (false);
+return b1;
+
+

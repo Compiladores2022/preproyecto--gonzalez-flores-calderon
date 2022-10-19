@@ -1,0 +1,6 @@
+int  nombreVar1=4;
+bool b1= true;
+int x2 = 2;
+
+return (nombreVar1 = 5 + 2); //la asignacion no es una expresion
+ 
