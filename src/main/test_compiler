@@ -5,7 +5,7 @@
 function testValidProgram {
     total_tests=total_tests+1
     file_output=$(./script_generated/a.out $file)
-    if [[ "$file_output" == *"$error_message"* ]]; #output contains error message
+    if [[ "$file_output" =~ $error_message ]]; #output contains error message
     then
         printf "\n\n${RED}Test $file_number - $file failed:${NORMAL}\n\n$file_output"
     else
@@ -19,7 +19,7 @@ function testValidProgram {
 function testInvalidProgram {
     total_tests=total_tests+1
     file_output=$(./script_generated/a.out $file)
-    if [[ "$file_output" != *"$error_message"* ]]; #output doesn't contains error message
+    if ! [[ "$file_output" =~ $error_message ]]; #output doesn't contains error message
     then
         printf "\n\n${RED}Test $file_number - $file failed, compiler didn't detect the error in:${NORMAL}\n\n$file_output"
     else
@@ -29,11 +29,12 @@ function testInvalidProgram {
 }
 
 function checkAllTestsPassed {
-    if [[ $(($1-$2 == $3)) ]];
+    if (($1-$2 == $3));
     then
-        printf "\n${GREEN}$4${NORMAL}"
+        printf "\n\n${GREEN}$4${NORMAL}"
     fi
-    (($3=$1-$2))
+    local -n update=$3
+    ((update=$1-$2))
 }
 
 
@@ -52,20 +53,20 @@ declare -i total_tests=0
 RED=$(tput setaf 1) #colors
 GREEN=$(tput setaf 2)
 NORMAL=$(tput sgr0)
-error_message="-> ERROR"
+error_message="(-> ERROR|Incompatible types|Aborted|Segmentation fault)"
 
 declare -i file_number=1
 printf "Testing valid programs\n";
-for file in ../test/resources/acceptedPrograms/*; do
+for file in ../test/resources/testSintaxis/acceptedPrograms/*; do
     testValidProgram
 done
-checkAllTestsPassed total_tests passed_tests failed_tests "All valid program tests passed"
+checkAllTestsPassed $total_tests $passed_tests failed_tests "All valid program tests passed"
 
 file_number=1
 printf "\n\n\nTesting Invalid programs\n";
-for file in ../test/resources/invalidPrograms/*; do
+for file in ../test/resources/testSintaxis/invalidPrograms/*; do
     testInvalidProgram    
 done
-checkAllTestsPassed total_tests passed_tests failed_tests "All invalid program tests passed"
+checkAllTestsPassed $total_tests $passed_tests failed_tests "All invalid program tests passed"
 
 printf "\n\nTests passed: $passed_tests out of $total_tests\n"
