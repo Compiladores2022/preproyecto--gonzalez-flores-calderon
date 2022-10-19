@@ -60,6 +60,7 @@ inil:   {   initialize(&list); } prog { printTree($2);
                 InstructionList *instructList = generateIntermediateCode($2);
                 char *assemblerCode = generateAssemblerCode(instructList, offset);
                 printf("%s",assemblerCode);
+                createAssemblerFile(assemblerCode);
             }
         }
     ;
