@@ -24,4 +24,6 @@ int stringToOperation(char *string);
 
 void linkTreeRight(struct TreeNode * tree1, struct TreeNode * tree2);
 
+void createAssemblerFile(char * assemblerCode);
+
 #endif

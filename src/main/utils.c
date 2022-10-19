@@ -98,3 +98,13 @@ void linkTreeRight(struct TreeNode * tree1, struct TreeNode * tree2){
     }
 
 }
+
+void createAssemblerFile(char * assemblerCode){
+
+    FILE *program;
+
+    program = fopen("assembler_generated/program.s", "w");
+    fputs(assemblerCode, program);
+
+    fclose(program);
+}
