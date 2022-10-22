@@ -18,7 +18,7 @@ char * generateAssemblerCode(InstructionList * intermediateCode, int maxOffset) 
     strcpy(code, "	.globl	main\n	.type	main, @function\nmain:\n.LFB0:\n");
 
     char * transformed = intToString(requiredFrameSpace);
-    char * requiredSpace = malloc(sizeof(char *));
+    char * requiredSpace = malloc(12 * sizeof(char *));
     strcpy(requiredSpace, "$(8 * ");
     strcat(requiredSpace, transformed);
     generateInstructionCode(code, "ENTER", strcat(requiredSpace, ")"), "$0");
@@ -28,9 +28,7 @@ char * generateAssemblerCode(InstructionList * intermediateCode, int maxOffset) 
         currentNode = currentNode->next;
     }
     code = strcat(code, "LEAVE\nRET\n");
-
-    free(transformed);
-    free(requiredSpace);
+    
     return code;
 }
 
