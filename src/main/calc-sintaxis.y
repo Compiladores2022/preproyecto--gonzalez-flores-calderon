@@ -116,7 +116,9 @@ expr: VALORINT  {   char *str = intToString($1);
                     $$ = newNode; }
 
     | VALORBOOL {   char * boolValue = $1 == 1 ? "true" : "false";
-                    Symbol *s = createSymbol(TYPEBOOL, boolValue, &$1, 0);
+                    int * a = (int*) malloc(sizeof(int));
+                    *a = $1;  
+                    Symbol *s = createSymbol(TYPEBOOL, boolValue, a, 0);
                     $$ = createNode(s); }
     
     | ID {  Symbol *s = search(&list, $1);
