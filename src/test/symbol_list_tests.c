@@ -11,7 +11,6 @@ int searchFindsSymbolInPreviousLevels();
 int searchFindsCorrectSymbol();
 
 int main(){
-    //total tests must be manually updated when adding a new test
     int testsPassed = 0, totalTests = 0;
     
     addOneSymbolAndSearchIt() ? testsPassed++ : printf("\033[0;31mTest add one symbol and search it failed\033[0m \n"); totalTests++;

@@ -15,7 +15,6 @@ int testOperationTypeAddition();
 int testOperationTypeOr();
 
 int main(){
-    //total tests must be manually updated when adding a new test
     int testsPassed = 0, totalTests = 0;
     
     testCreateFullTree() ? testsPassed++ : printf("\033[0;31mTest Create Full Tree failed\033[0m \n"); totalTests++;
@@ -29,7 +28,7 @@ int main(){
     // testOperationTypeAddition() ? testsPassed++ : printf("\033[0;31mTest checking the partner type for the operation arithmetic failed\033[0m \n"); totalTests++;
     // testOperationTypeOr() ? testsPassed++ : printf("\033[0;31mTest checking the partner type for the operation boolean failed\033[0m \n"); totalTests++;
 
-    printf("tests passed: %d out of %d\n", testsPassed, totalTests);
+        printf("tests passed: %d out of %d\n", testsPassed, totalTests);
     return 0;
 }
 
@@ -45,7 +44,6 @@ int testCreateFullTree() {
     struct TreeNode *left = createNode(symbol2);
     struct TreeNode *tree = createTree(symbol3, left, right);
 
-    //printf("%d \n", *(int *)tree->head->right->info->value);
     if(tree->right->info->value != symbol1->value){
         return 0;
     }
