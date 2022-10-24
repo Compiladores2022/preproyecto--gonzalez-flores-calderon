@@ -53,7 +53,7 @@ declare -i total_tests=0
 RED=$(tput setaf 1) #colors
 GREEN=$(tput setaf 2)
 NORMAL=$(tput sgr0)
-error_message="(-> ERROR|Incompatible types|Aborted|Segmentation fault)"
+error_message="(-> ERROR|Incompatible types|Conflicting types|Aborted|Segmentation fault)"
 
 declare -i file_number=1
 printf "Testing valid programs\n";

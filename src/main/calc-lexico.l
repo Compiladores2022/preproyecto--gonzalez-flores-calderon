@@ -27,6 +27,30 @@ digito [0-9]
 								printf("Return : %s\n",yytext);
 								return TReturn;}
 
+"program"					{ 
+								printf("Program : %s\n",yytext);
+								return TProgram;}
+
+"if"					{ 
+								printf("If : %s\n",yytext);
+								return TIf;}
+
+"then"					{ 
+								printf("Then : %s\n",yytext);
+								return TThen;}
+
+"else"					{ 
+								printf("Else : %s\n",yytext);
+								return TElse;}
+
+"while"					{ 
+								printf("While : %s\n",yytext);
+								return TWhile;}
+
+"extern"					{ 
+							    printf("TExtern : %s\n",yytext);
+								return TVOID;}
+
 "true"                      { 
 								yylval.i = 1;
 							    printf("TTRUE : %s\n",yytext);
@@ -45,7 +69,16 @@ digito [0-9]
 							    printf("TBOOL : %s\n",yytext);
 								return TBOOL;}
 
+"void"						{
+							    printf("TVOID : %s\n",yytext);
+								return TVOID;}
+
 "//".*"\n"                 	; /* ignore comments */
+
+"\*/".*"\*/"    			{	printf("-> ERROR Simbolo invalido: %s: En linea : %d\n", yytext, yylineno); 
+							 	exit(0);} 
+
+"/\*"(.*|.*\n|\n)*"\*/"     ; /* ignore comments */
 
 {minuscula}({letra}|{digito})* { 
 								printf("ID : %s\n",yytext);
@@ -59,10 +92,13 @@ digito [0-9]
 "||"						{	printf("%s\n",yytext);
                             	return TOR;}
 
+"=="						{	printf("%s\n",yytext);
+                            	return TIGUAL;}
+
 "-"                       	{	printf("%s\n",yytext);
                             	return TMENOS;}    
 
-[+*=;()]                    {	printf("%s\n",yytext);
+[+*%/=;()<>!]                    {	printf("%s\n",yytext);
                                 return *yytext;}
 
 \n|" "                        ; /* ignore all the rest */
