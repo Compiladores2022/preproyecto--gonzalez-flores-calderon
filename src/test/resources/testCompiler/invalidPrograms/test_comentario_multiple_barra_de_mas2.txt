@@ -1,0 +1,12 @@
+int x = 10;
+
+x = x + 4 - 5 * 1;
+
+
+/* este es un comentario
+    de multiple linea
+    para testear el compilador*/
+    */
+
+
+//otro comentario  

@@ -47,6 +47,11 @@ digito [0-9]
 
 "//".*"\n"                 	; /* ignore comments */
 
+"\*/".*"\*/"    			{	printf("-> ERROR Simbolo invalido: %s: En linea : %d\n", yytext, yylineno); 
+							 	exit(0);} 
+
+"/\*"(.*|.*\n|\n)*"\*/"     ; /* ignore comments */
+
 {minuscula}({letra}|{digito})* { 
 								printf("ID : %s\n",yytext);
 								yylval.s = (char *) malloc(sizeof(yytext)*yyleng);
