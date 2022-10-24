@@ -34,9 +34,21 @@ int yylex();
 %token TTRUE
 %token TFALSE
 %token TReturn
+%token VOID
+%token TIf
+%token TElse
+%token TWhile
+%token TExternR
+%token TThen
+%token TProgram
+%token TIgual
 
 %type<n> inil
 %type<n> prog
+%type<n> methodDecl
+%type<n> block
+%type<n> statement
+%type<n> methodCall
 %type<n> declList
 %type<n> decl
 %type<n> sentList
@@ -46,6 +58,12 @@ int yylex();
 %type<i> VALORBOOL
 %type<i> type
 %type<s> ID
+%type<n> binOp
+%type<n> arithOp
+%type<n> relOp
+%type<n> condOp
+%type<n> literal
+
 
 %left '+' TMENOS 
 %left '*' 
@@ -55,6 +73,96 @@ int yylex();
 %%
 
 
+
+inil: prog
+    ;    
+
+prog: TProgram '{' declList  methodDecl '}'
+    
+    | '{' methodDecl '}'
+    ;
+
+methodDecl: methodType ID '(' listParameters ')' block 
+    
+    | methodType ID '(' listParameters ')' TExtern ';'
+    ;
+
+methodType: type
+    | VOID
+    ;
+
+listParameters: parameter
+    
+    | parameters ',' listParameters
+    ;
+
+parameter: type ID
+    ;
+
+block: '{' declList statement '}'
+    ;
+
+statement: ID '=' expr ';'
+    
+    | methodCall ';'
+    
+    | TIf '(' expr ')' TThen block 
+    
+    | TIf '(' expr ')' TThen block TElse block
+
+    | TWhile expr block
+
+    | TReturn expr ':'
+
+    | ';'
+
+    | block
+    ; 
+    
+methodCall: ID '(' expr ')' ';'
+    ;
+
+expr: ID
+    
+    | methodCall
+
+    | literal
+
+    | expr binOp expr 
+
+    | '-' expr
+
+    | '!' expr
+
+    | '(' expr ')'
+    ;
+
+binOp: arithOp 
+    | relOp 
+    | condOp
+    ;
+
+arithOp: '+'
+    | TMENOS
+    | '*'
+    | '/'
+    | '%'
+    ; 
+
+relOp: '<'
+    | '>'
+    | TIgual
+    ;  
+
+condOp: TAND
+    | TOR
+    ;    
+
+literal: VALORINT 
+    | VALORBOOL
+    ;       
+
+/*
 inil:   {   initialize(&list); } prog { printTree($2); 
             if(checkTypeTree($2) == 1) {
                 InstructionList *instructList = generateIntermediateCode($2);
@@ -64,7 +172,7 @@ inil:   {   initialize(&list); } prog { printTree($2);
             }
         }
     ;
- 
+
 prog: declList sentList {   
                             linkTreeRight($1, $2);
                             $$ = $1;
@@ -154,6 +262,8 @@ VALORBOOL: TFALSE    { $$ = 1; }
 
     | TTRUE { $$ = 1; }
     ;
+
+*/
 
 type: TINT {/*Type int */ $$ = TYPEINT;}
 
