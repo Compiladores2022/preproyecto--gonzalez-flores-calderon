@@ -95,7 +95,7 @@ int operationType(char * operation, types typeL, types typeR) {
     switch (typeL){
     case TYPEINT:
         if(arithmeticOperation(operation) == 0){
-            printf("\033[0;31merror:\033[0m Incompatible operation types for %s\nexpected: BOOL %s BOOL\nfound: %s %s %s \n", operation, operation, enumToString(typeR), operation, enumToString(typeL));
+            printf("\033[0;31merror:\033[0m Incompatible types for %s operation\nexpected: BOOL %s BOOL\nfound: %s %s %s \n", operation, operation, enumToString(typeR), operation, enumToString(typeL));
             exit(0);
             return 0;
         }
@@ -103,7 +103,7 @@ int operationType(char * operation, types typeL, types typeR) {
     case TYPEBOOL:
         if(booleanOperation(operation) == 0){
             typeErrors++;
-            printf("\033[0;31merror:\033[0m Incompatible operation types for %s\nexpected: INT %s INT\n", operation, operation);
+            printf("\033[0;31merror:\033[0m Incompatible types for %s operation\nexpected: INT %s INT\n", operation, operation);
             exit(0);
             return 0;
         }
