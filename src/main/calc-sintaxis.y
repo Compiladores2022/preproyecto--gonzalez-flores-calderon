@@ -34,7 +34,7 @@ int yylex();
 %token TTRUE
 %token TFALSE
 %token TReturn
-%token VOID
+%token TVOID
 %token TIf
 %token TElse
 %token TWhile
@@ -46,9 +46,12 @@ int yylex();
 %type<n> inil
 %type<n> prog
 %type<n> methodDecl
+%type<i> methodType
 %type<n> block
 %type<n> statement
 %type<n> methodCall
+%type<n> listParameters
+%type<n> parameters
 %type<n> declList
 %type<n> decl
 %type<n> expr
@@ -81,13 +84,14 @@ prog: TProgram '{' declList  methodDecl '}'
     | '{' methodDecl '}'
     ;
 
-methodDecl: methodType ID '(' listParameters ')' block 
+methodDecl: methodType ID '(' listParameters ')' block  { $$ = $4; }
     
-    | methodType ID '(' listParameters ')' TExtern ';'
+    | methodType ID '(' listParameters ')' TExtern ';' { $$ = $4; }
     ;
 
 methodType: type
-    | VOID
+    
+    | TVOID
     ;
 
 listParameters: parameter
@@ -145,27 +149,37 @@ expr: ID
     ;
 
 binOp: arithOp 
+    
     | relOp 
+    
     | condOp
     ;
 
 arithOp: '+'
+    
     | TMENOS
+    
     | '*'
+    
     | '/'
+    
     | '%'
     ; 
 
 relOp: '<'
+    
     | '>'
+    
     | TIgual
     ;  
 
 condOp: TAND
+    
     | TOR
     ;    
 
 literal: VALORINT 
+    
     | VALORBOOL
     ;       
 
