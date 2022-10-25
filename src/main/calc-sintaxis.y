@@ -38,9 +38,9 @@ int yylex();
 %token TIf
 %token TElse
 %token TWhile
-%token TExternR
+%token TExtern
 %token TThen
-%token TProgram
+%token<n> TProgram
 %token TIgual
 
 %type<n> inil
@@ -51,8 +51,6 @@ int yylex();
 %type<n> methodCall
 %type<n> declList
 %type<n> decl
-%type<n> sentList
-%type<n> sent
 %type<n> expr
 %type<i> VALORINT
 %type<i> VALORBOOL
@@ -63,6 +61,7 @@ int yylex();
 %type<n> relOp
 %type<n> condOp
 %type<n> literal
+
 
 
 %left '+' TMENOS 
@@ -93,13 +92,21 @@ methodType: type
 
 listParameters: parameter
     
-    | parameters ',' listParameters
+    | parameter ',' listParameters
     ;
 
 parameter: type ID
     ;
 
 block: '{' declList statement '}'
+    ;
+
+declList: decl
+
+    | decl declList
+    ;
+
+decl: type ID '=' expr ';'  
     ;
 
 statement: ID '=' expr ';'
@@ -264,6 +271,15 @@ VALORBOOL: TFALSE    { $$ = 1; }
     ;
 
 */
+
+VALORINT: INT 
+    ;
+
+VALORBOOL: TFALSE  
+
+    | TTRUE
+    ;
+
 
 type: TINT {/*Type int */ $$ = TYPEINT;}
 
