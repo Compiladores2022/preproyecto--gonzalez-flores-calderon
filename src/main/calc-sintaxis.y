@@ -23,9 +23,7 @@ int yylex();
         struct TreeNode *n;}
 
 %token INT
-%token END
 %token ID
-%token BOOL 
 %token TMENOS
 %token TBOOL
 %token TINT
@@ -103,7 +101,13 @@ listParameters: parameter
 parameter: type ID
     ;
 
-block: '{' declList statement '}'
+block: '{' '}'
+
+    | '{' declList statement '}'
+
+    | '{' declList '}'
+
+    |'{' statement '}'
     ;
 
 declList: decl
@@ -124,7 +128,7 @@ statement: ID '=' expr ';'
 
     | TWhile expr block
 
-    | TReturn expr ':'
+    | TReturn expr ';'
 
     | ';'
 
