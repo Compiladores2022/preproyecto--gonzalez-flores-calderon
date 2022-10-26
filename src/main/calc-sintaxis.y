@@ -47,6 +47,7 @@ int yylex();
 %type<n> block
 %type<n> statement
 %type<n> methodCall
+%type<n> exprList
 %type<n> listParameters
 %type<n> parameter
 %type<n> declList
@@ -150,7 +151,12 @@ statement: ID '=' expr ';'   {   Symbol * idSymbol = search(&list, $1);
     | block
     ; 
     
-methodCall: ID '(' expr ')' ';'
+methodCall: ID '(' exprList ')' ';'
+    ;
+
+exprList: expr      { $$ = $1; }
+    
+    | expr exprList {  }
     ;
 
 expr: ID {  Symbol *s = search(&list, $1);
@@ -160,29 +166,33 @@ expr: ID {  Symbol *s = search(&list, $1);
             }
             $$ = createNode(s); }
     
-    | methodCall
+    | methodCall        { $$ = $1; }
 
-    | literal
+    | literal           { $$ = $1; }
 
-    | expr '+' expr {   
-                        offset += 8;
-                        $$ = createNewTree(UNDEFINED, $1, $3, "+", offset); }
+    | expr '+' expr     {   offset += 8;
+                            $$ = createNewTree(UNDEFINED, $1, $3, "+", offset); }
     
     | expr TMENOS expr  {   offset += 8;
                             $$ = createNewTree(UNDEFINED, $1, $3, "-", offset); }
 
-    | expr '*' expr {   offset += 8;
-                        $$ = createNewTree(UNDEFINED, $1, $3, "*", offset); }
+    | expr '*' expr     {   offset += 8;
+                            $$ = createNewTree(UNDEFINED, $1, $3, "*", offset); }
 
-    | expr '/' expr
+    | expr '/' expr     {   offset += 8;
+                            $$ = $$ = createNewTree(UNDEFINED, $1, $3, "/", offset); }
 
-    | expr '%' expr
+    | expr '%' expr     {   offset += 8;
+                            $$ = $$ = createNewTree(UNDEFINED, $1, $3, "%", offset); }
 
-    | expr '>' expr
+    | expr '>' expr     {   offset += 8;
+                            $$ = $$ = createNewTree(UNDEFINED, $1, $3, ">", offset); }
 
-    | expr '<' expr
+    | expr '<' expr     {   offset += 8;
+                            $$ = $$ = createNewTree(UNDEFINED, $1, $3, "<", offset); }
 
-    | expr TIGUAL expr
+    | expr TIGUAL expr  {   offset += 8;
+                            $$ = $$ = createNewTree(UNDEFINED, $1, $3, "==", offset); }
     
     | expr TAND expr    {   offset += 8;
                             $$ = $$ = createNewTree(UNDEFINED, $1, $3, "&&", offset); }
@@ -190,9 +200,13 @@ expr: ID {  Symbol *s = search(&list, $1);
     | expr TOR expr     {   offset += 8;
                             $$ = createNewTree(UNDEFINED, $1, $3, "||", offset); }
 
-    | '-' expr %prec UNARYPREC
+    | '-' expr %prec UNARYPREC {   
+                        offset += 8;
+                        $$ = createNewTree(UNDEFINED, $2, NULL, "-", offset); }
 
-    | '!' expr %prec UNARYPREC
+    | '!' expr %prec UNARYPREC {   
+                        offset += 8;
+                        $$ = createNewTree(UNDEFINED, $2, NULL, "!", offset); }
 
     | '(' expr ')' { $$ = $2; }
     ; 
