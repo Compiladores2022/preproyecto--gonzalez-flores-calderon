@@ -49,7 +49,7 @@ digito [0-9]
 
 "extern"					{ 
 							    printf("TExtern : %s\n",yytext);
-								return TVOID;}
+								return TExtern;}
 
 "true"                      { 
 								yylval.i = 1;
@@ -98,7 +98,7 @@ digito [0-9]
 "-"                       	{	printf("%s\n",yytext);
                             	return TMENOS;}    
 
-[+*%/=;()<>!{}]             {	printf("%s\n",yytext);
+[+*%/=;()<>!{},]             {	printf("%s\n",yytext);
                                 return *yytext;}
 
 \n|" "                        ; /* ignore all the rest */

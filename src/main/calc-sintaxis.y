@@ -46,7 +46,6 @@ int yylex();
 %type inil
 %type prog
 %type methodDecl
-%type methodType
 %type block
 %type statement
 %type methodCall
@@ -59,18 +58,15 @@ int yylex();
 %type VALORBOOL
 %type type
 %type ID
-%type binOp
-%type arithOp
-%type relOp
-%type condOp
 %type literal
 
 
 
 %left '+' TMENOS 
-%left '*' 
+%left '*' '%' '/' 
 %left TAND
 %left TOR
+%nonassoc '<' '>' TIGUAL 
 %right UNARYPREC
 
 %%
@@ -82,22 +78,26 @@ inil: prog
 
 prog: TProgram '{' declList  methodDecl '}'
     
-    | '{' methodDecl '}'
+    | TProgram '{' methodDecl '}'
     ;
 
-methodDecl: methodType ID '(' listParameters ')' block  
+methodDecl: type ID '('  ')' body  
 
-    | methodType ID '(' listParameters ')' TExtern ';' 
+    | TVOID ID '('  ')' body
+
+    | type ID '(' listParameters ')' body 
+
+    | TVOID ID '(' listParameters ')' body  
     ;
 
-methodType: type
+body: block
     
-    | TVOID
+    | TExtern ';'
     ;
 
 listParameters: parameter
     
-    | parameter ',' listParameters
+    | listParameters ',' parameter 
     ;
 
 parameter: type ID
@@ -108,7 +108,7 @@ block: '{' declList statement '}'
 
 declList: decl
 
-    | decl declList
+    | declList decl 
     ;
 
 decl: type ID '=' expr ';'  
@@ -140,44 +140,32 @@ expr: ID
 
     | literal
 
-    | expr binOp expr 
+    | expr '+' expr
+
+    | expr TMENOS expr
+
+    | expr '*' expr
+
+    | expr '/' expr
+
+    | expr '%' expr
+
+    | expr '>' expr
+
+    | expr '<' expr
+
+    | expr TIGUAL expr
+
+    | expr TAND expr 
+
+    | expr TOR expr
 
     | '-' expr %prec UNARYPREC
 
-    | '!' expr
+    | '!' expr %prec UNARYPREC
 
     | '(' expr ')'
-    ;
-
-binOp: arithOp 
-    
-    | relOp 
-    
-    | condOp
-    ;
-
-arithOp: '+'
-    
-    | TMENOS
-    
-    | '*'
-    
-    | '/'
-    
-    | '%'
     ; 
-
-relOp: '<'
-    
-    | '>'
-    
-    | TIGUAL
-    ;  
-
-condOp: TAND
-    
-    | TOR
-    ;    
 
 literal: VALORINT 
     
