@@ -101,7 +101,13 @@ listParameters: parameter
 parameter: type ID
     ;
 
-block: '{' declList statement '}'
+block: '{' '}'
+
+    | '{' declList statement '}'
+
+    | '{' declList '}'
+
+    |'{' statement '}'
     ;
 
 declList: decl          { $$ = createNextTree($1, NULL); }
