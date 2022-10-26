@@ -22,7 +22,7 @@ int yylex();
         char *s;
         struct TreeNode *n;}
 
-%token INT
+%token<i> INT
 %token ID
 %token TMENOS
 %token TBOOL
@@ -41,22 +41,22 @@ int yylex();
 %token TProgram
 %token TIGUAL
 
-%type inil
-%type prog
-%type methodDecl
-%type block
-%type statement
-%type methodCall
-%type listParameters
-%type parameter
-%type declList
-%type decl
-%type expr
-%type VALORINT
-%type VALORBOOL
-%type type
-%type ID
-%type literal
+%type<n> inil
+%type<n> prog
+%type<n> methodDecl
+%type<n> block
+%type<n> statement
+%type<n> methodCall
+%type<n> listParameters
+%type<n> parameter
+%type<n> declList
+%type<n> decl
+%type<n> expr
+%type<i> VALORINT
+%type<i> VALORBOOL
+%type<i> type
+%type<s> ID
+%type<n> literal
 
 
 
@@ -104,15 +104,30 @@ parameter: type ID
 block: '{' declList statement '}'
     ;
 
-declList: decl
+declList: decl          { $$ = createNextTree($1, NULL); }
 
-    | declList decl 
+    | decl declList     { $$ = createNextTree($1, $2); }
     ;
 
-decl: type ID '=' expr ';'  
+decl: type ID '=' expr ';'  {   if (searchInLevel(list.head->levelSymbols, $2) != NULL) {
+                                    printf("Multiple definitions of: %s", $2);
+                                    yyerror();
+                                }
+                                offset += 8;
+                                Symbol *newID = createSymbol($1, $2, NULL, offset);
+                                insert(&list, newID);
+                                struct TreeNode * idNode = createNode(newID);
+                                $$ = createNewTree(UNDEFINED, idNode, $4, "=", 0); 
+                            }
     ;
 
-statement: ID '=' expr ';'
+statement: ID '=' expr ';'   {   Symbol * idSymbol = search(&list, $1);
+                            if (idSymbol == NULL) { 
+                                printf("Undefined Symbol %s", $1);
+                                yyerror();
+                            }
+                            struct TreeNode * idNode = createNode(idSymbol);
+                            $$ = createNewTree(UNDEFINED, idNode, $3, "=", 0); }
     
     | methodCall ';'
     
@@ -122,7 +137,7 @@ statement: ID '=' expr ';'
 
     | TWhile expr block
 
-    | TReturn expr ':'
+    | TReturn expr ';'
 
     | ';'
 
@@ -132,17 +147,26 @@ statement: ID '=' expr ';'
 methodCall: ID '(' expr ')' ';'
     ;
 
-expr: ID
+expr: ID {  Symbol *s = search(&list, $1);
+            if (s == NULL) {
+                printf("Undefined symbol %s\n", $1);
+                yyerror();
+            }
+            $$ = createNode(s); }
     
     | methodCall
 
     | literal
 
-    | expr '+' expr
+    | expr '+' expr {   
+                        offset += 8;
+                        $$ = createNewTree(UNDEFINED, $1, $3, "+", offset); }
+    
+    | expr TMENOS expr  {   offset += 8;
+                            $$ = createNewTree(UNDEFINED, $1, $3, "-", offset); }
 
-    | expr TMENOS expr
-
-    | expr '*' expr
+    | expr '*' expr {   offset += 8;
+                        $$ = createNewTree(UNDEFINED, $1, $3, "*", offset); }
 
     | expr '/' expr
 
@@ -153,22 +177,33 @@ expr: ID
     | expr '<' expr
 
     | expr TIGUAL expr
+    
+    | expr TAND expr    {   offset += 8;
+                            $$ = $$ = createNewTree(UNDEFINED, $1, $3, "&&", offset); }
 
-    | expr TAND expr 
-
-    | expr TOR expr
+    | expr TOR expr     {   offset += 8;
+                            $$ = createNewTree(UNDEFINED, $1, $3, "||", offset); }
 
     | '-' expr %prec UNARYPREC
 
     | '!' expr %prec UNARYPREC
 
-    | '(' expr ')'
+    | '(' expr ')' { $$ = $2; }
     ; 
 
-literal: VALORINT 
-    
-    | VALORBOOL
-    ;       
+literal: VALORINT  {   char *str = intToString($1);
+                    int * a = (int*) malloc(sizeof(int));
+                    *a = $1;  
+                    Symbol *s = createSymbol(TYPEINT, str, a, 0);
+                    struct TreeNode *newNode = createNode(s);
+                    $$ = newNode; }
+
+    | VALORBOOL {   char * boolValue = $1 == 1 ? "true" : "false";
+                    int * a = (int*) malloc(sizeof(int));
+                    *a = $1;  
+                    Symbol *s = createSymbol(TYPEBOOL, boolValue, a, 0);
+                    $$ = createNode(s); }
+    ;
 
 /*
 inil:   {   initialize(&list); } prog { printTree($2); 
@@ -189,79 +224,17 @@ prog: declList sentList {
     | sentList { $$ = $1; }
     ;
 
-declList: decl          { $$ = createNextTree($1, NULL); }
-
-    | decl declList     { $$ = createNextTree($1, $2); }
-    ;
-
-decl: type ID '=' expr ';'  {   if (searchInLevel(list.head->levelSymbols, $2) != NULL) {
-                                    printf("Multiple definitions of: %s", $2);
-                                    yyerror();
-                                }
-                                offset += 8;
-                                Symbol *newID = createSymbol($1, $2, NULL, offset);
-                                insert(&list, newID);
-                                struct TreeNode * idNode = createNode(newID);
-                                $$ = createNewTree(UNDEFINED, idNode, $4, "=", 0); 
-                            }
-    ;
-
 sentList: sent { $$ = createNextTree($1, NULL); }
     
     |  sent sentList     {   $$ = createNextTree($1, $2); }
     ;
 
-sent: ID '=' expr ';'   {   Symbol * idSymbol = search(&list, $1);
-                            if (idSymbol == NULL) { 
-                                printf("Undefined Symbol %s", $1);
-                                yyerror();
-                            }
-                            struct TreeNode * idNode = createNode(idSymbol);
-                            $$ = createNewTree(UNDEFINED, idNode, $3, "=", 0); }
-
-    | expr ';' { $$ = $1; }
+sent: expr ';' { $$ = $1; }
 
     | TReturn expr ';'  {   $$ = createNewTree(UNDEFINED, NULL, $2, "return", 0); }
     ;
 
-expr: VALORINT  {   char *str = intToString($1);
-                    int * a = (int*) malloc(sizeof(int));
-                    *a = $1;  
-                    Symbol *s = createSymbol(TYPEINT, str, a, 0);
-                    struct TreeNode *newNode = createNode(s);
-                    $$ = newNode; }
-
-    | VALORBOOL {   char * boolValue = $1 == 1 ? "true" : "false";
-                    int * a = (int*) malloc(sizeof(int));
-                    *a = $1;  
-                    Symbol *s = createSymbol(TYPEBOOL, boolValue, a, 0);
-                    $$ = createNode(s); }
-    
-    | ID {  Symbol *s = search(&list, $1);
-            if (s == NULL) {
-                printf("Undefined symbol %s\n", $1);
-                yyerror();
-            }
-            $$ = createNode(s); }
-
-    | '(' expr ')' { $$ = $2; }
-
-    | expr '+' expr {   
-                        offset += 8;
-                        $$ = createNewTree(UNDEFINED, $1, $3, "+", offset); }
-    
-    | expr TMENOS expr  {   offset += 8;
-                            $$ = createNewTree(UNDEFINED, $1, $3, "-", offset); }
-
-    | expr '*' expr {   offset += 8;
-                        $$ = createNewTree(UNDEFINED, $1, $3, "*", offset); }
-
-    | expr TOR expr     {   offset += 8;
-                            $$ = createNewTree(UNDEFINED, $1, $3, "||", offset); }
-    
-    | expr TAND expr    {   offset += 8;
-                            $$ = $$ = createNewTree(UNDEFINED, $1, $3, "&&", offset); }
-    ;   
+*/
 
 VALORINT: INT { $$ = $1; }
     ;
@@ -269,16 +242,6 @@ VALORINT: INT { $$ = $1; }
 VALORBOOL: TFALSE    { $$ = 1; }
 
     | TTRUE { $$ = 1; }
-    ;
-
-*/
-
-VALORINT: INT 
-    ;
-
-VALORBOOL: TFALSE  
-
-    | TTRUE
     ;
 
 
