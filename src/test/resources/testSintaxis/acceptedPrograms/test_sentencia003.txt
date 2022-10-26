@@ -1,5 +1,0 @@
-return  (false && true || true);
-
-          
-
-// && tiene predencia sobre el || - resultado esperado = true

@@ -1,5 +1,0 @@
-int  nombreVar1;
-bool b1;
-
-nombreVar1 = 55;
-retornar nombreVar1 + 1;

@@ -1,6 +1,0 @@
-int  NOMBREvar1 = (false || true);
-
-b1 = (false);
-return b1;
-
-

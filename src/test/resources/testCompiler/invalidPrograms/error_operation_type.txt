@@ -1,4 +1,0 @@
-bool b1 = 1 && true;
-bool b2 = 0 || false;
-
-return b1 && b2;
