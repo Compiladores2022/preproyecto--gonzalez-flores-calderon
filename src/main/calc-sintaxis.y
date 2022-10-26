@@ -22,7 +22,7 @@ int yylex();
         char *s;
         struct TreeNode *n;}
 
-%token<i> INT
+%token INT
 %token END
 %token ID
 %token BOOL 
@@ -40,30 +40,30 @@ int yylex();
 %token TWhile
 %token TExtern
 %token TThen
-%token<n> TProgram
-%token TIgual
+%token TProgram
+%token TIGUAL
 
-%type<n> inil
-%type<n> prog
-%type<n> methodDecl
-%type<i> methodType
-%type<n> block
-%type<n> statement
-%type<n> methodCall
-%type<n> listParameters
-%type<n> parameters
-%type<n> declList
-%type<n> decl
-%type<n> expr
-%type<i> VALORINT
-%type<i> VALORBOOL
-%type<i> type
-%type<s> ID
-%type<n> binOp
-%type<n> arithOp
-%type<n> relOp
-%type<n> condOp
-%type<n> literal
+%type inil
+%type prog
+%type methodDecl
+%type methodType
+%type block
+%type statement
+%type methodCall
+%type listParameters
+%type parameter
+%type declList
+%type decl
+%type expr
+%type VALORINT
+%type VALORBOOL
+%type type
+%type ID
+%type binOp
+%type arithOp
+%type relOp
+%type condOp
+%type literal
 
 
 
@@ -71,6 +71,7 @@ int yylex();
 %left '*' 
 %left TAND
 %left TOR
+%right UNARYPREC
 
 %%
 
@@ -84,9 +85,9 @@ prog: TProgram '{' declList  methodDecl '}'
     | '{' methodDecl '}'
     ;
 
-methodDecl: methodType ID '(' listParameters ')' block  { $$ = $4; }
-    
-    | methodType ID '(' listParameters ')' TExtern ';' { $$ = $4; }
+methodDecl: methodType ID '(' listParameters ')' block  
+
+    | methodType ID '(' listParameters ')' TExtern ';' 
     ;
 
 methodType: type
@@ -141,7 +142,7 @@ expr: ID
 
     | expr binOp expr 
 
-    | '-' expr
+    | '-' expr %prec UNARYPREC
 
     | '!' expr
 
@@ -170,7 +171,7 @@ relOp: '<'
     
     | '>'
     
-    | TIgual
+    | TIGUAL
     ;  
 
 condOp: TAND
@@ -295,9 +296,9 @@ VALORBOOL: TFALSE
     ;
 
 
-type: TINT {/*Type int */ $$ = TYPEINT;}
+type: TINT 
 
-    | TBOOL {/*Type bool */$$ = TYPEBOOL;}
+    | TBOOL 
     ;
 
 %%

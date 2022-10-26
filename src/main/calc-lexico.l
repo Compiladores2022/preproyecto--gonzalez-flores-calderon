@@ -80,7 +80,7 @@ digito [0-9]
 
 "/\*"(.*|.*\n|\n)*"\*/"     ; /* ignore comments */
 
-{minuscula}({letra}|{digito})* { 
+{minuscula}({letra}|{digito}|'_')* { 
 								printf("ID : %s\n",yytext);
 								yylval.s = (char *) malloc(sizeof(yytext)*yyleng);
     							strcpy(yylval.s, yytext);
@@ -98,7 +98,7 @@ digito [0-9]
 "-"                       	{	printf("%s\n",yytext);
                             	return TMENOS;}    
 
-[+*%/=;()<>!]                    {	printf("%s\n",yytext);
+[+*%/=;()<>!{}]             {	printf("%s\n",yytext);
                                 return *yytext;}
 
 \n|" "                        ; /* ignore all the rest */
