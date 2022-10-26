@@ -23,9 +23,7 @@ int yylex();
         struct TreeNode *n;}
 
 %token INT
-%token END
 %token ID
-%token BOOL 
 %token TMENOS
 %token TBOOL
 %token TINT
