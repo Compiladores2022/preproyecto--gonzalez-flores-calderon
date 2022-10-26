@@ -143,7 +143,7 @@ statement: ID '=' expr ';'   {   Symbol * idSymbol = search(&list, $1);
 
     | TWhile expr block
 
-    | TReturn expr ';'
+    | TReturn expr ';'  {   $$ = createNewTree(UNDEFINED, NULL, $2, "return", 0); }
 
     | ';'
 
@@ -250,10 +250,9 @@ VALORBOOL: TFALSE    { $$ = 1; }
     | TTRUE { $$ = 1; }
     ;
 
+type: TINT {/*Type int */ $$ = TYPEINT;}
 
-type: TINT 
-
-    | TBOOL 
+    | TBOOL {/*Type bool */$$ = TYPEBOOL;}
     ;
 
 %%
