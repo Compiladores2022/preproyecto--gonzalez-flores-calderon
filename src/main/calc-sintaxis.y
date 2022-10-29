@@ -44,6 +44,7 @@ int yylex();
 %type<n> inil
 %type<n> prog
 %type<n> methodDecl
+%type<n> body
 %type<n> block
 %type<n> statement
 %type<n> methodCall
@@ -89,26 +90,27 @@ methodDecl: type ID '('  ')' body
     | TVOID ID '(' listParameters ')' body  
     ;
 
-body: block
+body: block         { $$ = $1; }
     
-    | TExtern ';'
+    | TExtern ';'   { $$ = NULL; }
     ;
 
-listParameters: parameter
+listParameters: parameter           { $$ = $1; }
     
-    | listParameters ',' parameter 
+    | listParameters ',' parameter  { $$ = createNextTree($2, $1); }
     ;
 
-parameter: type ID
+parameter: type ID  { offset += 8;
+                        $$ = createNewTree($1, NULL, NULL, $2, offset); }
     ;
 
-block: '{' '}'
+block: { openLevel(&list); } '{' '}' { closeLevel(&list); }
 
-    | '{' declList statement '}'
+    | { openLevel(&list); } '{' declList statement '}'  { closeLevel(&list); }
 
-    | '{' declList '}'
+    | { openLevel(&list); } '{' declList '}' { closeLevel(&list); }
 
-    |'{' statement '}'
+    | { openLevel(&list); } '{' statement '}' { closeLevel(&list); }
     ;
 
 declList: decl          { $$ = createNextTree($1, NULL); }
@@ -140,23 +142,29 @@ statement: ID '=' expr ';'   {   Symbol * idSymbol = search(&list, $1);
     
     | TIf '(' expr ')' TThen block 
     
-    | TIf '(' expr ')' TThen block TElse block
+    | TIf '(' expr ')' TThen block TElse block  { }
 
-    | TWhile expr block
+    | TWhile expr block     { $$ = createNextTree(UNDEFINED, $1, $2, "while", 0); }
 
     | TReturn expr ';'  {   $$ = createNewTree(UNDEFINED, NULL, $2, "return", 0); }
 
-    | ';'
+    | ';'           { $$ = NULL; }
 
-    | block
+    | block         { $$ = $1; }
     ; 
     
-methodCall: ID '(' exprList ')' ';'
+methodCall: ID '(' exprList ')' ';'         { Symbol * methodSymb = search(list.head->levelSymbols, $1);
+                                            if ( methodSymb == NULL) {
+                                                printf("Undefined method: %s", $1);
+                                                yyerror();
+                                            }
+                                            struct TreeNode * idNode = createTree(methodSymb, NULL, $3);
+                                            $$ = createNewTree(UNDEFINED, idNode, $4, "=", 0); }
     ;
 
 exprList: expr      { $$ = $1; }
     
-    | expr exprList {  }
+    | expr exprList { $$ = createNextTree($1, $2); }
     ;
 
 expr: ID {  Symbol *s = search(&list, $1);
