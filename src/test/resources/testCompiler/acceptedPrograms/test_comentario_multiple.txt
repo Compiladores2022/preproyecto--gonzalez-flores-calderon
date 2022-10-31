@@ -1,11 +1,13 @@
-int x = 10;
+program {
+    /* este es un comentario
+        de multiple linea
+        para testear el compilador*/
 
-x = x + 4 - 5 * 1;
+    void main() {
+        int x = 10;
+        //otro comentario
+        x = x + 4 - 5 * 1;
 
-
-/* este es un comentario
-    de multiple linea
-    para testear el compilador
-*/
-
-//otro comentario  
+        return x;
+    }
+}
