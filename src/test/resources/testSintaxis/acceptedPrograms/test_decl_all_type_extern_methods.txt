@@ -1,0 +1,8 @@
+program {
+
+    void asd() extern;
+    void eea(int a, bool b, int x) extern;
+    int faaa() extern;
+    bool aaa(bool x, bool q, int y) extern;
+
+}

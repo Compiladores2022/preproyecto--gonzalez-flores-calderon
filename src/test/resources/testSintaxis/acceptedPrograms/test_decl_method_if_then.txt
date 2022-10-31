@@ -1,0 +1,16 @@
+program {
+
+    bool positiveOnly(int num) {
+        if (num > 0) then {
+            return true;
+        }
+        return false;
+    }
+
+    void main(){
+        int x = 4 + 5;
+        return positiveOnly(x);
+    }
+
+
+}

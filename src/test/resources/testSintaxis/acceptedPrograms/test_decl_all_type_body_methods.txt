@@ -1,0 +1,16 @@
+program {
+
+    void asd() {
+        return 3;
+    }
+    void eea(int a, bool b, int x) {
+        ;       
+    }
+    int faaa() {
+        return 10 + 3;
+    }
+    bool aaa(bool x, bool q, int y) {
+        return !true;
+    }
+
+}
