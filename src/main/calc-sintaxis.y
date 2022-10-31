@@ -78,12 +78,12 @@ inil: prog
 prog: TProgram '{' declList  methodDeclList '}' { linkTreeRight($3, $4);
                                                 $$ = $3; }
     
-    | TProgram '{' methodDeclList '}'
+    | TProgram '{' methodDeclList '}'           { $$ = $3; }
     ;
 
-methodDeclList: methodDecl
+methodDeclList: methodDecl          { $$ = createNextTree($1, NULL); }
 
-    | methodDeclList methodDecl
+    | methodDeclList methodDecl     { $$ = createNextTree($2, $1); }
     ;
 
 methodDecl: type ID '('  ')' body   {   Symbol * methodSymb = search(list.head->levelSymbols, $2);
@@ -101,7 +101,7 @@ methodDecl: type ID '('  ')' body   {   Symbol * methodSymb = search(list.head->
                                         yyerror();
                                     }
                                     struct TreeNode * idNode = createNode(methodSymb);
-                                    $$ = createNewTree($1, idNode, $5, $2, 0); 
+                                    $$ = createNewTree(UNDEFINED, idNode, $5, $2, 0); 
                                 }
 
     | type ID '(' { openLevel(&list); } listParameters ')' body {   closeLevel(&list);   
@@ -121,7 +121,7 @@ methodDecl: type ID '('  ')' body   {   Symbol * methodSymb = search(list.head->
                                                                     yyerror();
                                                                     }    
                                                                     struct TreeNode * idNode = createNode(methodSymb);
-                                                                    $$ = createNewTree($1, idNode, $5, $2, 0);    
+                                                                    $$ = createNewTree(UNDEFINED, idNode, $5, $2, 0);    
                                                                 }
     ;
 
@@ -132,7 +132,7 @@ body: block         { $$ = $1; }
 
 listParameters: parameter           { $$ = $1; }
     
-    | listParameters ',' parameter  { $$ = createNextTree($2, $1); }
+    | listParameters ',' parameter  { $$ = createNextTree($3, $1); }
     ;
 
 parameter: type ID  {   offset += 8;
@@ -150,7 +150,7 @@ block: { openLevel(&list); } '{' '}' { closeLevel(&list); }
 
 declList: decl          { $$ = createNextTree($1, NULL); }
 
-    | decl declList     { $$ = createNextTree($1, $2); }
+    | declList decl     { $$ = createNextTree($2, $1); }
     ;
 
 decl: type ID '=' expr ';'  {   if (searchInLevel(list.head->levelSymbols, $2) != NULL) {
@@ -178,9 +178,9 @@ statement: ID '=' expr ';'   {   Symbol * idSymbol = search(&list, $1);
     | TIf '(' expr ')' TThen block { $$ = createNewTree(UNDEFINED, $3, $6, "if", 0); }
     
     | TIf '(' expr ')' TThen block TElse block  {   struct TreeNode *ifElse = createNewTree(UNDEFINED, $6, $8, "ifelse", 0);
-                                                    $$ = createNewTree(UNDEFINED, $3,TIf ifElse, 0); }
+                                                    $$ = createNewTree(UNDEFINED, $3, ifElse, "if", 0); }
 
-    | TWhile expr block     { $$ = createNewTree(UNDEFINED, $1, $2, "while", 0); }
+    | TWhile expr block     { $$ = createNewTree(UNDEFINED, $2, $3, "while", 0); }
 
     | TReturn expr ';'  {   $$ = createNewTree(UNDEFINED, NULL, $2, "return", 0); }
 
