@@ -1,16 +1,15 @@
 program {
 
-    int x = 10;
-    int operation(){
-        x = x + 4 - 5 * 1;
-    }
-
-
     /* este es un comentario
         de multiple linea
-        para testear el compilador
-    */
+        para testear el compilador*/
 
+    void main() {
+        int x = 10;
+        //otro comentario
+        x = x + 4 - 5 * 1;
+
+        return x;
+    }
     //otro comentario  
-
 }

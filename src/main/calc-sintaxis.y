@@ -72,12 +72,11 @@ int yylex();
 
 %%
 
-
-
-inil: prog
+inil: prog 
     ;    
 
-prog: TProgram '{' declList  methodDeclList '}'
+prog: TProgram '{' declList  methodDeclList '}' { linkTreeRight($3, $4);
+                                                $$ = $3; }
     
     | TProgram '{' methodDeclList '}'
     ;
@@ -87,13 +86,43 @@ methodDeclList: methodDecl
     | methodDeclList methodDecl
     ;
 
-methodDecl: type ID '('  ')' body  
+methodDecl: type ID '('  ')' body   {   Symbol * methodSymb = search(list.head->levelSymbols, $2);
+                                        if(methodSymb != NULL){
+                                            printf("Already defined method: %s", $2);
+                                            yyerror();
+                                        }
+                                        struct TreeNode * idNode = createNode(methodSymb);
+                                        $$ = createNewTree($1, idNode, $5, $2, 0);
+                                    }
 
-    | TVOID ID '('  ')' body
+    | TVOID ID '('  ')' body    {   Symbol * methodSymb = search(list.head->levelSymbols, $2);
+                                    if(methodSymb != NULL){
+                                        printf("Already defined method: %s", $2);
+                                        yyerror();
+                                    }
+                                    struct TreeNode * idNode = createNode(methodSymb);
+                                    $$ = createNewTree($1, idNode, $5, $2, 0); 
+                                }
 
-    | type ID '(' listParameters ')' body 
+    | type ID '(' { openLevel(&list); } listParameters ')' body {   closeLevel(&list);   
+                                                                    Symbol * methodSymb = search(list.head->levelSymbols, $2);
+                                                                    if(methodSymb != NULL){
+                                                                    printf("Already defined method: %s", $2);
+                                                                    yyerror();
+                                                                    }    
+                                                                    struct TreeNode * idNode = createNode(methodSymb);
+                                                                    $$ = createNewTree($1, idNode, $5, $2, 0);  
+                                                                }
 
-    | TVOID ID '(' listParameters ')' body
+    | TVOID ID '(' { openLevel(&list);} listParameters ')' body {   closeLevel(&list);   
+                                                                    Symbol * methodSymb = search(list.head->levelSymbols, $2);
+                                                                    if(methodSymb != NULL){
+                                                                    printf("Already defined method: %s", $2);
+                                                                    yyerror();
+                                                                    }    
+                                                                    struct TreeNode * idNode = createNode(methodSymb);
+                                                                    $$ = createNewTree($1, idNode, $5, $2, 0);    
+                                                                }
     ;
 
 body: block         { $$ = $1; }
@@ -106,7 +135,7 @@ listParameters: parameter           { $$ = $1; }
     | listParameters ',' parameter  { $$ = createNextTree($2, $1); }
     ;
 
-parameter: type ID  { offset += 8;
+parameter: type ID  {   offset += 8;
                         $$ = createNewTree($1, NULL, NULL, $2, offset); }
     ;
 
@@ -144,7 +173,7 @@ statement: ID '=' expr ';'   {   Symbol * idSymbol = search(&list, $1);
                             struct TreeNode * idNode = createNode(idSymbol);
                             $$ = createNewTree(UNDEFINED, idNode, $3, "=", 0); }
     
-    | methodCall ';' { $$ = $1; }
+    | methodCall ';' { $$ = $1; }   
     
     | TIf '(' expr ')' TThen block { $$ = createNewTree(UNDEFINED, $3, $6, "if", 0); }
     
@@ -160,13 +189,14 @@ statement: ID '=' expr ';'   {   Symbol * idSymbol = search(&list, $1);
     | block         { $$ = $1; }
     ; 
     
-methodCall: ID '(' exprList ')' ';'         { Symbol * methodSymb = search(list.head->levelSymbols, $1);
+methodCall: ID '(' exprList ')' ';'     {   Symbol * methodSymb = search(list.head->levelSymbols, $1);
                                             if ( methodSymb == NULL) {
                                                 printf("Undefined method: %s", $1);
                                                 yyerror();
                                             }
-                                            struct TreeNode * idNode = createTree(methodSymb, NULL, $3);
-                                            $$ = createNewTree(UNDEFINED, idNode, $4, "=", 0); }
+                                            struct TreeNode * idNode = createNode(methodSymb);
+                                            $$ = createNewTree(UNDEFINED, idNode, $3, "methodcall", 0); 
+                                        }
     ;
 
 exprList: expr      { $$ = $1; }
@@ -239,37 +269,6 @@ literal: VALORINT  {   char *str = intToString($1);
                     Symbol *s = createSymbol(TYPEBOOL, boolValue, a, 0);
                     $$ = createNode(s); }
     ;
-
-/*
-inil:   {   initialize(&list); } prog { printTree($2); 
-            if(checkTypeTree($2) == 1) {
-                InstructionList *instructList = generateIntermediateCode($2);
-                char *assemblerCode = generateAssemblerCode(instructList, offset);
-                printf("%s",assemblerCode);
-                createAssemblerFile(assemblerCode);
-            }
-        }
-    ;
-
-prog: declList sentList {   
-                            linkTreeRight($1, $2);
-                            $$ = $1;
-                        }
-
-    | sentList { $$ = $1; }
-    ;
-
-sentList: sent { $$ = createNextTree($1, NULL); }
-    
-    |  sent sentList     {   $$ = createNextTree($1, $2); }
-    ;
-
-sent: expr ';' { $$ = $1; }
-
-    | TReturn expr ';'  {   $$ = createNewTree(UNDEFINED, NULL, $2, "return", 0); }
-    ;
-
-*/
 
 VALORINT: INT { $$ = $1; }
     ;

@@ -1,0 +1,9 @@
+program {
+    int x = 7;
+    int y = 4;
+
+    bool isMaxThat(int fst, int snd) {
+        if ( fst < snd ) then { return false; }
+        else { return true; }
+    }
+}
