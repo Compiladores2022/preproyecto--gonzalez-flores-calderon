@@ -43,6 +43,7 @@ int yylex();
 
 %type<n> inil
 %type<n> prog
+%type<n> methodDeclList
 %type<n> methodDecl
 %type<n> body
 %type<n> block
@@ -76,9 +77,14 @@ int yylex();
 inil: prog
     ;    
 
-prog: TProgram '{' declList  methodDecl '}'
+prog: TProgram '{' declList  methodDeclList '}'
     
-    | TProgram '{' methodDecl '}'
+    | TProgram '{' methodDeclList '}'
+    ;
+
+methodDeclList: methodDecl
+
+    | methodDeclList methodDecl
     ;
 
 methodDecl: type ID '('  ')' body  
@@ -87,7 +93,7 @@ methodDecl: type ID '('  ')' body
 
     | type ID '(' listParameters ')' body 
 
-    | TVOID ID '(' listParameters ')' body  
+    | TVOID ID '(' listParameters ')' body
     ;
 
 body: block         { $$ = $1; }
