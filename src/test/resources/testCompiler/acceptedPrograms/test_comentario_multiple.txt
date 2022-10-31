@@ -1,11 +1,16 @@
-int x = 10;
+program {
 
-x = x + 4 - 5 * 1;
+    int x = 10;
+    int operation(){
+        x = x + 4 - 5 * 1;
+    }
 
 
-/* este es un comentario
-    de multiple linea
-    para testear el compilador
-*/
+    /* este es un comentario
+        de multiple linea
+        para testear el compilador
+    */
 
-//otro comentario  
+    //otro comentario  
+
+}
