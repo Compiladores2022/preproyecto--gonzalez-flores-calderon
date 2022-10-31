@@ -138,13 +138,14 @@ statement: ID '=' expr ';'   {   Symbol * idSymbol = search(&list, $1);
                             struct TreeNode * idNode = createNode(idSymbol);
                             $$ = createNewTree(UNDEFINED, idNode, $3, "=", 0); }
     
-    | methodCall ';'
+    | methodCall ';' { $$ = $1; }
     
-    | TIf '(' expr ')' TThen block 
+    | TIf '(' expr ')' TThen block { $$ = createNewTree(UNDEFINED, $3, $6, "if", 0); }
     
-    | TIf '(' expr ')' TThen block TElse block  { }
+    | TIf '(' expr ')' TThen block TElse block  {   struct TreeNode *ifElse = createNewTree(UNDEFINED, $6, $8, "ifelse", 0);
+                                                    $$ = createNewTree(UNDEFINED, $3,TIf ifElse, 0); }
 
-    | TWhile expr block     { $$ = createNextTree(UNDEFINED, $1, $2, "while", 0); }
+    | TWhile expr block     { $$ = createNewTree(UNDEFINED, $1, $2, "while", 0); }
 
     | TReturn expr ';'  {   $$ = createNewTree(UNDEFINED, NULL, $2, "return", 0); }
 

@@ -1,0 +1,9 @@
+program{
+
+    bool exambleB(bool p, bool q){
+
+        return p && (q && p);
+    }
+
+
+}
