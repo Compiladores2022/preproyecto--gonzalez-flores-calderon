@@ -1,0 +1,11 @@
+program {
+    int number1 = 4;
+    int number2 = 5;
+
+    void print_int(int i) extern ;
+
+    void main() {
+        int number3 = 9;
+        if ( number1 + number2 == number3 ) then print_int(number3);
+    }
+}

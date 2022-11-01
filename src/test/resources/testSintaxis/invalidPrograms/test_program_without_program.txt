@@ -1,0 +1,6 @@
+int x = 4 + 5;
+int y = 7;
+
+void main() {
+    int z = x + y;
+}
