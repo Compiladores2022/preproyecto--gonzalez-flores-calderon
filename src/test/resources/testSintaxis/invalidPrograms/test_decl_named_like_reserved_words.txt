@@ -1,0 +1,13 @@
+program {
+    int program = 5;
+    int if = 5;
+
+    bool equals(int a, int b) {
+        if (a == b) then { return true; }
+        else { return false; }
+    }
+
+    void main() {
+        return equals(program, if);
+    }
+}

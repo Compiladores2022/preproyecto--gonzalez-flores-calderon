@@ -1,0 +1,7 @@
+program {
+    int int = 5;
+
+    void main() {
+        if (int == 5) then { return true; }
+    }
+}
