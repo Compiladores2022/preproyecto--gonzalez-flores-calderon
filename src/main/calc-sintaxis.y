@@ -48,6 +48,7 @@ int yylex();
 %type<n> body
 %type<n> block
 %type<n> statement
+%type<n> statementList
 %type<n> methodCall
 %type<n> exprList
 %type<n> listParameters
@@ -141,9 +142,9 @@ parameter: type ID  {   offset += 8;
 
 block: '{' '}' {$$ = null}
 
-    | '{' { openLevel(&list); } declList statement '}'  { closeLevel(&list); }
+    | '{' { openLevel(&list); } declList statementList '}'  { closeLevel(&list); }
 
-    | '{' statement '}' {$$ = $2}
+    | '{' statementList '}' {$$ = $2}
     ;
 
 declList: decl          { $$ = createNextTree($1, NULL); }
@@ -163,6 +164,11 @@ decl: type ID '=' expr ';'  {   if (searchInLevel(list.head->levelSymbols, $2) !
                             }
     ;
 
+statementList:  statement       { $$ = createNextTree($1, NULL); }
+    
+    | statementList statement   { $$ = createNextTree($2, $1); }
+    ;
+    
 statement: ID '=' expr ';'   {   Symbol * idSymbol = search(&list, $1);
                             if (idSymbol == NULL) { 
                                 printf("Undefined Symbol %s", $1);
