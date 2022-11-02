@@ -139,13 +139,11 @@ parameter: type ID  {   offset += 8;
                         $$ = createNewTree($1, NULL, NULL, $2, offset); }
     ;
 
-block: { openLevel(&list); } '{' '}' { closeLevel(&list); }
+block: '{' '}' {$$ = null}
 
-    | { openLevel(&list); } '{' declList statement '}'  { closeLevel(&list); }
+    | '{' { openLevel(&list); } declList statement '}'  { closeLevel(&list); }
 
-    | { openLevel(&list); } '{' declList '}' { closeLevel(&list); }
-
-    | { openLevel(&list); } '{' statement '}' { closeLevel(&list); }
+    | '{' statement '}' {$$ = $2}
     ;
 
 declList: decl          { $$ = createNextTree($1, NULL); }
