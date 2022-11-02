@@ -63,11 +63,11 @@ int yylex();
 
 
 
-%left '+' TMENOS 
-%left '*' '%' '/' 
 %left TAND
 %left TOR
-%nonassoc '<' '>' TIGUAL 
+%nonassoc '<' '>' TIGUAL
+%left '+' TMENOS
+%left '*' '%' '/'
 %right UNARYPREC
 
 %%
@@ -200,8 +200,8 @@ methodCall: ID '(' exprList ')' ';'     {   Symbol * methodSymb = search(list.he
     ;
 
 exprList: expr      { $$ = $1; }
-    
-    | expr exprList { $$ = createNextTree($1, $2); }
+
+    | expr "," exprList { $$ = createNextTree($1, $3); }
     ;
 
 expr: ID {  Symbol *s = search(&list, $1);
@@ -210,14 +210,14 @@ expr: ID {  Symbol *s = search(&list, $1);
                 yyerror();
             }
             $$ = createNode(s); }
-    
+
     | methodCall        { $$ = $1; }
 
     | literal           { $$ = $1; }
 
     | expr '+' expr     {   offset += 8;
                             $$ = createNewTree(UNDEFINED, $1, $3, "+", offset); }
-    
+
     | expr TMENOS expr  {   offset += 8;
                             $$ = createNewTree(UNDEFINED, $1, $3, "-", offset); }
 
@@ -238,23 +238,23 @@ expr: ID {  Symbol *s = search(&list, $1);
 
     | expr TIGUAL expr  {   offset += 8;
                             $$ = $$ = createNewTree(UNDEFINED, $1, $3, "==", offset); }
-    
+
     | expr TAND expr    {   offset += 8;
                             $$ = $$ = createNewTree(UNDEFINED, $1, $3, "&&", offset); }
 
     | expr TOR expr     {   offset += 8;
                             $$ = createNewTree(UNDEFINED, $1, $3, "||", offset); }
 
-    | '-' expr %prec UNARYPREC {   
+    | '-' expr %prec UNARYPREC {
                         offset += 8;
                         $$ = createNewTree(UNDEFINED, $2, NULL, "-", offset); }
 
-    | '!' expr %prec UNARYPREC {   
+    | '!' expr %prec UNARYPREC {
                         offset += 8;
                         $$ = createNewTree(UNDEFINED, $2, NULL, "!", offset); }
 
     | '(' expr ')' { $$ = $2; }
-    ; 
+    ;
 
 literal: VALORINT  {   char *str = intToString($1);
                     int * a = (int*) malloc(sizeof(int));
