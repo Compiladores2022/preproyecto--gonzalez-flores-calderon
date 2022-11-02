@@ -140,11 +140,12 @@ parameter: type ID  {   offset += 8;
                         $$ = createNewTree($1, NULL, NULL, $2, offset); }
     ;
 
-block: '{' '}' {$$ = null}
+block: '{' '}' {$$ = NULL;}
 
-    | '{' { openLevel(&list); } declList statementList '}'  { closeLevel(&list); }
+    | '{' { openLevel(&list); } declList statementList '}'  { closeLevel(&list); }  { linkTreeRight($3, $4);
+                                                                                      $$ = $3;}
 
-    | '{' statementList '}' {$$ = $2}
+    | '{' statementList '}' {$$ = $2;}
     ;
 
 declList: decl          { $$ = createNextTree($1, NULL); }
