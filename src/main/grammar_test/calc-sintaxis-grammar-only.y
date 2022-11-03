@@ -76,7 +76,7 @@ int yylex();
 inil: prog 
     ;    
 
-prog: TProgram '{' declList  methodDeclList '}' 
+prog: TProgram '{' declList methodDeclList '}' 
 
     | TProgram '{' methodDeclList '}'
     ;
@@ -145,7 +145,7 @@ statement: ID '=' expr ';'
     | block
     ; 
     
-methodCall: ID '(' exprList ')' ';'
+methodCall: ID '(' exprList ')'
     ;
 
 exprList: expr

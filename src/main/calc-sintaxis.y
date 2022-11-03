@@ -193,14 +193,14 @@ statement: ID '=' expr ';'   {   Symbol * idSymbol = search(&list, $1);
     | block         { $$ = $1; }
     ; 
     
-methodCall: ID '(' exprList ')' ';'     {   Symbol * methodSymb = search(list.head->levelSymbols, $1);
-                                            if ( methodSymb == NULL) {
-                                                printf("Undefined method: %s", $1);
-                                                yyerror();
-                                            }
-                                            struct TreeNode * idNode = createNode(methodSymb);
-                                            $$ = createNewTree(UNDEFINED, idNode, $3, "methodcall", 0); 
+methodCall: ID '(' exprList ')'     {   Symbol * methodSymb = search(list.head->levelSymbols, $1);
+                                        if ( methodSymb == NULL) {
+                                            printf("Undefined method: %s", $1);
+                                            yyerror();
                                         }
+                                        struct TreeNode * idNode = createNode(methodSymb);
+                                        $$ = createNewTree(UNDEFINED, idNode, $3, "methodcall", 0); 
+                                    }
     ;
 
 exprList: expr      { $$ = $1; }
