@@ -118,12 +118,17 @@ int checkTypeTree(struct TreeNode *tree) {
     if(tree == NULL){
         return 1;
     }
+    
     if(tree->right != NULL && tree->right->info->type == UNDEFINED && strcmp(tree->right->info->name, "next") != 0){                
         validTree = validTree && checkTypeTree(tree->right);
     }
     
     if(tree->left != NULL && tree->left->info->type == UNDEFINED){
         validTree = validTree && checkTypeTree(tree->left);  
+    }
+
+    if(tree->left != NULL && strcmp(tree->left->info->name, "methoddecl") == 0){
+        validTree = validTree && checkTypeTree(tree->left);
     }
     
     //checking the partner type for the operation    
@@ -149,6 +154,15 @@ int checkTypeTree(struct TreeNode *tree) {
             }
             
         }
+        
+        if(strcmp(tree->left->info->name, "methoddecl") == 0){
+            if(tree->info->type != tree->right->info->type){
+                printf("\033[0;31merror:\033[0m Incompatible types: %s cannot be converted to %s", enumToString(tree->info->type), enumToString(tree->right->info->type));         
+                exit(0);
+            }
+        }
+        //No se si en el return esta bien asi que sea a la izquierda o tendria que ser a la derecha,
+        // porque a la redecha en el return es donde esta el tipo
         tree->info->type = tree->left->info->type;
     }
     if(tree->right != NULL && strcmp(tree->right->info->name, "next") == 0){
