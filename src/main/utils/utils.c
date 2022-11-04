@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include "symbol_list/symbol_list.h"
 
 char * enumToString(types type) {
     switch (type) {
@@ -10,6 +11,8 @@ char * enumToString(types type) {
         case TYPEBOOL: return "BOOL";
 
         case UNDEFINED: return "UNDEFINED";
+
+        case TYPEVOID: return "VOID";
 
         default : exit(0);
     }
@@ -107,4 +110,16 @@ void createAssemblerFile(char * assemblerCode){
     fputs(assemblerCode, program);
 
     fclose(program);
+}
+
+int checkMain(SymbolList symbolList){
+    
+    struct levelNode *ln = symbolList.head;
+    while (ln != NULL){
+        if (strcmp(symbolList.head->levelSymbols->info->name, "main") == 0){
+            return 1;
+        }
+        ln = ln->next;  
+    }
+    return 0;
 }
