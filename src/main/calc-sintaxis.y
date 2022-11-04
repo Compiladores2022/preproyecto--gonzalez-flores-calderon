@@ -76,10 +76,10 @@ int yylex();
 inil: prog 
     ;    
 
-prog: TProgram '{' declList  methodDeclList '}' { linkTreeRight($3, $4);
-                                                $$ = $3; }
-    
-    | TProgram '{' methodDeclList '}'           { $$ = $3; }
+prog: TProgram '{' declList  methodDeclList '}' {   linkTreeRight($3, $4);
+                                                    $$ = $3; 
+                                                }
+    | TProgram '{' methodDeclList '}'   { $$ = $3; }
     ;
 
 methodDeclList: methodDecl          { $$ = createNextTree($1, NULL); }
@@ -93,7 +93,7 @@ methodDecl: type ID '('  ')' body   {   Symbol * methodSymb = search(list.head->
                                             yyerror();
                                         }
                                         struct TreeNode * idNode = createNode(methodSymb);
-                                        $$ = createNewTree($1, idNode, $5, $2, 0);
+                                        $$ = createNewTree($1, idNode, $5, "methoddecl", 0);
                                     }
 
     | TVOID ID '('  ')' body    {   Symbol * methodSymb = search(list.head->levelSymbols, $2);
@@ -102,7 +102,7 @@ methodDecl: type ID '('  ')' body   {   Symbol * methodSymb = search(list.head->
                                         yyerror();
                                     }
                                     struct TreeNode * idNode = createNode(methodSymb);
-                                    $$ = createNewTree(UNDEFINED, idNode, $5, $2, 0); 
+                                    $$ = createNewTree(TYPEVOID, idNode, $5, "methoddecl", 0); 
                                 }
 
     | type ID '(' { openLevel(&list); } listParameters ')' body {   closeLevel(&list);   
@@ -112,7 +112,7 @@ methodDecl: type ID '('  ')' body   {   Symbol * methodSymb = search(list.head->
                                                                     yyerror();
                                                                     }    
                                                                     struct TreeNode * idNode = createNode(methodSymb);
-                                                                    $$ = createNewTree($1, idNode, $5, $2, 0);  
+                                                                    $$ = createNewTree($1, idNode, $5, "methoddecl", 0);  
                                                                 }
 
     | TVOID ID '(' { openLevel(&list);} listParameters ')' body {   closeLevel(&list);   
@@ -122,7 +122,7 @@ methodDecl: type ID '('  ')' body   {   Symbol * methodSymb = search(list.head->
                                                                     yyerror();
                                                                     }    
                                                                     struct TreeNode * idNode = createNode(methodSymb);
-                                                                    $$ = createNewTree(UNDEFINED, idNode, $5, $2, 0);    
+                                                                    $$ = createNewTree(TYPEVOID, idNode, $5, "methoddecl", 0);    
                                                                 }
     ;
 
@@ -199,7 +199,7 @@ methodCall: ID '(' exprList ')'     {   Symbol * methodSymb = search(list.head->
                                             yyerror();
                                         }
                                         struct TreeNode * idNode = createNode(methodSymb);
-                                        $$ = createNewTree(UNDEFINED, idNode, $3, "methodcall", 0); 
+                                        $$ = createNewTree(methodSymb.type, idNode, $3, "methodcall", 0); 
                                     }
     ;
 
@@ -215,7 +215,12 @@ expr: ID {  Symbol *s = search(&list, $1);
             }
             $$ = createNode(s); }
 
-    | methodCall        { $$ = $1; }
+    | methodCall        {   if($1->info->type == TYPEVOID){
+                                printf("Method void not use to expr: %s", $1->info->name);
+                                yyerror();
+                            }    
+                            $$ = $1; 
+                        } //Agregar caso en que el metodo el void no se puede asignar a nada 
 
     | literal           { $$ = $1; }
 
