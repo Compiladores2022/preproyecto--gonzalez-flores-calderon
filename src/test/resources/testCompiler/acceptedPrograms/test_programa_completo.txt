@@ -1,17 +1,16 @@
 program
  {
-    integer inc(integer x)
-     {
+    int inc(int x) {
         return x + 1;
      }
 
-    integer get_int() extern;
+    int get_int() extern;
 
-    void print_int(integer i) extern ;
+    void print_int(int i) extern ;
     
     void main()
      {
-        integer y = 0;
+        int y = 0;
         y = get_int();
         if (y == 1) then
          {

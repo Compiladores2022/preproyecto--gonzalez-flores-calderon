@@ -142,7 +142,7 @@ parameter: type ID  {   offset += 8;
 
 block: '{' '}' {$$ = NULL;}
 
-    | '{' { openLevel(&list); } declList statementList '}'  { closeLevel(&list); }  { linkTreeRight($3, $4);
+    | '{' { openLevel(&list); } declList statementList { closeLevel(&list); } '}'    { linkTreeRight($3, $4);
                                                                                       $$ = $3;}
 
     | '{' statementList '}' {$$ = $2;}
@@ -178,7 +178,7 @@ statement: ID '=' expr ';'   {   Symbol * idSymbol = search(&list, $1);
                             struct TreeNode * idNode = createNode(idSymbol);
                             $$ = createNewTree(UNDEFINED, idNode, $3, "=", 0); }
     
-    | methodCall ';' { $$ = $1; }   
+    | methodCall { $$ = $1; }
     
     | TIf '(' expr ')' TThen block { $$ = createNewTree(UNDEFINED, $3, $6, "if", 0); }
     
@@ -188,6 +188,8 @@ statement: ID '=' expr ';'   {   Symbol * idSymbol = search(&list, $1);
     | TWhile expr block     { $$ = createNewTree(UNDEFINED, $2, $3, "while", 0); }
 
     | TReturn expr ';'  {   $$ = createNewTree(UNDEFINED, NULL, $2, "return", 0); }
+
+    | TReturn ';'       {   $$ = NULL   }
 
     | ';'           { $$ = NULL; }
 
