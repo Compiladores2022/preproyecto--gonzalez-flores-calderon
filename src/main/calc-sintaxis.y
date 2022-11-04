@@ -140,12 +140,13 @@ parameter: type ID  {   offset += 8;
                         $$ = createNewTree($1, NULL, NULL, $2, offset); }
     ;
 
-block: '{' '}' {$$ = NULL;}
+block: '{' '}' { $$ = NULL; }
+
 
     | '{' { openLevel(&list); } declList statementList { closeLevel(&list); } '}'    { linkTreeRight($3, $4);
                                                                                       $$ = $3;}
 
-    | '{' statementList '}' {$$ = $2;}
+    | '{' statementList '}' { $$ = $2; }
     ;
 
 declList: decl          { $$ = createNextTree($1, NULL); }
@@ -196,14 +197,14 @@ statement: ID '=' expr ';'   {   Symbol * idSymbol = search(&list, $1);
     | block         { $$ = $1; }
     ; 
     
-methodCall: ID '(' exprList ')' ';'     {   Symbol * methodSymb = search(list.head->levelSymbols, $1);
-                                            if ( methodSymb == NULL) {
-                                                printf("Undefined method: %s", $1);
-                                                yyerror();
-                                            }
-                                            struct TreeNode * idNode = createNode(methodSymb);
-                                            $$ = createNewTree(UNDEFINED, idNode, $3, "methodcall", 0); 
+methodCall: ID '(' exprList ')'     {   Symbol * methodSymb = search(list.head->levelSymbols, $1);
+                                        if ( methodSymb == NULL) {
+                                            printf("Undefined method: %s", $1);
+                                            yyerror();
                                         }
+                                        struct TreeNode * idNode = createNode(methodSymb);
+                                        $$ = createNewTree(UNDEFINED, idNode, $3, "methodcall", 0); 
+                                    }
     ;
 
 exprList: expr      { $$ = $1; }

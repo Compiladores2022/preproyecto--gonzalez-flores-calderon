@@ -1,0 +1,73 @@
+#!/bin/bash
+
+# tests if the given file contains a valid syntaxis by executing it and checking if the output
+# have an error message
+function testValidSyntaxis {
+    total_tests=total_tests+1
+    file_output=$(./script_generated/a.out $file)
+    if [[ "$file_output" =~ $error_message ]]; #output contains error message
+    then
+        printf "\n\n${RED}Test $file_number - $file failed:${NORMAL}\n\n$file_output"
+    else
+        passed_tests=passed_tests+1
+    fi
+    file_number=file_number+1
+}
+
+# tests if the given file contains an invalid syntaxis by executing it and checking if the output
+# doesn't have an error message
+function testInvalidSyntaxis {
+    total_tests=total_tests+1
+    file_output=$(./script_generated/a.out $file)
+    if ! [[ "$file_output" =~ $error_message ]]; #output doesn't contains error message
+    then
+        printf "\n\n${RED}Test $file_number - $file failed, compiler didn't detect the error in:${NORMAL}\n\n$file_output"
+    else
+        passed_tests=passed_tests+1
+    fi
+    file_number=file_number+1
+}
+
+function checkAllTestsPassed {
+    if (($1-$2 == $3));
+    then
+        printf "\n\n${GREEN}$4${NORMAL}"
+    fi
+    local -n update=$3
+    ((update=$1-$2))
+}
+
+
+flex grammar_test/calc-lexico-grammar-only.l 
+bison -d grammar_test/calc-sintaxis-grammar-only.y
+gcc lex.yy.c calc-sintaxis-grammar-only.tab.c types/symbol.c symbol_list/symbol_list.c sintactic_analysis_tree/sintactic_analysis_tree.c utils/utils.c intermediate_code_generator/intermediate_code_generator.c intermediate_code_generator/instruction.c assembler_code_generator/assembler_generator.c
+
+
+mv lex.yy.c script_generated/lex.yy.c
+mv calc-sintaxis-grammar-only.tab.c script_generated/calc-sintaxis-grammar-only.tab.c
+mv calc-sintaxis-grammar-only.tab.h script_generated/calc-sintaxis-grammar-only.tab.h
+mv a.out script_generated/a.out
+
+declare -i passed_tests=0
+declare -i failed_tests=0
+declare -i total_tests=0
+RED=$(tput setaf 1) #colors
+GREEN=$(tput setaf 2)
+NORMAL=$(tput sgr0)
+error_message="(-> ERROR|Incompatible types|Conflicting types|Aborted|Segmentation fault)"
+
+declare -i file_number=1
+printf "Testing valid syntaxiss\n";
+for file in ../test/resources/testSintaxis/acceptedPrograms/*; do
+    testValidSyntaxis
+done
+checkAllTestsPassed $total_tests $passed_tests failed_tests "All valid syntaxis tests passed"
+
+file_number=1
+printf "\n\n\nTesting Invalid syntaxiss\n";
+for file in ../test/resources/testSintaxis/invalidPrograms/*; do
+    testInvalidSyntaxis    
+done
+checkAllTestsPassed $total_tests $passed_tests failed_tests "All invalid syntaxis tests passed"
+
+printf "\n\nTests passed: $passed_tests out of $total_tests\n"

@@ -1,7 +1,7 @@
 program {
     
     int x = 10;
-    int b = 4
+    int b = 4;
     int theOperation(){
         x = x + b % 10;
     }
