@@ -1,6 +1,5 @@
 #include "symbol.h"
 #include "../utils/utils.h"
-
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -17,7 +16,26 @@ Symbol * createSymbol(types type, char *name, void *value, int offset) {
     newSymbol->name = name;
     newSymbol->value = value;
     newSymbol->offset = offset;
+    newSymbol->parameter = NULL;
+        
+    return newSymbol;
+}
 
+Symbol * createSymbolWithParameter(types type, char *name, void *value, int offset, parameterList *parameterList){
+    Symbol * newSymbol;
+
+    newSymbol = (Symbol *) malloc (sizeof(Symbol));
+    if(newSymbol == NULL){
+        printf("couldn't create symbol, exiting\n");
+        exit(EXIT_FAILURE);
+    }
+
+    newSymbol->type = type;
+    newSymbol->name = name;
+    newSymbol->value = value;
+    newSymbol->offset = offset;
+    newSymbol->parameter = patameterList;
+    
     return newSymbol;
 }
 
