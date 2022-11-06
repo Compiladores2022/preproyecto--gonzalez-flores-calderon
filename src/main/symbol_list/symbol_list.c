@@ -1,4 +1,5 @@
 #include "symbol_list.h"
+#include "../types/symbol.h"
 
 #include <stdio.h>
 #include <stdlib.h>

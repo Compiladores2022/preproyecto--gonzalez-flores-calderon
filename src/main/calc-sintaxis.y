@@ -8,6 +8,8 @@
 #include "assembler_code_generator/assembler_generator.h"
 #include "utils/utils.h"
 #include "symbol_list/symbol_list.h"
+#include "parameter_list/parameter_list.h"
+#include "types/parameter.h"
 
 SymbolList list;
 SintacticAnalysisTree sat;
@@ -100,7 +102,7 @@ methodDecl: type ID '('  ')' body   {   Symbol * methodSymb = search(list.head->
                                     if(methodSymb != NULL){
                                         printf("Already defined method: %s", $2);
                                         yyerror();
-                                    }
+                                    } 
                                     struct TreeNode * idNode = createNode(methodSymb);
                                     $$ = createNewTree(TYPEVOID, idNode, $5, "methoddecl", 0); 
                                 }

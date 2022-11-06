@@ -12,16 +12,18 @@ Symbol * createSymbol(types type, char *name, void *value, int offset) {
         exit(EXIT_FAILURE);
     }
 
+    ParameterList *list;
+    
     newSymbol->type = type;
     newSymbol->name = name;
     newSymbol->value = value;
     newSymbol->offset = offset;
-    newSymbol->parameter = NULL;
+    newSymbol->parameterList = list;
         
     return newSymbol;
 }
 
-Symbol * createSymbolWithParameter(types type, char *name, void *value, int offset, parameterList *parameterList){
+Symbol * createSymbolWithParameter(types type, char *name, void *value, int offset, ParameterList *parameterList){
     Symbol * newSymbol;
 
     newSymbol = (Symbol *) malloc (sizeof(Symbol));
@@ -34,7 +36,8 @@ Symbol * createSymbolWithParameter(types type, char *name, void *value, int offs
     newSymbol->name = name;
     newSymbol->value = value;
     newSymbol->offset = offset;
-    newSymbol->parameter = patameterList;
+    
+    newSymbol->parameterList = parameterList;
     
     return newSymbol;
 }

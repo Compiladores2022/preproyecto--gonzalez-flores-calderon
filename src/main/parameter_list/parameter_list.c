@@ -3,12 +3,12 @@
 #include "parameter_list.h"
 
 
-void initialize(parameterList *parameterList) {
+void initialize(ParameterList *parameterList) {
     parameterList->head = NULL; 
 }
 
 struct ParameterNode * CrearNodo(){
-	struct ParameterNode *nuevo;
+	struct ParameterNode *newNode;
 	newNode = (struct ParameterNode *) malloc (sizeof(struct ParameterNode));
 	if (newNode == NULL){
 	 	exit(EXIT_FAILURE);
@@ -18,10 +18,9 @@ struct ParameterNode * CrearNodo(){
 	}
 }
 
-void Insertar(ParameterList *list, Parameter parameter){
+void Insertar(ParameterList *list, Parameter *parameter){
 	
-	struct Nodo *p;
-
+	struct ParameterNode *p;
 	p = CrearNodo(); 
 	p->info = parameter;
 	p->next = list->head;

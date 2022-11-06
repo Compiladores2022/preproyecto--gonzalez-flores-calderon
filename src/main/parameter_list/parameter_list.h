@@ -1,22 +1,15 @@
-#include "../types/symbol.h"
-#include "../utils/utils.h"
+#include "../types/parameter.h"
 
 #ifndef PARAMETER_LIST_H
 #define PARAMETER_LIST_H
 
 struct ParameterNode {
-    parameter *info;
-    struct parameterNode *next;
+    Parameter *info;
+    struct ParameterNode *next;
 };
 
 typedef struct{
-    struct parameterNode *head;
+    struct ParameterNode *head;
 }ParameterList;
 
-
-
-
-
-
-
-#endif
+#endif  
