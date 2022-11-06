@@ -2,7 +2,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "symbol_list/symbol_list.h"
 
 char * enumToString(types type) {
     switch (type) {

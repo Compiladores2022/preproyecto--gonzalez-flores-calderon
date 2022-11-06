@@ -1,5 +1,6 @@
 #include "../types/symbol.h"
 #include "../sintactic_analysis_tree/sintactic_analysis_tree.h"
+#include "../symbol_list/symbol_list.h"
 
 #ifndef UTILS_H
 #define UTILS_H
