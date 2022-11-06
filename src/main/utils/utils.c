@@ -70,10 +70,16 @@ int stringToOperation(char *string) {
         return ADD;
     }
     else if (strcmp(string, "-") == 0 || strcmp(string, "SUB") == 0){
-        return SUB; 
+        return SUB;
     }
     else if (strcmp(string, "*") == 0 || strcmp(string, "MULT") == 0){
         return MULT;
+    }
+    else if (strcmp(string, "/") == 0 || strcmp(string, "DIV") == 0){
+        return DIV;
+    }
+    else if (strcmp(string, "%") == 0 || strcmp(string, "MOD") == 0){
+        return MOD;
     }
     else if (strcmp(string, "&&") == 0 || strcmp(string, "AND") == 0){
         return AND; 
@@ -81,12 +87,36 @@ int stringToOperation(char *string) {
     else if (strcmp(string, "||") == 0 || strcmp(string, "OR") == 0){
         return OR; 
     }
+    else if (strcmp(string, "!") == 0 || strcmp(string, "NOT") == 0){
+        return NOT; 
+    }
     else if (strcmp(string, "=") == 0 || strcmp(string, "ASSIG") == 0){
         return ASSIG; 
     }
+    else if (strcmp(string, "<") == 0 || strcmp(string, "GREAT") == 0){
+        return GREAT; 
+    }
+    else if (strcmp(string, ">") == 0 || strcmp(string, "LESS") == 0){
+        return LESS; 
+    }
     else if (strcmp(string, "return") == 0 || strcmp(string, "RET") == 0){
         return RET; 
-    }    
+    }
+    else if (strcmp(string, "methoddecl") == 0 || strcmp(string, "METHDECL") == 0){
+        return METHDECL; 
+    }
+    else if (strcmp(string, "methodcall") == 0 || strcmp(string, "METHCALL") == 0){
+        return METHCALL; 
+    }
+    else if (strcmp(string, "if") == 0 || strcmp(string, "IF") == 0){
+        return IF; 
+    }
+    else if (strcmp(string, "ifelse") == 0 || strcmp(string, "IFELSE") == 0){
+        return IFELSE; 
+    }
+    else if (strcmp(string, "while") == 0 || strcmp(string, "WHILE") == 0){
+        return WHILE; 
+    }
 
     return -1;
 }
