@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include "parameter.h"
 
-Paremeter * createSymbol(types type, char *id) {
+Parameter * createParameter(types type, char *id) {
     Parameter * newParameter;
 
     newParameter = (Parameter *) malloc (sizeof(Parameter));

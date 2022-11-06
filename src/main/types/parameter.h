@@ -1,13 +1,13 @@
-#include "../types/symbol.h"
+#include "enumeration.h"
 
-#ifndef SYMBOL_H
-#define SYMBOL_H
+#ifndef PARAMETER_H
+#define PARAMETER_H
 
 typedef struct{
     types type;
     char* id;
 }Parameter;
 
-Parameter * createParameter(types type, char * id);
+Parameter * createParameter(types type, char *id);
 
 #endif

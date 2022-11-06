@@ -1,8 +1,8 @@
-#include "sintactic_analysis_tree.h"
-#include "../utils/utils.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include "sintactic_analysis_tree.h"
+#include "../utils/utils.h"
 
 int operationType(char * operation, types typeL, types typeR);
 int arithmeticOperation(char * operation);
