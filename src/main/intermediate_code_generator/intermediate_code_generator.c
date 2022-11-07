@@ -5,7 +5,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-void generateIntermediateCode2(struct TreeNode *tree, InstructionList * codeList);
+void translateTreeIntoCode(struct TreeNode *tree, InstructionList * codeList);
 Symbol * generateSentenceCode(struct TreeNode *tree, InstructionList * codeList);
 int isOperationSymbol(char *symbolName);
 Symbol * addCurrentInstruction(struct TreeNode *tree, InstructionList * codeList, Symbol * temp1, Symbol * temp2);
@@ -16,17 +16,16 @@ Symbol * addCurrentInstruction(struct TreeNode *tree, InstructionList * codeList
 InstructionList * generateIntermediateCode(struct TreeNode *tree) {
     InstructionList * codeList;
     codeList = (InstructionList *) malloc (sizeof(InstructionList));
-    //initialize(codeList);
     
-    generateIntermediateCode2(tree, codeList);   //left part cannot be a 'next' symbol, must be sentence or declaration
+    translateTreeIntoCode(tree, codeList);   //left part cannot be a 'next' symbol, must be sentence or declaration
     return codeList;   
 }
 
-void generateIntermediateCode2(struct TreeNode *tree, InstructionList * codeList) {
+void translateTreeIntoCode(struct TreeNode *tree, InstructionList * codeList) {
     
     generateSentenceCode(tree->left, codeList);   //left part cannot be a 'next' symbol, must be sentence or declaration
     if (tree->right != NULL) {  //right part is a next symbol if exists
-        generateIntermediateCode2(tree->right, codeList);
+        translateTreeIntoCode(tree->right, codeList);
     }
 }
 
