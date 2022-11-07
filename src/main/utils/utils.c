@@ -37,11 +37,11 @@ struct TreeNode * createNewTree(types symbolType, struct TreeNode *left, struct 
 }
 
 int arithmeticOperation(char * operation) {
-    return !(strcmp(operation, "+") && strcmp(operation, "-") && strcmp(operation, "*"));
+    return !(strcmp(operation, "+") && strcmp(operation, "-") && strcmp(operation, "*") && strcmp(operation, "/") && strcmp(operation, "%"));
 }
 
 int booleanOperation(char * operation) {
-    return !(strcmp(operation, "&&") && strcmp(operation, "||"));
+    return !(strcmp(operation, "&&") && strcmp(operation, "||") && strcmp(operation, "!"));
 }
 
 int digitLength(int number) {
@@ -93,6 +93,9 @@ int stringToOperation(char *string) {
     }
     else if (strcmp(string, "=") == 0 || strcmp(string, "ASSIG") == 0){
         return ASSIG; 
+    }
+    else if (strcmp(string, "==") == 0 || strcmp(string, "EQUAL") == 0){
+        return EQUAL; 
     }
     else if (strcmp(string, "<") == 0 || strcmp(string, "GREAT") == 0){
         return GREAT; 
