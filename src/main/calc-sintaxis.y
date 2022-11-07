@@ -207,7 +207,7 @@ methodCall: ID '(' exprList ')'     {   Symbol * methodSymb = search(list.head->
 
 exprList: expr      { $$ = $1; }
 
-    | expr "," exprList { $$ = createNextTree($1, $3); }
+    | expr ',' exprList { $$ = createNextTree($1, $3); }
     ;
 
 expr: ID {  Symbol *s = search(&list, $1);

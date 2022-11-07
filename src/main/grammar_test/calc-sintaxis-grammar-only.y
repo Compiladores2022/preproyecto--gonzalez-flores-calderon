@@ -150,7 +150,7 @@ methodCall: ID '(' exprList ')'
 
 exprList: expr
 
-    | expr "," exprList
+    | expr ',' exprList
     ;
 
 expr: ID
