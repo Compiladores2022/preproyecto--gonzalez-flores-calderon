@@ -57,3 +57,12 @@ void addValue(Symbol *symbol, void *value) {
     }
     symbol->value = value;
 }
+
+void addIdentifierType(Symbol *symbol, identifierType identifierType){
+    if(symbol->it != UNDEFINED){
+        printf("\033[0;31mError:\033[0m Symbol %s already has a identifier type setted\n", symbol->name);
+        exit(0);
+    }
+    symbol->it = identifierType;
+
+}
