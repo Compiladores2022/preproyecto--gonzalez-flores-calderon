@@ -12,7 +12,7 @@ Symbol * createSymbol(types type, char *name, void *value, int offset) {
         exit(EXIT_FAILURE);
     }
 
-    ParameterList *list;
+    struct ParameterList *list;
     
     newSymbol->type = type;
     newSymbol->name = name;
@@ -23,7 +23,7 @@ Symbol * createSymbol(types type, char *name, void *value, int offset) {
     return newSymbol;
 }
 
-Symbol * createSymbolWithParameter(types type, char *name, void *value, int offset, ParameterList *parameterList){
+Symbol * createSymbolWithParameter(types type, char *name, void *value, int offset, struct ParameterList *parameterList){
     Symbol * newSymbol;
 
     newSymbol = (Symbol *) malloc (sizeof(Symbol));
@@ -56,4 +56,13 @@ void addValue(Symbol *symbol, void *value) {
         exit(0);
     }
     symbol->value = value;
+}
+
+void addIdentifierType(Symbol *symbol, identifierType identifierType){
+    if(symbol->it != UNDEFINED){
+        printf("\033[0;31mError:\033[0m Symbol %s already has a identifier type setted\n", symbol->name);
+        exit(0);
+    }
+    symbol->it = identifierType;
+
 }

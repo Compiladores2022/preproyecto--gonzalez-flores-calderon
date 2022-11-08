@@ -2,14 +2,15 @@
 
 #include <stdlib.h>
 #include <stdio.h>
+#include "types/parameter.h"
+#include "types/enumeration.h"
+#include "parameter_list/parameter_list.h"
 #include "sintactic_analysis_tree/sintactic_analysis_tree.h"
 #include "intermediate_code_generator/instruction.h"
 #include "intermediate_code_generator/intermediate_code_generator.h"
 #include "assembler_code_generator/assembler_generator.h"
 #include "utils/utils.h"
 #include "symbol_list/symbol_list.h"
-#include "parameter_list/parameter_list.h"
-#include "types/parameter.h"
 
 SymbolList list;
 SintacticAnalysisTree sat;
@@ -22,7 +23,9 @@ int yylex();
 
 %union {int i;
         char *s;
-        struct TreeNode *n;}
+        struct TreeNode *n;
+        struct Parameter *p;
+        struct ParameterList *plist;}
 
 %token<i> INT
 %token ID
@@ -53,8 +56,8 @@ int yylex();
 %type<n> statementList
 %type<n> methodCall
 %type<n> exprList
-%type<n> listParameters
-%type<n> parameter
+%type<plist> listParameters
+%type<p> parameter
 %type<n> declList
 %type<n> decl
 %type<n> expr
@@ -89,42 +92,39 @@ methodDeclList: methodDecl          { $$ = createNextTree($1, NULL); }
     | methodDeclList methodDecl     { $$ = createNextTree($2, $1); }
     ;
 
-methodDecl: type ID '('  ')' body   {   Symbol * methodSymb = search(list.head->levelSymbols, $2);
-                                        if(methodSymb != NULL){
+methodDecl: type ID '('  ')' body   {   if(search(&list, $2) != NULL){
                                             printf("Already defined method: %s", $2);
                                             yyerror();
                                         }
-                                        struct TreeNode * idNode = createNode(methodSymb);
-                                        $$ = createNewTree($1, idNode, $5, "methoddecl", 0);
+                                        struct TreeNode *methodtree = createNewTree($1, $5, NULL, $2, 0);
+                                        $$ = createNewTree($1, methodtree, NULL, "methoddecl", 0);    
                                     }
 
-    | TVOID ID '('  ')' body    {   Symbol * methodSymb = search(list.head->levelSymbols, $2);
-                                    if(methodSymb != NULL){
+    | TVOID ID '('  ')' body    {   if(search(&list, $2) != NULL){
                                         printf("Already defined method: %s", $2);
                                         yyerror();
                                     } 
-                                    struct TreeNode * idNode = createNode(methodSymb);
-                                    $$ = createNewTree(TYPEVOID, idNode, $5, "methoddecl", 0); 
+                                    struct TreeNode *methodtree = createNewTree(TYPEVOID, $5, NULL, $2, 0); 
+                                    $$ = createNewTree(TYPEVOID, methodtree, NULL, "methoddecl", 0);
                                 }
 
     | type ID '(' { openLevel(&list); } listParameters ')' body {   closeLevel(&list);   
-                                                                    Symbol * methodSymb = search(list.head->levelSymbols, $2);
-                                                                    if(methodSymb != NULL){
-                                                                    printf("Already defined method: %s", $2);
-                                                                    yyerror();
-                                                                    }    
-                                                                    struct TreeNode * idNode = createNode(methodSymb);
-                                                                    $$ = createNewTree($1, idNode, $5, "methoddecl", 0);  
+                                                                    if(search(&list, $2) != NULL){
+                                                                        printf("Already defined method: %s", $2);
+                                                                        yyerror();
+                                                                    }
+                                                                    
+                                                                    struct TreeNode *methodtree = createNewTreeWithParameters($1, $7, NULL, $2, 0, $5);  
+                                                                    $$ = createNewTree($1, methodtree, NULL, "methoddecl", 0);
                                                                 }
 
     | TVOID ID '(' { openLevel(&list);} listParameters ')' body {   closeLevel(&list);   
-                                                                    Symbol * methodSymb = search(list.head->levelSymbols, $2);
-                                                                    if(methodSymb != NULL){
-                                                                    printf("Already defined method: %s", $2);
-                                                                    yyerror();
-                                                                    }    
-                                                                    struct TreeNode * idNode = createNode(methodSymb);
-                                                                    $$ = createNewTree(TYPEVOID, idNode, $5, "methoddecl", 0);    
+                                                                    if(search(&list, $2) != NULL){
+                                                                        printf("Already defined method: %s", $2);
+                                                                        yyerror();
+                                                                    }
+                                                                    struct TreeNode *methodtree = createNewTreeWithParameters(TYPEVOID, $7, NULL, $2, 0, $5);
+                                                                    $$ = createNewTree(TYPEVOID, methodtree, NULL, "methoddecl", 0);
                                                                 }
     ;
 
@@ -133,18 +133,29 @@ body: block         { $$ = $1; }
     | TExtern ';'   { $$ = NULL; }
     ;
 
-listParameters: parameter           { $$ = $1; }
+listParameters: parameter           {    
+                                        struct ParameterList *pList;
+                                        initializeP(pList);
+                                        insertParameter(pList, $1);
+                                        $$ = pList;
+                                    }
     
-    | listParameters ',' parameter  { $$ = createNextTree($3, $1); }
+    | listParameters ',' parameter  {   insertParameter($1, $3); 
+                                        $$ = $1;
+                                    }
     ;
 
-parameter: type ID  {   offset += 8;
-                        $$ = createNewTree($1, NULL, NULL, $2, offset); }
+parameter: type ID  {   struct Parameter *parameter = createParameter($1, $2);
+                        $$ = parameter;
+                    }
     ;
 
 block: '{' '}' { $$ = NULL; }
 
-    | '{' { openLevel(&list); } declList statementList '}'  { closeLevel(&list); }
+    | '{' { openLevel(&list); } declList statementList '}'  {   closeLevel(&list); 
+                                                                linkTreeRight($3, $4);
+                                                                $$ = $3;
+                                                            }
 
     | '{' statementList '}' { $$ = $2; }
     ;
@@ -163,7 +174,7 @@ decl: type ID '=' expr ';'  {   if (searchInLevel(list.head->levelSymbols, $2) !
                                 insert(&list, newID);
                                 struct TreeNode * idNode = createNode(newID);
                                 $$ = createNewTree(UNDEFINED, idNode, $4, "=", 0); 
-                            }
+                            }   
     ;
 
 statementList:  statement       { $$ = createNextTree($1, NULL); }
@@ -195,14 +206,15 @@ statement: ID '=' expr ';'   {   Symbol * idSymbol = search(&list, $1);
     | block         { $$ = $1; }
     ; 
     
-methodCall: ID '(' exprList ')'     {   Symbol * methodSymb = search(list.head->levelSymbols, $1);
-                                        if ( methodSymb == NULL) {
-                                            printf("Undefined method: %s", $1);
-                                            yyerror();
-                                        }
-                                        struct TreeNode * idNode = createNode(methodSymb);
-                                        $$ = createNewTree(methodSymb.type, idNode, $3, "methodcall", 0); 
+methodCall: ID '(' exprList ')' {   Symbol * methodSymb = search(&list, $1);
+                                    if ( methodSymb == NULL) {
+                                        printf("Undefined method: %s", $1);
+                                        yyerror();
                                     }
+                                    // struct TreeNode * idNode = createNode(methodSymb);
+                                    $$ = createTree(methodSymb, $3, NULL);
+                                    // $$ = createNewTree(methodSymb.type, idNode, $3, $1, 0); 
+                                }
     ;
 
 exprList: expr      { $$ = $1; }

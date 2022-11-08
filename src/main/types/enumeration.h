@@ -3,4 +3,7 @@
 
 typedef enum {TYPEINT, TYPEBOOL, UNDEFINED, TYPEVOID} types;
 
+
+typedef enum {METHOD, CONST, VAR} identifierType;
+
 #endif

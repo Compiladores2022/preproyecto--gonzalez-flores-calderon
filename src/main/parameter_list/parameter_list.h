@@ -4,12 +4,16 @@
 #define PARAMETER_LIST_H
 
 struct ParameterNode {
-    Parameter *info;
+    struct Parameter *info;
     struct ParameterNode *next;
 };
 
-typedef struct{
+struct ParameterList{
     struct ParameterNode *head;
-}ParameterList;
+};
+
+void initializeP(struct ParameterList *parameterList);
+
+void insertParameter(struct ParameterList *list, struct Parameter *parameter);
 
 #endif  
