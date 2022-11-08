@@ -12,4 +12,8 @@ typedef struct{
     struct ParameterNode *head;
 }ParameterList;
 
+void initializeP(ParameterList *parameterList);
+
+void insertParameter(ParameterList *list, Parameter *parameter);
+
 #endif  
