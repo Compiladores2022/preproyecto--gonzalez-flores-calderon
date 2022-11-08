@@ -5,7 +5,7 @@
 #ifndef UTILS_H
 #define UTILS_H
 
-typedef enum {ADD, SUB, MULT, DIV, MOD, AND, OR, NOT, ASSIG, GREAT, LESS, RET, METHDECL, METHCALL, IF, IFELSE, WHILE} operations;
+typedef enum {ADD, SUB, MULT, DIV, MOD, AND, OR, NOT, ASSIG, EQUAL, GREAT, LESS, RET, METHDECL, METHCALL, IF, IFELSE, WHILE} operations;
 
 char * enumToString(types type);
 
