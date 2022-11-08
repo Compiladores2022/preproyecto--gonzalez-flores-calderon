@@ -74,7 +74,7 @@ Symbol * addCurrentInstruction(struct TreeNode *tree, InstructionList * codeList
     if(temp2 == NULL && tree->right != NULL) {
         temp2 = tree->right->info;
     }
-    Symbol * temp3 = NULL;
+    Symbol *temp3 = NULL, *elseLabel = NULL, *endLabel = NULL, *whileLabel = NULL, *expressionResult = NULL;
     int *operationResult = (int*) malloc(sizeof(int));
     struct Instruction * instruction;
     switch (stringToOperation(tree->info->name)) { //creates the instruction
@@ -133,7 +133,6 @@ Symbol * addCurrentInstruction(struct TreeNode *tree, InstructionList * codeList
             instruction = createInstruction("NOT", temp1, NULL, temp3);
             break;
         case ASSIG:
-            temp3 = NULL;
             instruction = createInstruction("ASSIG", temp2, NULL, temp1);
             temp1->value = temp2->value;
             break;
@@ -162,11 +161,34 @@ Symbol * addCurrentInstruction(struct TreeNode *tree, InstructionList * codeList
         case METHDECL:
             break;
         case IF:
-            translateTreeIntoCode(tree->left, codeList);
-            Symbol * label = createSymbol(UNDEFINED, createLabel(), NULL, 0);
-            insertInstructionNode(codeList, createInstruction("IF", codeList->last->instruction->result, label, NULL));
+            translateTreeIntoCode(tree->left, codeList);    //calculate expression result
+            endLabel = createSymbol(UNDEFINED, createLabel(), NULL, 0);
+            expressionResult = codeList->last->instruction->result;
+            insertInstructionNode(codeList, createInstruction("IF", expressionResult, NULL, endLabel));
             translateTreeIntoCode(tree->right, codeList);
-            instruction = createInstruction(label->name, NULL, NULL, NULL);
+            instruction = createInstruction(endLabel->name, NULL, NULL, NULL);
+            break;
+        case IFELSE:
+            translateTreeIntoCode(tree->left, codeList);    //calculate expression result
+            elseLabel = createSymbol(UNDEFINED, createLabel(), NULL, 0);
+            endLabel = createSymbol(UNDEFINED, createLabel(), NULL, 0);
+            expressionResult = codeList->last->instruction->result;
+            insertInstructionNode(codeList, createInstruction("IFELSE", expressionResult, elseLabel, endLabel));
+            translateTreeIntoCode(tree->right->left, codeList); //generate code for 'then' block
+            
+            insertInstructionNode(codeList, createInstruction(elseLabel->name, NULL, NULL, NULL));  //insert else label
+            translateTreeIntoCode(tree->right->right, codeList); //generate code for 'else' block
+            instruction = createInstruction(endLabel->name, NULL, NULL, NULL);
+            break;
+        case WHILE:
+            translateTreeIntoCode(tree->left, codeList);    //calculate expression result
+            expressionResult = codeList->last->instruction->result;
+            whileLabel = createSymbol(UNDEFINED, createLabel(), NULL, 0);
+            insertInstructionNode(codeList, createInstruction(whileLabel->name, NULL, NULL, NULL));  //insert while label
+            
+            translateTreeIntoCode(tree->right, codeList); //generate code for while block
+            
+            instruction = createInstruction("WHILE", expressionResult, NULL, whileLabel);
             break;
         default: printf("%s is not an operator\n", tree->info->name);
             exit(0);
