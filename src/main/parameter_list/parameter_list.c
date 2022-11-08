@@ -3,7 +3,7 @@
 #include "parameter_list.h"
 
 
-void initializeP(ParameterList *parameterList) {
+void initializeP(struct ParameterList *parameterList) {
     parameterList->head = NULL; 
 }
 
@@ -18,7 +18,7 @@ struct ParameterNode * createParameterNode(){
 	}
 }
 
-void insertParameter(ParameterList *list, Parameter *parameter){
+void insertParameter(struct ParameterList *list, struct Parameter *parameter){
 	
 	struct ParameterNode *p;
 	p = createParameterNode(); 

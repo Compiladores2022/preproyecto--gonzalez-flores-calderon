@@ -3,11 +3,11 @@
 #ifndef PARAMETER_H
 #define PARAMETER_H
 
-typedef struct{
+struct Parameter{
     types type;
     char* id;
-}Parameter;
+};
 
-Parameter * createParameter(types type, char *id);
+struct Parameter * createParameter(types type, char *id);
 
 #endif

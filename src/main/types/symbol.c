@@ -12,7 +12,7 @@ Symbol * createSymbol(types type, char *name, void *value, int offset) {
         exit(EXIT_FAILURE);
     }
 
-    ParameterList *list;
+    struct ParameterList *list;
     
     newSymbol->type = type;
     newSymbol->name = name;
@@ -23,7 +23,7 @@ Symbol * createSymbol(types type, char *name, void *value, int offset) {
     return newSymbol;
 }
 
-Symbol * createSymbolWithParameter(types type, char *name, void *value, int offset, ParameterList *parameterList){
+Symbol * createSymbolWithParameter(types type, char *name, void *value, int offset, struct ParameterList *parameterList){
     Symbol * newSymbol;
 
     newSymbol = (Symbol *) malloc (sizeof(Symbol));

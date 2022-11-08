@@ -2,10 +2,10 @@
 #include <stdlib.h>
 #include "parameter.h"
 
-Parameter * createParameter(types type, char *id) {
-    Parameter * newParameter;
+struct Parameter * createParameter(types type, char *id) {
+    struct Parameter * newParameter;
 
-    newParameter = (Parameter *) malloc (sizeof(Parameter));
+    newParameter = (struct Parameter *) malloc (sizeof(struct Parameter));
     if(newParameter == NULL){
         printf("couldn't create parameter, exiting\n");
         exit(EXIT_FAILURE);

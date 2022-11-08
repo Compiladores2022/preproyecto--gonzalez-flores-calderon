@@ -29,6 +29,6 @@ void createAssemblerFile(char * assemblerCode);
 
 int checkMain(SymbolList symbolList);
 
-struct TreeNode * createNewTreeWithParameters(types symbolType, struct TreeNode *left, struct TreeNode *right, char *operation, int offset, ParameterList *parameterList);
+struct TreeNode * createNewTreeWithParameters(types symbolType, struct TreeNode *left, struct TreeNode *right, char *operation, int offset, struct ParameterList *parameterList);
 
 #endif

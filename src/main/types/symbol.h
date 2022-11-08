@@ -9,13 +9,13 @@ typedef struct {
     char *name;
     void *value;
     int offset;
-    ParameterList *parameterList;
+    struct ParameterList *parameterList;
     identifierType it;
 }Symbol;
 
 Symbol * createSymbol(types type, char *name, void *value, int offset);
 
-Symbol * createSymbolWithParameter(types type, char *name, void *value, int offset, ParameterList *parameterList);
+Symbol * createSymbolWithParameter(types type, char *name, void *value, int offset, struct ParameterList *parameterList);
 
 void addIdentifierType(Symbol *symbol, identifierType identifierType);
 

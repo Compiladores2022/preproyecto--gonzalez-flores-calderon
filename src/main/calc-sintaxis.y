@@ -24,8 +24,8 @@ int yylex();
 %union {int i;
         char *s;
         struct TreeNode *n;
-        Parameter *p;
-        ParameterList *plist;}
+        struct Parameter *p;
+        struct ParameterList *plist;}
 
 %token<i> INT
 %token ID
@@ -134,7 +134,7 @@ body: block         { $$ = $1; }
     ;
 
 listParameters: parameter           {    
-                                        ParameterList *pList;
+                                        struct ParameterList *pList;
                                         initializeP(pList);
                                         insertParameter(pList, $1);
                                         $$ = pList;
@@ -145,7 +145,7 @@ listParameters: parameter           {
                                     }
     ;
 
-parameter: type ID  {   Parameter *parameter = createParameter($1, $2);
+parameter: type ID  {   struct Parameter *parameter = createParameter($1, $2);
                         $$ = parameter;
                     }
     ;

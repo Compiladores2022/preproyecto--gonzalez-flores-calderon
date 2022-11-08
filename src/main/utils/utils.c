@@ -37,7 +37,7 @@ struct TreeNode * createNewTree(types symbolType, struct TreeNode *left, struct 
     return newTree;
 }
 
-struct TreeNode * createNewTreeWithParameters(types symbolType, struct TreeNode *left, struct TreeNode *right, char *operation, int offset, ParameterList *parameterList) {
+struct TreeNode * createNewTreeWithParameters(types symbolType, struct TreeNode *left, struct TreeNode *right, char *operation, int offset, struct ParameterList *parameterList) {
     Symbol *s = createSymbolWithParameter(symbolType, operation, NULL, offset, parameterList);
     struct TreeNode * newTree = createTree(s, left, right);
     return newTree;
