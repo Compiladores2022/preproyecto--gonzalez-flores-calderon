@@ -4,7 +4,7 @@
 
 
 void initializeP(struct ParameterList *parameterList) {
-    parameterList->head = NULL; 
+    parameterList->head = NULL;
 }
 
 struct ParameterNode * createParameterNode(){
