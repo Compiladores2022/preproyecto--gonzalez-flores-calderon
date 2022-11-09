@@ -127,7 +127,7 @@ int checkTypeTree(struct TreeNode *tree) {
         validTree = validTree && checkTypeTree(tree->left);  
     }
 
-    if(tree->left != NULL && strcmp(tree->left->info->name, "methoddecl") == 0){
+    if(tree->left != NULL && tree->left->info->it == METHOD){
         validTree = validTree && checkTypeTree(tree->left);
     }
     

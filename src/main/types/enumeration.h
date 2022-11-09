@@ -4,6 +4,6 @@
 typedef enum {TYPEINT, TYPEBOOL, UNDEFINED, TYPEVOID} types;
 
 
-typedef enum {METHOD, CONST, VAR} identifierType;
+typedef enum {METHOD, CONST, VAR, TYPELESS} identifierType;
 
 #endif
