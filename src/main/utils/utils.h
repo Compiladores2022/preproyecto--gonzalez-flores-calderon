@@ -27,7 +27,7 @@ void linkTreeRight(struct TreeNode * tree1, struct TreeNode * tree2);
 
 void createAssemblerFile(char * assemblerCode);
 
-int checkMain(SymbolList symbolList);
+int checkMain(SymbolList *symbolList);
 
 struct TreeNode * createNewTreeWithParameters(types symbolType, struct TreeNode *left, struct TreeNode *right, char *operation, int offset, struct ParameterList *parameterList, identifierType identifiertype);
 

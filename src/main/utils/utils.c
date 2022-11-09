@@ -4,6 +4,7 @@
 #include <string.h>
 #include "../types/enumeration.h"
 #include "../parameter_list/parameter_list.h"
+#include "../symbol_list/symbol_list.h"
 
 char * enumToString(types type) {
     switch (type) {
@@ -40,7 +41,7 @@ struct TreeNode * createNewTree(types symbolType, struct TreeNode *left, struct 
 
 struct TreeNode * createNewTreeWithParameters(types symbolType, struct TreeNode *left, struct TreeNode *right, char *operation, int offset, struct ParameterList *parameterList, identifierType identifiertype) {
     Symbol *s = createSymbolWithParameter(symbolType, operation, NULL, offset, parameterList);
-    addIdentifierType(s, identifiertype);
+    addIdentifierType(s, identifiertype);   
     struct TreeNode * newTree = createTree(s, left, right);
     return newTree;
 }
@@ -154,14 +155,12 @@ void createAssemblerFile(char * assemblerCode){
     fclose(program);
 }
 
-int checkMain(SymbolList symbolList){
-    
-    struct levelNode *ln = symbolList.head;
-    while (ln != NULL){
-        if (strcmp(symbolList.head->levelSymbols->info->name, "main") == 0){
-            return 1;
-        }
-        ln = ln->next;  
+int checkMain(SymbolList *symbolList){
+    Symbol *example = search(symbolList, "+");
+    // printf("%d\n", example->type);
+    if(example == NULL){
+        printf("Main not define\n");
+        exit(0);
     }
     return 0;
 }
