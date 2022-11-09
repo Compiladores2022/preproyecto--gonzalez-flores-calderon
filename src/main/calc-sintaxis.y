@@ -96,26 +96,22 @@ methodDecl: type ID '('  ')' body   {   if(search(&list, $2) != NULL){
                                             printf("Already defined method: %s", $2);
                                             yyerror();
                                         }
-                                        struct TreeNode *methodtree = createNewTree($1, $5, NULL, $2, 0);
-                                        $$ = createNewTree($1, methodtree, NULL, "methoddecl", 0);    
+                                        $$ = createNewTree($1, $5, NULL, $2, 0, METHOD);    
                                     }
 
     | TVOID ID '('  ')' body    {   if(search(&list, $2) != NULL){
                                         printf("Already defined method: %s", $2);
                                         yyerror();
                                     } 
-                                    struct TreeNode *methodtree = createNewTree(TYPEVOID, $5, NULL, $2, 0); 
-                                    $$ = createNewTree(TYPEVOID, methodtree, NULL, "methoddecl", 0);
+                                    $$ = createNewTree(TYPEVOID, $5, NULL, $2, 0, METHOD);
                                 }
 
     | type ID '(' { openLevel(&list); } listParameters ')' body {   closeLevel(&list);   
                                                                     if(search(&list, $2) != NULL){
                                                                         printf("Already defined method: %s", $2);
                                                                         yyerror();
-                                                                    }
-                                                                    
-                                                                    struct TreeNode *methodtree = createNewTreeWithParameters($1, $7, NULL, $2, 0, $5);  
-                                                                    $$ = createNewTree($1, methodtree, NULL, "methoddecl", 0);
+                                                                    }                                                                    
+                                                                    $$ = createNewTreeWithParameters($1, $7, NULL, $2, 0, $5, METHOD);
                                                                 }
 
     | TVOID ID '(' { openLevel(&list);} listParameters ')' body {   closeLevel(&list);   
@@ -123,15 +119,14 @@ methodDecl: type ID '('  ')' body   {   if(search(&list, $2) != NULL){
                                                                         printf("Already defined method: %s", $2);
                                                                         yyerror();
                                                                     }
-                                                                    struct TreeNode *methodtree = createNewTreeWithParameters(TYPEVOID, $7, NULL, $2, 0, $5);
-                                                                    $$ = createNewTree(TYPEVOID, methodtree, NULL, "methoddecl", 0);
+                                                                    $$ = createNewTreeWithParameters(TYPEVOID, $7, NULL, $2, 0, $5, METHOD);
                                                                 }
     ;
 
 body: block         { $$ = $1; }
     
     | TExtern ';'   { $$ = NULL; }
-    ;
+    ; 
 
 listParameters: parameter           {    
                                         struct ParameterList *pList;
@@ -173,7 +168,7 @@ decl: type ID '=' expr ';'  {   if (searchInLevel(list.head->levelSymbols, $2) !
                                 Symbol *newID = createSymbol($1, $2, NULL, offset);
                                 insert(&list, newID);
                                 struct TreeNode * idNode = createNode(newID);
-                                $$ = createNewTree(UNDEFINED, idNode, $4, "=", 0); 
+                                $$ = createNewTree(UNDEFINED, idNode, $4, "=", 0, TYPELESS); 
                             }   
     ;
 
@@ -182,38 +177,42 @@ statementList:  statement       { $$ = createNextTree($1, NULL); }
     | statementList statement   { $$ = createNextTree($2, $1); }
     ;
     
-statement: ID '=' expr ';'   {   Symbol * idSymbol = search(&list, $1);
-                            if (idSymbol == NULL) { 
-                                printf("Undefined Symbol %s", $1);
-                                yyerror();
+statement: ID '=' expr ';'  {   //chequear que ese symbol no sea un metodo
+                                Symbol * idSymbol = search(&list, $1);
+                                if (idSymbol == NULL) { 
+                                    printf("Undefined Symbol %s", $1);
+                                    yyerror();
+                                }
+                                struct TreeNode * idNode = createNode(idSymbol);
+                                $$ = createNewTree(UNDEFINED, idNode, $3, "=", 0, TYPELESS); 
                             }
-                            struct TreeNode * idNode = createNode(idSymbol);
-                            $$ = createNewTree(UNDEFINED, idNode, $3, "=", 0); }
     
     | methodCall ';' { $$ = $1; }   
     
-    | TIf '(' expr ')' TThen block { $$ = createNewTree(UNDEFINED, $3, $6, "if", 0); }
+    | TIf '(' expr ')' TThen block { $$ = createNewTree(UNDEFINED, $3, $6, "if", 0, TYPELESS); }
     
-    | TIf '(' expr ')' TThen block TElse block  {   struct TreeNode *ifElse = createNewTree(UNDEFINED, $6, $8, "ifelse", 0);
-                                                    $$ = createNewTree(UNDEFINED, $3, ifElse, "if", 0); }
+    | TIf '(' expr ')' TThen block TElse block  {   struct TreeNode *ifElse = createNewTree(UNDEFINED, $6, $8, "ifelse", 0, TYPELESS);
+                                                    $$ = createNewTree(UNDEFINED, $3, ifElse, "if", 0, TYPELESS); }
 
-    | TWhile expr block     { $$ = createNewTree(UNDEFINED, $2, $3, "while", 0); }
+    | TWhile expr block     { $$ = createNewTree(UNDEFINED, $2, $3, "while", 0, TYPELESS); }
 
-    | TReturn expr ';'  {   $$ = createNewTree(UNDEFINED, NULL, $2, "return", 0); }
+    | TReturn expr ';'  {   $$ = createNewTree(UNDEFINED, NULL, $2, "return", 0, TYPELESS); }
 
     | ';'           { $$ = NULL; }
 
     | block         { $$ = $1; }
     ; 
     
-methodCall: ID '(' exprList ')' {   Symbol * methodSymb = search(&list, $1);
+methodCall: ID '(' exprList ')' {   //cheqar que sea un metodo
+                                    Symbol * methodSymb = search(&list, $1);
                                     if ( methodSymb == NULL) {
                                         printf("Undefined method: %s", $1);
                                         yyerror();
+                                    }else if(methodSymb->it != METHOD){
+                                        printf("This name not a method: %s", $1);
+                                        yyerror();
                                     }
-                                    // struct TreeNode * idNode = createNode(methodSymb);
                                     $$ = createTree(methodSymb, $3, NULL);
-                                    // $$ = createNewTree(methodSymb.type, idNode, $3, $1, 0); 
                                 }
     ;
 
@@ -239,42 +238,42 @@ expr: ID {  Symbol *s = search(&list, $1);
     | literal           { $$ = $1; }
 
     | expr '+' expr     {   offset += 8;
-                            $$ = createNewTree(UNDEFINED, $1, $3, "+", offset); }
+                            $$ = createNewTree(UNDEFINED, $1, $3, "+", offset, TYPELESS); }
 
     | expr TMENOS expr  {   offset += 8;
-                            $$ = createNewTree(UNDEFINED, $1, $3, "-", offset); }
+                            $$ = createNewTree(UNDEFINED, $1, $3, "-", offset, TYPELESS); }
 
     | expr '*' expr     {   offset += 8;
-                            $$ = createNewTree(UNDEFINED, $1, $3, "*", offset); }
+                            $$ = createNewTree(UNDEFINED, $1, $3, "*", offset, TYPELESS); }
 
     | expr '/' expr     {   offset += 8;
-                            $$ = $$ = createNewTree(UNDEFINED, $1, $3, "/", offset); }
+                            $$ = $$ = createNewTree(UNDEFINED, $1, $3, "/", offset, TYPELESS); }
 
     | expr '%' expr     {   offset += 8;
-                            $$ = $$ = createNewTree(UNDEFINED, $1, $3, "%", offset); }
+                            $$ = $$ = createNewTree(UNDEFINED, $1, $3, "%", offset, TYPELESS); }
 
     | expr '>' expr     {   offset += 8;
-                            $$ = $$ = createNewTree(UNDEFINED, $1, $3, ">", offset); }
+                            $$ = $$ = createNewTree(UNDEFINED, $1, $3, ">", offset, TYPELESS); }
 
     | expr '<' expr     {   offset += 8;
-                            $$ = $$ = createNewTree(UNDEFINED, $1, $3, "<", offset); }
+                            $$ = $$ = createNewTree(UNDEFINED, $1, $3, "<", offset, TYPELESS); }
 
     | expr TIGUAL expr  {   offset += 8;
-                            $$ = $$ = createNewTree(UNDEFINED, $1, $3, "==", offset); }
+                            $$ = $$ = createNewTree(UNDEFINED, $1, $3, "==", offset, TYPELESS); }
 
     | expr TAND expr    {   offset += 8;
-                            $$ = $$ = createNewTree(UNDEFINED, $1, $3, "&&", offset); }
+                            $$ = $$ = createNewTree(UNDEFINED, $1, $3, "&&", offset, TYPELESS); }
 
     | expr TOR expr     {   offset += 8;
-                            $$ = createNewTree(UNDEFINED, $1, $3, "||", offset); }
+                            $$ = createNewTree(UNDEFINED, $1, $3, "||", offset, TYPELESS); }
 
     | '-' expr %prec UNARYPREC {
                         offset += 8;
-                        $$ = createNewTree(UNDEFINED, $2, NULL, "-", offset); }
+                        $$ = createNewTree(UNDEFINED, $2, NULL, "-", offset, TYPELESS); }
 
     | '!' expr %prec UNARYPREC {
                         offset += 8;
-                        $$ = createNewTree(UNDEFINED, $2, NULL, "!", offset); }
+                        $$ = createNewTree(UNDEFINED, $2, NULL, "!", offset, TYPELESS); }
 
     | '(' expr ')' { $$ = $2; }
     ;

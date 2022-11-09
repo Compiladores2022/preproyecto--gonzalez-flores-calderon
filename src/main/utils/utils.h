@@ -13,7 +13,7 @@ void printTree(struct TreeNode *tree);
 
 struct TreeNode * createNextTree(struct TreeNode *left, struct TreeNode *right);
 
-struct TreeNode * createNewTree(types symbolType, struct TreeNode *left, struct TreeNode *right, char *operation, int offset);
+struct TreeNode * createNewTree(types symbolType, struct TreeNode *left, struct TreeNode *right, char *operation, int offset, identifierType identifiertype);
 
 int arithmeticOperation(char * operation);
 
@@ -29,6 +29,6 @@ void createAssemblerFile(char * assemblerCode);
 
 int checkMain(SymbolList symbolList);
 
-struct TreeNode * createNewTreeWithParameters(types symbolType, struct TreeNode *left, struct TreeNode *right, char *operation, int offset, struct ParameterList *parameterList);
+struct TreeNode * createNewTreeWithParameters(types symbolType, struct TreeNode *left, struct TreeNode *right, char *operation, int offset, struct ParameterList *parameterList, identifierType identifiertype);
 
 #endif

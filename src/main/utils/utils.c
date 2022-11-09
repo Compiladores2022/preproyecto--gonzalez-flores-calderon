@@ -31,14 +31,16 @@ struct TreeNode * createNextTree(struct TreeNode *left, struct TreeNode *right) 
     return newTree;
 }
 
-struct TreeNode * createNewTree(types symbolType, struct TreeNode *left, struct TreeNode *right, char *operation, int offset) {
+struct TreeNode * createNewTree(types symbolType, struct TreeNode *left, struct TreeNode *right, char *operation, int offset, identifierType identifiertype) {
     Symbol *s = createSymbol(symbolType, operation, NULL, offset);
+    addIdentifierType(s, identifiertype);
     struct TreeNode * newTree = createTree(s, left, right);
     return newTree;
 }
 
-struct TreeNode * createNewTreeWithParameters(types symbolType, struct TreeNode *left, struct TreeNode *right, char *operation, int offset, struct ParameterList *parameterList) {
+struct TreeNode * createNewTreeWithParameters(types symbolType, struct TreeNode *left, struct TreeNode *right, char *operation, int offset, struct ParameterList *parameterList, identifierType identifiertype) {
     Symbol *s = createSymbolWithParameter(symbolType, operation, NULL, offset, parameterList);
+    addIdentifierType(s, identifiertype);
     struct TreeNode * newTree = createTree(s, left, right);
     return newTree;
 }
