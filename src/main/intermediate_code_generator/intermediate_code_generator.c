@@ -74,7 +74,7 @@ Symbol * addCurrentInstruction(struct TreeNode *tree, InstructionList * codeList
     if(temp2 == NULL && tree->right != NULL) {
         temp2 = tree->right->info;
     }
-    Symbol *temp3 = NULL, *elseLabel = NULL, *endLabel = NULL, *whileLabel = NULL, *expressionResult = NULL;
+    Symbol *temp3 = NULL, *elseLabel = NULL, *endLabel = NULL, *whileLabel = NULL, *expressionResult = NULL, *methodLabel = NULL;
     int *operationResult = (int*) malloc(sizeof(int));
     struct Instruction * instruction;
     switch (stringToOperation(tree->info->name)) { //creates the instruction
@@ -159,6 +159,15 @@ Symbol * addCurrentInstruction(struct TreeNode *tree, InstructionList * codeList
             instruction = createInstruction("RET", NULL, NULL, temp3);
             break;
         case METHDECL:
+            methodLabel = createSymbol(UNDEFINED, createLabel(tree->left->info->name), NULL, 0);
+            insertInstructionNode(codeList, createInstruction("METHDECL", methodLabel, tree->left->info, NULL));
+            translateTreeIntoCode(tree->left->left, codeList);    //load method content
+            instruction = createInstruction("RET", NULL, NULL, NULL);
+            break;
+        case METHCALL:
+            createParameterInstructions(tree->left);
+            methodLabel = createSymbol(UNDEFINED, createLabel(tree->info->name), NULL, 0);
+            instruction = createInstruction("METHCALL", methodLabel, NULL, NULL);
             break;
         case IF:
             translateTreeIntoCode(tree->left, codeList);    //calculate expression result
@@ -205,5 +214,12 @@ char * createLabel() {
     strcat(label, ":");
     
     labelNumber++;
+    return label;
+}
+
+char * createLabel(char* name) {
+    char * label = malloc(strlen(name) * sizeof(char *));
+    strcpy(label, name);
+    
     return label;
 }
