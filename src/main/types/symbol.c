@@ -19,7 +19,7 @@ Symbol * createSymbol(types type, char *name, void *value, int offset) {
     newSymbol->value = value;
     newSymbol->offset = offset;
     newSymbol->parameterList = list;
-        
+    newSymbol->it = TYPELESS;
     return newSymbol;
 }
 
@@ -36,6 +36,7 @@ Symbol * createSymbolWithParameter(types type, char *name, void *value, int offs
     newSymbol->name = name;
     newSymbol->value = value;
     newSymbol->offset = offset;
+    newSymbol->it = TYPELESS;
     
     newSymbol->parameterList = parameterList;
     
@@ -59,7 +60,7 @@ void addValue(Symbol *symbol, void *value) {
 }
 
 void addIdentifierType(Symbol *symbol, identifierType identifierType){
-    if(symbol->it != UNDEFINED){
+    if(symbol->it != TYPELESS){
         printf("\033[0;31mError:\033[0m Symbol %s already has a identifier type setted\n", symbol->name);
         exit(0);
     }
