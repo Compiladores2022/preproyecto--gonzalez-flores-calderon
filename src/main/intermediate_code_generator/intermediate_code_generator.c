@@ -12,7 +12,9 @@ void translateTreeIntoCode(struct TreeNode *tree, InstructionList * codeList);
 Symbol * generateSentenceCode(struct TreeNode *tree, InstructionList * codeList);
 int isOperationSymbol(char *symbolName);
 Symbol * addCurrentInstruction(struct TreeNode *tree, InstructionList * codeList, Symbol * temp1, Symbol * temp2);
-char * createLabel();
+void createParameterInstructions(struct TreeNode *parameters, InstructionList * codeList);
+char * createLabel(char *name);
+char * createGenericLabel();
 
 /*
  * takes a decorated tree and returns an equivalent three address code program as a list of instructions
@@ -165,13 +167,13 @@ Symbol * addCurrentInstruction(struct TreeNode *tree, InstructionList * codeList
             instruction = createInstruction("RET", NULL, NULL, NULL);
             break;
         case METHCALL:
-            createParameterInstructions(tree->left);
+            createParameterInstructions(tree->left, codeList);
             methodLabel = createSymbol(UNDEFINED, createLabel(tree->info->name), NULL, 0);
             instruction = createInstruction("METHCALL", methodLabel, NULL, NULL);
             break;
         case IF:
             translateTreeIntoCode(tree->left, codeList);    //calculate expression result
-            endLabel = createSymbol(UNDEFINED, createLabel(), NULL, 0);
+            endLabel = createSymbol(UNDEFINED, createGenericLabel(), NULL, 0);
             expressionResult = codeList->last->instruction->result;
             insertInstructionNode(codeList, createInstruction("IF", expressionResult, NULL, endLabel));
             translateTreeIntoCode(tree->right, codeList);
@@ -179,8 +181,8 @@ Symbol * addCurrentInstruction(struct TreeNode *tree, InstructionList * codeList
             break;
         case IFELSE:
             translateTreeIntoCode(tree->left, codeList);    //calculate expression result
-            elseLabel = createSymbol(UNDEFINED, createLabel(), NULL, 0);
-            endLabel = createSymbol(UNDEFINED, createLabel(), NULL, 0);
+            elseLabel = createSymbol(UNDEFINED, createGenericLabel(), NULL, 0);
+            endLabel = createSymbol(UNDEFINED, createGenericLabel(), NULL, 0);
             expressionResult = codeList->last->instruction->result;
             insertInstructionNode(codeList, createInstruction("IFELSE", expressionResult, elseLabel, endLabel));
             translateTreeIntoCode(tree->right->left, codeList); //generate code for 'then' block
@@ -192,7 +194,7 @@ Symbol * addCurrentInstruction(struct TreeNode *tree, InstructionList * codeList
         case WHILE:
             translateTreeIntoCode(tree->left, codeList);    //calculate expression result
             expressionResult = codeList->last->instruction->result;
-            whileLabel = createSymbol(UNDEFINED, createLabel(), NULL, 0);
+            whileLabel = createSymbol(UNDEFINED, createGenericLabel(), NULL, 0);
             insertInstructionNode(codeList, createInstruction(whileLabel->name, NULL, NULL, NULL));  //insert while label
             
             translateTreeIntoCode(tree->right, codeList); //generate code for while block
@@ -207,7 +209,18 @@ Symbol * addCurrentInstruction(struct TreeNode *tree, InstructionList * codeList
     return temp3;
 }
 
-char * createLabel() {
+void createParameterInstructions(struct TreeNode *parameters, InstructionList * codeList) {
+    if (parameters == NULL)
+        return;
+
+    translateTreeIntoCode(parameters->left, codeList);  //calculate parameter expression result
+    Symbol *expressionResult = codeList->last->instruction->result;
+    insertInstructionNode(codeList, createInstruction("PUSH", expressionResult, NULL, NULL)); //pushParameter
+
+    createParameterInstructions(parameters->right, codeList);
+}
+
+char * createGenericLabel() {
     char * label = malloc(12 * sizeof(char *));
     strcpy(label, "LABEL ");
     strcat(label, intToString(labelNumber));

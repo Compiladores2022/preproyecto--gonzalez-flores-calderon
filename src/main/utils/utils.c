@@ -130,8 +130,11 @@ int stringToOperation(char *string) {
     else if (strcmp(string, "while") == 0 || strcmp(string, "WHILE") == 0){
         return WHILE; 
     }
-
-    return -1;
+    else if (strcmp(string, "PUSH") == 0){
+        return PUSH; 
+    }else {
+        return -1;
+    }
 }
 
 void linkTreeRight(struct TreeNode * tree1, struct TreeNode * tree2){
