@@ -82,17 +82,20 @@ inil: {initialize(&list);} prog {   //checkMain(&list);
     ;    
 
 prog: TProgram '{' declList  methodDeclList '}' {   linkTreeRight($3, $4);
-                                                    $$ = $3; 
-                                                }
+                                                    $$ = $3; }
+
     | TProgram '{' methodDeclList '}'   { $$ = $3; }
     ;
 
-methodDeclList: methodDecl          { $$ = createNextTree($1, NULL); }
-
-    | methodDeclList methodDecl     { $$ = createNextTree($1, $2); }
+methodDeclList: methodDecl methodDeclList    { $$ = createNextTree($1, $2); 
+                                                // linkTreeRight($2, $1);
+                                                // $$ = $2;
+                                            }
+    | methodDecl          { $$ = createNextTree($1, NULL); }
     ;
 
-methodDecl: type ID '('  ')' body   {   if(search(&list, $2) != NULL){
+methodDecl: type ID '('  ')' body   {   printf("------------------------------> %s\n", $2);
+                                        if(search(&list, $2) != NULL){
                                             printf("Already defined method: %s", $2);
                                             yyerror();
                                         }
@@ -107,6 +110,7 @@ methodDecl: type ID '('  ')' body   {   if(search(&list, $2) != NULL){
                                 }
 
     | type ID '(' { openLevel(&list); } listParameters ')' body {   closeLevel(&list);   
+                                                                    printf("------------------------------> %s\n", $2);
                                                                     if(search(&list, $2) != NULL){
                                                                         yyerror();
                                                                     }
@@ -158,7 +162,7 @@ declList: decl          {   //$$ = createNextTree($1, NULL);
                             $$ = $1; 
                         }
 
-    | declList decl     { $$ = createNextTree($2, $1); }
+    | declList decl     { $$ = createNextTree($1, $2); }
     ;
 
 decl: type ID '=' expr ';'  {   if (searchInLevel(list.head->levelSymbols, $2) != NULL) {
@@ -177,7 +181,7 @@ statementList:  statement       {   //$$ = createNextTree($1, NULL);
                                     $$ = $1; 
                                 }
     
-    | statementList statement   { $$ = createNextTree($2, $1); }
+    | statementList statement   { $$ = createNextTree($1, $2); }
     ;
     
 statement: ID '=' expr ';'  {   //chequear que ese symbol no sea un metodo
