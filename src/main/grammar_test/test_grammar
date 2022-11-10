@@ -57,14 +57,14 @@ NORMAL=$(tput sgr0)
 error_message="(-> ERROR|Incompatible types|Conflicting types|Aborted|Segmentation fault)"
 
 declare -i file_number=1
-printf "Testing valid syntaxiss\n";
+printf "Testing valid syntaxis\n";
 for file in ../test/resources/testSintaxis/acceptedPrograms/*; do
     testValidSyntaxis
 done
 checkAllTestsPassed $total_tests $passed_tests failed_tests "All valid syntaxis tests passed"
 
 file_number=1
-printf "\n\n\nTesting Invalid syntaxiss\n";
+printf "\n\n\nTesting invalid syntaxis\n";
 for file in ../test/resources/testSintaxis/invalidPrograms/*; do
     testInvalidSyntaxis    
 done

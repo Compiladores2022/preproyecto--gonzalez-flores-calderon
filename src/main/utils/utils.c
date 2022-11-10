@@ -2,7 +2,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "symbol_list/symbol_list.h"
+#include "../types/enumeration.h"
+#include "../parameter_list/parameter_list.h"
+#include "../symbol_list/symbol_list.h"
 
 char * enumToString(types type) {
     switch (type) {
@@ -30,18 +32,26 @@ struct TreeNode * createNextTree(struct TreeNode *left, struct TreeNode *right) 
     return newTree;
 }
 
-struct TreeNode * createNewTree(types symbolType, struct TreeNode *left, struct TreeNode *right, char *operation, int offset) {
+struct TreeNode * createNewTree(types symbolType, struct TreeNode *left, struct TreeNode *right, char *operation, int offset, identifierType identifiertype) {
     Symbol *s = createSymbol(symbolType, operation, NULL, offset);
+    addIdentifierType(s, identifiertype);
+    struct TreeNode * newTree = createTree(s, left, right);
+    return newTree;
+}
+
+struct TreeNode * createNewTreeWithParameters(types symbolType, struct TreeNode *left, struct TreeNode *right, char *operation, int offset, struct ParameterList *parameterList, identifierType identifiertype) {
+    Symbol *s = createSymbolWithParameter(symbolType, operation, NULL, offset, parameterList);
+    addIdentifierType(s, identifiertype);   
     struct TreeNode * newTree = createTree(s, left, right);
     return newTree;
 }
 
 int arithmeticOperation(char * operation) {
-    return !(strcmp(operation, "+") && strcmp(operation, "-") && strcmp(operation, "*"));
+    return !(strcmp(operation, "+") && strcmp(operation, "-") && strcmp(operation, "*") && strcmp(operation, "/") && strcmp(operation, "%"));
 }
 
 int booleanOperation(char * operation) {
-    return !(strcmp(operation, "&&") && strcmp(operation, "||"));
+    return !(strcmp(operation, "&&") && strcmp(operation, "||") && strcmp(operation, "!"));
 }
 
 int digitLength(int number) {
@@ -71,10 +81,16 @@ int stringToOperation(char *string) {
         return ADD;
     }
     else if (strcmp(string, "-") == 0 || strcmp(string, "SUB") == 0){
-        return SUB; 
+        return SUB;
     }
     else if (strcmp(string, "*") == 0 || strcmp(string, "MULT") == 0){
         return MULT;
+    }
+    else if (strcmp(string, "/") == 0 || strcmp(string, "DIV") == 0){
+        return DIV;
+    }
+    else if (strcmp(string, "%") == 0 || strcmp(string, "MOD") == 0){
+        return MOD;
     }
     else if (strcmp(string, "&&") == 0 || strcmp(string, "AND") == 0){
         return AND; 
@@ -82,14 +98,44 @@ int stringToOperation(char *string) {
     else if (strcmp(string, "||") == 0 || strcmp(string, "OR") == 0){
         return OR; 
     }
+    else if (strcmp(string, "!") == 0 || strcmp(string, "NOT") == 0){
+        return NOT; 
+    }
     else if (strcmp(string, "=") == 0 || strcmp(string, "ASSIG") == 0){
         return ASSIG; 
     }
+    else if (strcmp(string, "==") == 0 || strcmp(string, "EQUAL") == 0){
+        return EQUAL; 
+    }
+    else if (strcmp(string, "<") == 0 || strcmp(string, "GREAT") == 0){
+        return GREAT; 
+    }
+    else if (strcmp(string, ">") == 0 || strcmp(string, "LESS") == 0){
+        return LESS; 
+    }
     else if (strcmp(string, "return") == 0 || strcmp(string, "RET") == 0){
         return RET; 
-    }    
-
-    return -1;
+    }
+    else if (strcmp(string, "methoddecl") == 0 || strcmp(string, "METHDECL") == 0){
+        return METHDECL; 
+    }
+    else if (strcmp(string, "methodcall") == 0 || strcmp(string, "METHCALL") == 0){
+        return METHCALL; 
+    }
+    else if (strcmp(string, "if") == 0 || strcmp(string, "IF") == 0){
+        return IF; 
+    }
+    else if (strcmp(string, "ifelse") == 0 || strcmp(string, "IFELSE") == 0){
+        return IFELSE; 
+    }
+    else if (strcmp(string, "while") == 0 || strcmp(string, "WHILE") == 0){
+        return WHILE; 
+    }
+    else if (strcmp(string, "PUSH") == 0){
+        return PUSH; 
+    }else {
+        return -1;
+    }
 }
 
 void linkTreeRight(struct TreeNode * tree1, struct TreeNode * tree2){
@@ -112,14 +158,12 @@ void createAssemblerFile(char * assemblerCode){
     fclose(program);
 }
 
-int checkMain(SymbolList symbolList){
-    
-    struct levelNode *ln = symbolList.head;
-    while (ln != NULL){
-        if (strcmp(symbolList.head->levelSymbols->info->name, "main") == 0){
-            return 1;
-        }
-        ln = ln->next;  
+int checkMain(SymbolList *symbolList){
+    Symbol *example = search(symbolList, "+");
+    // printf("%d\n", example->type);
+    if(example == NULL){
+        printf("Main not define\n");
+        exit(0);
     }
     return 0;
 }

@@ -1,8 +1,8 @@
-#include "sintactic_analysis_tree.h"
-#include "../utils/utils.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include "sintactic_analysis_tree.h"
+#include "../utils/utils.h"
 
 int operationType(char * operation, types typeL, types typeR);
 int arithmeticOperation(char * operation);
@@ -10,6 +10,8 @@ int booleanOperation(char * operation);
 int asignType(char * operation, types typeL, types typeR);
 
 int typeErrors = 0;
+types typeMethod;
+struct ParameterList *paramList;
 
 struct TreeNode * CreateEmptyNode() {
     struct TreeNode *newNode;
@@ -127,8 +129,13 @@ int checkTypeTree(struct TreeNode *tree) {
         validTree = validTree && checkTypeTree(tree->left);  
     }
 
-    if(tree->left != NULL && strcmp(tree->left->info->name, "methoddecl") == 0){
+    if(tree->left != NULL && tree->left->info->it == METHOD){
+        typeMethod = tree->left->info->it;
         validTree = validTree && checkTypeTree(tree->left);
+    }
+
+    if(tree->left != NULL && tree->left->info->it == METHODCALL){
+        paramList = tree->info->parameterList;
     }
     
     //checking the partner type for the operation    
@@ -155,15 +162,15 @@ int checkTypeTree(struct TreeNode *tree) {
             
         }
         
-        if(strcmp(tree->left->info->name, "methoddecl") == 0){
-            if(tree->info->type != tree->right->info->type){
-                printf("\033[0;31merror:\033[0m Incompatible types: %s cannot be converted to %s", enumToString(tree->info->type), enumToString(tree->right->info->type));         
-                exit(0);
-            }
-        }
         //No se si en el return esta bien asi que sea a la izquierda o tendria que ser a la derecha,
         // porque a la redecha en el return es donde esta el tipo
         tree->info->type = tree->left->info->type;
+        if(strcmp(tree->right->info->name, "return") == 0){
+            if(tree->info->type != typeMethod){
+                printf("\033[0;31merror:\033[0m Incompatible types: %s cannot be converted to %s", enumToString(tree->info->type), enumToString(typeMethod));         
+                exit(0);
+            }
+        }
     }
     if(tree->right != NULL && strcmp(tree->right->info->name, "next") == 0){
         checkTypeTree(tree->right);
