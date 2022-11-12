@@ -23,4 +23,6 @@ void addType(Symbol *symbol, types type);
 
 void addValue(Symbol *symbol, void *value);
 
+void replaceIdentifierType(Symbol *symbol, identifierType identifierType);
+
 #endif
