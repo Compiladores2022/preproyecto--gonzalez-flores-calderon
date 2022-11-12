@@ -15,6 +15,7 @@ Symbol * addCurrentInstruction(struct TreeNode *tree, InstructionList * codeList
 void createParameterInstructions(struct TreeNode *parameters, InstructionList * codeList);
 char * createLabel(char *name);
 char * createGenericLabel();
+char * getOperationName(Symbol * s);
 
 /*
  * takes a decorated tree and returns an equivalent three address code program as a list of instructions
@@ -78,60 +79,43 @@ Symbol * addCurrentInstruction(struct TreeNode *tree, InstructionList * codeList
     }
     Symbol *temp3 = NULL, *elseLabel = NULL, *endLabel = NULL, *whileLabel = NULL, *expressionResult = NULL, *methodLabel = NULL;
     int *operationResult = (int*) malloc(sizeof(int));
-    struct Instruction * instruction;
-    switch (stringToOperation(tree->info->name)) { //creates the instruction
+    struct Instruction * instruction = NULL;
+    char * operation = getOperationName(tree->info);
+    switch (stringToOperation(operation)) { //creates the instruction
         case ADD:
             temp3 = tree->info;
-            *operationResult = *(int*)temp1->value + *(int*)temp2->value;
-            temp3->value = operationResult;
             instruction = createInstruction("ADD", temp1, temp2, temp3);
             break;
         case SUB:
             temp3 = tree->info;
             if (temp2 == NULL) {
-                *operationResult = - *(int*)temp1->value;
-                temp3->value = operationResult;
                 instruction = createInstruction("SUB", temp1, NULL, temp3);
             } else {
-                *operationResult = *(int*)temp1->value - *(int*)temp2->value;
-                temp3->value = operationResult;
                 instruction = createInstruction("SUB", temp1, temp2, temp3);
             }
             break;
         case MULT:
             temp3 = tree->info;
-            *operationResult = *(int*)temp1->value * *(int*)temp2->value;
-            temp3->value = operationResult;
             instruction = createInstruction("MULT", temp1, temp2, temp3);
             break;
         case DIV:
             temp3 = tree->info;
-            *operationResult = *(int*)temp1->value / *(int*)temp2->value;
-            temp3->value = operationResult;
             instruction = createInstruction("DIV", temp1, temp2, temp3);
             break;
         case MOD:
             temp3 = tree->info;
-            *operationResult = *(int*)temp1->value % *(int*)temp2->value;
-            temp3->value = operationResult;
             instruction = createInstruction("MOD", temp1, temp2, temp3);
             break;
         case AND:
             temp3 = tree->info;
-            *operationResult = *(int*)temp1->value && *(int*)temp2->value;
-            temp3->value = operationResult;
             instruction = createInstruction("AND", temp1, temp2, temp3);
             break;
         case OR:
             temp3 = tree->info;
-            *operationResult = *(int*)temp1->value || *(int*)temp2->value;
-            temp3->value = operationResult;
             instruction = createInstruction("OR", temp1, temp2, temp3);
             break;
         case NOT:
             temp3 = tree->info;
-            *operationResult = !*(int*)temp1->value;
-            temp3->value = operationResult;
             instruction = createInstruction("NOT", temp1, NULL, temp3);
             break;
         case ASSIG:
@@ -140,20 +124,14 @@ Symbol * addCurrentInstruction(struct TreeNode *tree, InstructionList * codeList
             break;
         case EQUAL:
             temp3 = tree->info;
-            *operationResult = *(int*)temp1->value == *(int*)temp2->value;
-            temp3->value = operationResult;
             instruction = createInstruction("EQUAL", temp1, temp2, temp3);
             break;
         case GREAT:
             temp3 = tree->info;
-            *operationResult = *(int*)temp1->value < *(int*)temp2->value;
-            temp3->value = operationResult;
             instruction = createInstruction("GREAT", temp1, temp2, temp3);
             break;
         case LESS:
             temp3 = tree->info;
-            *operationResult = *(int*)temp1->value > *(int*)temp2->value;
-            temp3->value = operationResult;
             instruction = createInstruction("LESS", temp1, temp2, temp3);
             break;
         case RET:
@@ -163,8 +141,7 @@ Symbol * addCurrentInstruction(struct TreeNode *tree, InstructionList * codeList
         case METHDECL:
             methodLabel = createSymbol(UNDEFINED, createLabel(tree->left->info->name), NULL, 0);
             insertInstructionNode(codeList, createInstruction("METHDECL", methodLabel, tree->left->info, NULL));
-            translateTreeIntoCode(tree->left->left, codeList);    //load method content
-            instruction = createInstruction("RET", NULL, NULL, NULL);
+            translateTreeIntoCode(tree->left, codeList);    //load method content
             break;
         case METHCALL:
             createParameterInstructions(tree->left, codeList);
@@ -205,7 +182,9 @@ Symbol * addCurrentInstruction(struct TreeNode *tree, InstructionList * codeList
             exit(0);
     }
     
-    insertInstructionNode(codeList, instruction);
+    if (instruction != NULL) {
+        insertInstructionNode(codeList, instruction);
+    }
     return temp3;
 }
 
@@ -235,4 +214,14 @@ char * createLabel(char* name) {
     strcpy(label, name);
     
     return label;
+}
+
+char * getOperationName(Symbol * s) {
+    if (s->it == METHOD) {
+        return "methoddecl";
+    } else if (s->it == METHODCALL) {
+        return "methodcall";
+    } else {
+        return s->name;
+    }
 }
