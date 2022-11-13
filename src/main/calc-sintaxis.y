@@ -165,8 +165,8 @@ block: '{' '}' { $$ = NULL; }
     ;
 
 //ver si a $$ va = $1 o se debe hacer $$ = createNextTree($1, NULL);
-declList: decl          {   //$$ = createNextTree($1, NULL);
-                            $$ = $1; 
+declList: decl          {   $$ = createNextTree($1, NULL);
+                            // $$ = $1; 
                         }
 
     | declList decl     { $$ = createNextTree($1, $2); }
@@ -184,11 +184,12 @@ decl: type ID '=' expr ';'  {   if (searchInLevel(list.head->levelSymbols, $2) !
                             }   
     ;
 //ver si a $$ va = $1 o se debe hacer $$ = createNextTree($1, NULL); 
-statementList:  statement       {   //$$ = createNextTree($1, NULL);
-                                    $$ = $1; 
+statementList:  statement       {   $$ = createNextTree($1, NULL);
+                                    // $$ = $1; 
                                 }
-    
-    | statementList statement   { $$ = createNextTree($1, $2); }
+                                
+                                //se cambio ($1, $2) por ($2, $1) 
+    | statementList statement   { $$ = createNextTree($2, $1); }
     ;
     
 statement: ID '=' expr ';'  {   //chequear que ese symbol no sea un metodo
@@ -210,7 +211,7 @@ statement: ID '=' expr ';'  {   //chequear que ese symbol no sea un metodo
 
     | TWhile expr block     { $$ = createNewTree(UNDEFINED, $2, $3, "while", 0, TYPELESS); }
 
-    | TReturn expr ';'  {   $$ = createNewTree(UNDEFINED, NULL, $2, "return", 0, TYPELESS); }
+    | TReturn expr ';'  { $$ = createNewTree(UNDEFINED, NULL, $2, "return", 0, TYPELESS); }
 
     | ';'           { $$ = NULL; }
 
@@ -225,13 +226,14 @@ methodCall: ID '(' exprList ')' {   Symbol * methodSymb = search(&list, $1);
                                         printf("This name not a method: %s", $1);
                                         yyerror();
                                     }
-                                    Symbol *copySymbol = methodSymb;
-                                    replaceIdentifierType(copySymbol, METHODCALL);
-                                    $$ = createTree(methodSymb, $3, NULL);
+                                    // Symbol *copySymbol = createSymbolWithParameter(methodSymb->type, methodSymb->name, NULL, 0, methodSymb->parameterList);
+                                    // addIdentifierType(copySymbol, METHODCALL);
+                                    $$ = createNewTreeWithParameters(methodSymb->type, $3, NULL, methodSymb->name, 0, methodSymb->parameterList, METHODCALL);
+                                    // $$ = createTree(copySymbol, $3, NULL);
                                 }
     ;
 
-exprList: expr      { $$ = $1; }
+exprList: expr      { $$ = createNextTree($1, NULL); }
 
     | expr ',' exprList { $$ = createNextTree($1, $3); }
     ;
