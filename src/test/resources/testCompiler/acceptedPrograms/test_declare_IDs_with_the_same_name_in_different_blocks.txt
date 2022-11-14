@@ -19,6 +19,6 @@ program {
     }
 
     void main() {
-        return method2() == method3();
+        method2() == method3();
     }
 }
