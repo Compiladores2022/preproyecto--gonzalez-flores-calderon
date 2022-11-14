@@ -123,35 +123,30 @@ int checkTypeTree(struct TreeNode *tree) {
     }
     
     if(tree->right != NULL && tree->right->info->type == UNDEFINED && strcmp(tree->right->info->name, "next") != 0){                
-        // printf("symbol: %s\n", tree->right->info->name);        
         validTree = validTree && checkTypeTree(tree->right);
     }
     
     if(tree->left != NULL && tree->left->info->type == UNDEFINED){
-        // printf("symbol: %s\n", tree->left->info->name);
         validTree = validTree && checkTypeTree(tree->left);  
     }
 
     if(tree->left != NULL && tree->left->info->it == METHOD){
         typeMethod = tree->left->info->it;
-        // printf("symbol: %s tipo: %d\n", tree->left->info->name, tree->left->info->type);
         validTree = validTree && checkTypeTree(tree->left);
     }
 
     if(tree->left != NULL && tree->left->info->it == METHODCALL){
-        paramList = tree->info->parameterList;
-        checkTypeTree(tree->left);
+        validTree = validTree && checkTypeTree(tree->left->left);
+        validTree = validTree && checkParameters(tree->left->left, tree->left->info->parameterList->head);
     }
 
     if(tree->right != NULL && tree->right->info->it == METHODCALL){
-        paramList = tree->right->info->parameterList;
-        checkTypeTree(tree->left);
+        validTree = validTree && checkTypeTree(tree->right->left);
+        validTree = validTree && checkParameters(tree->right->left, tree->right->info->parameterList->head);
     }
     
     //checking the partner type for the operation    
     if(strcmp(tree->info->name, "next") != 0 && tree->left != NULL && tree->right != NULL){
-        // printf("symbol: %s\n", tree->left->info->name);
-        // printf("symbol: %s\n", tree->right->info->name);
         if(strcmp(tree->info->name, "=") == 0){
             validTree = validTree && asignType(tree->info->name, tree->left->info->type, tree->right->info->type);
         }   
@@ -186,27 +181,24 @@ int checkTypeTree(struct TreeNode *tree) {
         }
     }
 
-    printf("tree = %s\n", tree->info->name);
-    if(tree->info->it == METHODCALL){
-        printf("ENTRO AL METHODCALL\n"); 
-        printf("left = %s, type = %d\n", tree->left->info->name, tree->left->info->type);
-        // printf("aaaaa\n");
-        // if(tree->left->info->type != paramList->head->info->type){
-        //     printf("\033[0;31merror:\033[0m Incompatible types: %s cannot be converted to %s", enumToString(tree->info->type), enumToString(paramList->head->info->type));
-        //     exit(0);
-        // }
-    }
-
-    if(strcmp(tree->info->name, "next") == 0){
-        // printf("symbol: %s tipo: %d\n", tree->info->name, tree->info->type);
-        tree->info->type = tree->left->info->type;
-    }
-
     if(tree->right != NULL && strcmp(tree->right->info->name, "next") == 0){
-        // printf("entro al la otra parte\n");
-        // printf("symbol: %s tipo: %d\n", tree->right->left->left->left->right->left->left->info->name, tree->right->left->left->left->right->left->left->info->type);
-
         checkTypeTree(tree->right);
     }
+
     return validTree;
 }   
+
+int checkParameters(struct TreeNode *tree,  struct ParameterNode *list){
+    
+    if(tree->left != NULL && tree->left->info->type != UNDEFINED){
+        if(tree->left->info->type != list->info->type){
+            printf("\033[0;31merror:\033[0m Incompatible types: %s cannot be converted to %s\n", enumToString(tree->left->info->type), enumToString(list->info->type));
+            exit(0);
+        }
+    }
+
+    if(tree->right != NULL && tree->right != NULL && strcmp(tree->right->info->name, "next") == 0){
+        checkParameters(tree->right, list->next);
+    }
+
+}
