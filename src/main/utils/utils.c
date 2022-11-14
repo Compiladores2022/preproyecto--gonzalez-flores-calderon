@@ -47,11 +47,19 @@ struct TreeNode * createNewTreeWithParameters(types symbolType, struct TreeNode 
 }
 
 int arithmeticOperation(char * operation) {
-    return !(strcmp(operation, "+") && strcmp(operation, "-") && strcmp(operation, "*") && strcmp(operation, "/") && strcmp(operation, "%"));
+    return !(strcmp(operation, "+") && 
+                strcmp(operation, "-") && 
+                strcmp(operation, "*") && 
+                strcmp(operation, "/") && 
+                strcmp(operation, "%"));
 }
 
 int booleanOperation(char * operation) {
-    return !(strcmp(operation, "&&") && strcmp(operation, "||") && strcmp(operation, "!"));
+    return !(strcmp(operation, "&&") && 
+                strcmp(operation, "||") && 
+                strcmp(operation, "!") &&
+                strcmp(operation, "<") &&
+                strcmp(operation, ">"));
 }
 
 int digitLength(int number) {
@@ -159,10 +167,9 @@ void createAssemblerFile(char * assemblerCode){
 }
 
 int checkMain(SymbolList *symbolList){
-    Symbol *example = search(symbolList, "+");
-    // printf("%d\n", example->type);
+    Symbol *example = search(symbolList, "main");
     if(example == NULL){
-        printf("Main not define\n");
+        printf("Main not defined\n");
         exit(0);
     }
     return 0;
