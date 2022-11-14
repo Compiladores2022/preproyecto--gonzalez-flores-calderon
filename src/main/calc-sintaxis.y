@@ -76,7 +76,7 @@ int yylex();
 
 %%
 
-inil: {initialize(&list);} prog {   //checkMain(&list);
+inil: {initialize(&list);} prog {   checkMain(&list);
                                     printTree($2); 
                                     checkTypeTree($2);
                                 }
@@ -284,7 +284,7 @@ expr: ID {  Symbol *s = search(&list, $1);
     | expr TOR expr     {   offset += 8;
                             $$ = createNewTree(UNDEFINED, $1, $3, "||", offset, TYPELESS); }
 
-    | '-' expr %prec UNARYPREC {
+    | TMENOS expr %prec UNARYPREC {
                         offset += 8;
                         $$ = createNewTree(UNDEFINED, $2, NULL, "-", offset, TYPELESS); }
 
