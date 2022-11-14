@@ -169,7 +169,7 @@ void createAssemblerFile(char * assemblerCode){
 int checkMain(SymbolList *symbolList){
     Symbol *example = search(symbolList, "main");
     if(example == NULL){
-        printf("Main not defined\n");
+        printf("\033[0;31mERROR:\033[0m Main not defined\n");
         exit(0);
     }
     return 0;
