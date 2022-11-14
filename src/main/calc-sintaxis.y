@@ -76,11 +76,11 @@ int yylex();
 
 %%
 
-inil: {initialize(&list);} prog {   //checkMain(&list);
+inil: {initialize(&list);} prog {   checkMain(&list);
                                     printTree($2); 
                                     checkTypeTree($2);
-                                    // InstructionList * intermediateCode = generateIntermediateCode($2);
-                                    // printInstructionList(intermediateCode);
+                                    //InstructionList * intermediateCode = generateIntermediateCode($2);
+                                    //printInstructionList(intermediateCode);
                                 }
     ;    
 
@@ -90,10 +90,8 @@ prog: TProgram '{' declList  methodDeclList '}' {   linkTreeRight($3, $4);
     | TProgram '{' methodDeclList '}'   { $$ = $3; }
     ;
 
-methodDeclList: methodDecl methodDeclList    { $$ = createNextTree($1, $2); 
-                                                // linkTreeRight($2, $1);
-                                                // $$ = $2;
-                                            }
+methodDeclList: methodDecl methodDeclList    { $$ = createNextTree($1, $2); }
+    
     | methodDecl          { $$ = createNextTree($1, NULL); }
     ;
 
@@ -166,10 +164,7 @@ block: '{' '}' { $$ = NULL; }
     | '{' statementList '}' { $$ = $2; }
     ;
 
-//ver si a $$ va = $1 o se debe hacer $$ = createNextTree($1, NULL);
-declList: decl          {   $$ = createNextTree($1, NULL);
-                            // $$ = $1; 
-                        }
+declList: decl          {   $$ = createNextTree($1, NULL); }
 
     | declList decl     { $$ = createNextTree($1, $2); }
     ;
@@ -185,17 +180,12 @@ decl: type ID '=' expr ';'  {   if (searchInLevel(list.head->levelSymbols, $2) !
                                 $$ = createNewTree(UNDEFINED, idNode, $4, "=", 0, TYPELESS); 
                             }   
     ;
-//ver si a $$ va = $1 o se debe hacer $$ = createNextTree($1, NULL); 
-statementList:  statement       {   $$ = createNextTree($1, NULL);
-                                    // $$ = $1; 
-                                }
+statementList:  statement       {   $$ = createNextTree($1, NULL); }
                                 
-                                //se cambio ($1, $2) por ($2, $1) 
     | statementList statement   { $$ = createNextTree($2, $1); }
     ;
     
-statement: ID '=' expr ';'  {   //chequear que ese symbol no sea un metodo
-                                Symbol * idSymbol = search(&list, $1);
+statement: ID '=' expr ';'  {   Symbol * idSymbol = search(&list, $1);
                                 if (idSymbol == NULL) { 
                                     printf("Undefined Symbol %s", $1);
                                     yyerror();
@@ -209,7 +199,8 @@ statement: ID '=' expr ';'  {   //chequear que ese symbol no sea un metodo
     | TIf '(' expr ')' TThen block { $$ = createNewTree(UNDEFINED, $3, $6, "if", 0, TYPELESS); }
     
     | TIf '(' expr ')' TThen block TElse block  {   struct TreeNode *ifElse = createNewTree(UNDEFINED, $6, $8, "ifelse", 0, TYPELESS);
-                                                    $$ = createNewTree(UNDEFINED, $3, ifElse, "if", 0, TYPELESS); }
+                                                    $$ = createNewTree(UNDEFINED, $3, ifElse, "if", 0, TYPELESS); 
+                                                }
 
     | TWhile '(' expr ')' block     { $$ = createNewTree(UNDEFINED, $3, $5, "while", 0, TYPELESS); }
 
@@ -228,13 +219,10 @@ methodCall: ID '(' exprList ')' {   Symbol * methodSymb = search(&list, $1);
                                         printf("This name not a method: %s", $1);
                                         yyerror();
                                     }
-                                    // Symbol *copySymbol = createSymbolWithParameter(methodSymb->type, methodSymb->name, NULL, 0, methodSymb->parameterList);
-                                    // addIdentifierType(copySymbol, METHODCALL);
                                     $$ = createNewTreeWithParameters(methodSymb->type, $3, NULL, methodSymb->name, 0, methodSymb->parameterList, METHODCALL);
-                                    // $$ = createTree(copySymbol, $3, NULL);
                                 }
 
-    | ID '(' ')' {   Symbol * methodSymb = search(&list, $1);
+    | ID '(' ')'                {   Symbol * methodSymb = search(&list, $1);
                                     if ( methodSymb == NULL) {
                                         printf("Undefined method: %s", $1);
                                         yyerror();
@@ -242,10 +230,7 @@ methodCall: ID '(' exprList ')' {   Symbol * methodSymb = search(&list, $1);
                                         printf("This name not a method: %s", $1);
                                         yyerror();
                                     }
-                                    // Symbol *copySymbol = createSymbolWithParameter(methodSymb->type, methodSymb->name, NULL, 0, methodSymb->parameterList);
-                                    // addIdentifierType(copySymbol, METHODCALL);
-                                    $$ = createNewTreeWithParameters(methodSymb->type, NULL, NULL, methodSymb->name, 0, methodSymb->parameterList, METHODCALL);
-                                    // $$ = createTree(copySymbol, $3, NULL);
+                                    $$ = createNewTreeWithParameters(methodSymb->type, NULL, NULL, methodSymb->name, 0, methodSymb->parameterList, METHODCALL); 
                                 }
     ;
 
@@ -254,19 +239,20 @@ exprList: expr      { $$ = createNextTree($1, NULL); }
     | expr ',' exprList { $$ = createNextTree($1, $3); }
     ;
 
-expr: ID {  Symbol *s = search(&list, $1);
-            if (s == NULL) {
-                printf("Undefined symbol %s\n", $1);
-                yyerror();
+expr: ID    {   Symbol *s = search(&list, $1);
+                if (s == NULL) {
+                    printf("Undefined symbol %s\n", $1);
+                    yyerror();
+                }
+                $$ = createNode(s); 
             }
-            $$ = createNode(s); }
 
     | methodCall        {   if($1->info->type == TYPEVOID){
                                 printf("Method void not use to expr: %s", $1->info->name);
                                 yyerror();
                             }    
                             $$ = $1; 
-                        } //Agregar caso en que el metodo el void no se puede asignar a nada 
+                        } 
 
     | literal           { $$ = $1; }
 
@@ -300,9 +286,8 @@ expr: ID {  Symbol *s = search(&list, $1);
     | expr TOR expr     {   offset += 8;
                             $$ = createNewTree(UNDEFINED, $1, $3, "||", offset, TYPELESS); }
 
-    | TMENOS expr %prec UNARYPREC {
-                        offset += 8;
-                        $$ = createNewTree(UNDEFINED, $2, NULL, "-", offset, TYPELESS); }
+    | TMENOS expr %prec UNARYPREC   {   offset += 8;
+                                        $$ = createNewTree(UNDEFINED, $2, NULL, "-", offset, TYPELESS); }
 
     | '!' expr %prec UNARYPREC {
                         offset += 8;
@@ -311,18 +296,20 @@ expr: ID {  Symbol *s = search(&list, $1);
     | '(' expr ')' { $$ = $2; }
     ;
 
-literal: VALORINT  {   char *str = intToString($1);
-                    int * a = (int*) malloc(sizeof(int));
-                    *a = $1;  
-                    Symbol *s = createSymbol(TYPEINT, str, a, 0);
-                    struct TreeNode *newNode = createNode(s);
-                    $$ = newNode; }
+literal: VALORINT   {   char *str = intToString($1);
+                        int * a = (int*) malloc(sizeof(int));
+                        *a = $1;  
+                        Symbol *s = createSymbol(TYPEINT, str, a, 0);
+                        struct TreeNode *newNode = createNode(s);
+                        $$ = newNode; 
+                    }
 
     | VALORBOOL {   char * boolValue = $1 == 1 ? "true" : "false";
                     int * a = (int*) malloc(sizeof(int));
                     *a = $1;  
                     Symbol *s = createSymbol(TYPEBOOL, boolValue, a, 0);
-                    $$ = createNode(s); }
+                    $$ = createNode(s); 
+                }
     ;
 
 VALORINT: INT { $$ = $1; }
