@@ -41,7 +41,11 @@ struct TreeNode * createNewTree(types symbolType, struct TreeNode *left, struct 
 
 struct TreeNode * createNewTreeWithParameters(types symbolType, struct TreeNode *left, struct TreeNode *right, char *operation, int offset, struct ParameterList *parameterList, identifierType identifiertype) {
     Symbol *s = createSymbolWithParameter(symbolType, operation, NULL, offset, parameterList);
-    addIdentifierType(s, identifiertype);   
+    addIdentifierType(s, identifiertype);
+    if(identifiertype == METHODCALL){
+        struct TreeNode * newNode = createNode(s);
+        return newNode;
+    }   
     struct TreeNode * newTree = createTree(s, left, right);
     return newTree;
 }
