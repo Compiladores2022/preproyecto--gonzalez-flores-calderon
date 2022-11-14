@@ -137,12 +137,13 @@ int ifType(struct TreeNode * tree){
 }
 
 int angleBracketsType(struct TreeNode * tree){
-    if(tree->left->info->type != TYPEINT && tree->right->info->type != TYPEINT){
+    if(tree->left->info->type != TYPEINT || tree->right->info->type != TYPEINT){
         printf("\033[0;31merror:\033[0m Incompatible types for %s operation\nexpected: INT %s INT\nfound: %s %s %s \n", tree->info->name, tree->info->name, enumToString(tree->left->info->type), tree->info->name, enumToString(tree->right->info->type));
         exit(0);
     }
 
     tree->info->type = TYPEBOOL;
+    return 1;
 }
 
 int arithmeticType(struct TreeNode * tree){
@@ -209,7 +210,7 @@ int checkTypeTree(struct TreeNode *tree) {
 
     if(strcmp(tree->info->name, "!") == 0){
         if(tree->left->info->type != TYPEBOOL){
-            printf("\033[0;31merror:\033[0m Incompatible types: %s cannot be converted to %s\n", enumToString(tree->info->type), enumToString(typeMethod));         
+            printf("\033[0;31merror:\033[0m Incompatible types: %s cannot be converted to %s\n", enumToString(tree->left->info->type), enumToString(TYPEBOOL));         
             exit(0);             
         }
         tree->info->type = tree->left->info->type;
