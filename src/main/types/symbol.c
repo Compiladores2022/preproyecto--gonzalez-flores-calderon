@@ -1,5 +1,6 @@
 #include "symbol.h"
 #include "../utils/utils.h"
+#include "../types/enumeration.h"
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -65,5 +66,8 @@ void addIdentifierType(Symbol *symbol, identifierType identifierType){
         exit(0);
     }
     symbol->it = identifierType;
+}
 
+void replaceIdentifierType(Symbol *symbol, identifierType identifiertype){
+    symbol->it = identifiertype;
 }

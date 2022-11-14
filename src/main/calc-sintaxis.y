@@ -76,8 +76,9 @@ int yylex();
 
 %%
 
-inil: {initialize(&list);} prog {   //checkMain(&list);
+inil: {initialize(&list);} prog {   checkMain(&list);
                                     printTree($2); 
+                                    checkTypeTree($2);
                                 }
     ;    
 
@@ -94,34 +95,40 @@ methodDeclList: methodDecl methodDeclList    { $$ = createNextTree($1, $2);
     | methodDecl          { $$ = createNextTree($1, NULL); }
     ;
 
-methodDecl: type ID '('  ')' body   {   printf("------------------------------> %s\n", $2);
-                                        if(search(&list, $2) != NULL){
+methodDecl: type ID '('  ')' body   {   if(search(&list, $2) != NULL){
                                             printf("Already defined method: %s", $2);
                                             yyerror();
                                         }
-                                        $$ = createNewTree($1, $5, NULL, $2, 0, METHOD);    
+                                        struct TreeNode *treeMethod = createNewTree($1, $5, NULL, $2, 0, METHOD);
+                                        insert(&list, treeMethod->info);
+                                        $$ = treeMethod;    
                                     }
 
     | TVOID ID '('  ')' body    {   if(search(&list, $2) != NULL){
                                         printf("Already defined method: %s", $2);
                                         yyerror();
                                     } 
-                                    $$ = createNewTree(TYPEVOID, $5, NULL, $2, 0, METHOD);
+                                    struct TreeNode *treeMethod = createNewTree(TYPEVOID, $5, NULL, $2, 0, METHOD);
+                                    insert(&list, treeMethod->info);
+                                    $$ = treeMethod;
                                 }
 
     | type ID '(' { openLevel(&list); } listParameters ')' body {   closeLevel(&list);   
-                                                                    printf("------------------------------> %s\n", $2);
                                                                     if(search(&list, $2) != NULL){
                                                                         yyerror();
                                                                     }
-                                                                    $$ = createNewTreeWithParameters($1, $7, NULL, $2, 0, $5, METHOD);
+                                                                    struct TreeNode *treeMethod = createNewTreeWithParameters($1, $7, NULL, $2, 0, $5, METHOD);
+                                                                    insert(&list, treeMethod->info);
+                                                                    $$ = treeMethod;
                                                                 }
 
     | TVOID ID '(' { openLevel(&list);} listParameters ')' body {   closeLevel(&list);   
                                                                     if(search(&list, $2) != NULL){
                                                                         yyerror();
                                                                     }
-                                                                    $$ = createNewTreeWithParameters(TYPEVOID, $7, NULL, $2, 0, $5, METHOD);
+                                                                    struct TreeNode *treeMethod = createNewTreeWithParameters(TYPEVOID, $7, NULL, $2, 0, $5, METHOD);
+                                                                    insert(&list, treeMethod->info);
+                                                                    $$ = treeMethod;
                                                                 }
     ;
 
@@ -158,8 +165,8 @@ block: '{' '}' { $$ = NULL; }
     ;
 
 //ver si a $$ va = $1 o se debe hacer $$ = createNextTree($1, NULL);
-declList: decl          {   //$$ = createNextTree($1, NULL);
-                            $$ = $1; 
+declList: decl          {   $$ = createNextTree($1, NULL);
+                            // $$ = $1; 
                         }
 
     | declList decl     { $$ = createNextTree($1, $2); }
@@ -177,11 +184,12 @@ decl: type ID '=' expr ';'  {   if (searchInLevel(list.head->levelSymbols, $2) !
                             }   
     ;
 //ver si a $$ va = $1 o se debe hacer $$ = createNextTree($1, NULL); 
-statementList:  statement       {   //$$ = createNextTree($1, NULL);
-                                    $$ = $1; 
+statementList:  statement       {   $$ = createNextTree($1, NULL);
+                                    // $$ = $1; 
                                 }
-    
-    | statementList statement   { $$ = createNextTree($1, $2); }
+                                
+                                //se cambio ($1, $2) por ($2, $1) 
+    | statementList statement   { $$ = createNextTree($2, $1); }
     ;
     
 statement: ID '=' expr ';'  {   //chequear que ese symbol no sea un metodo
@@ -203,7 +211,7 @@ statement: ID '=' expr ';'  {   //chequear que ese symbol no sea un metodo
 
     | TWhile expr block     { $$ = createNewTree(UNDEFINED, $2, $3, "while", 0, TYPELESS); }
 
-    | TReturn expr ';'  {   $$ = createNewTree(UNDEFINED, NULL, $2, "return", 0, TYPELESS); }
+    | TReturn expr ';'  { $$ = createNewTree(UNDEFINED, NULL, $2, "return", 0, TYPELESS); }
 
     | TReturn ';'       {   $$ = NULL   }
 
@@ -220,13 +228,14 @@ methodCall: ID '(' exprList ')' {   Symbol * methodSymb = search(&list, $1);
                                         printf("This name not a method: %s", $1);
                                         yyerror();
                                     }
-                                    printf("si soy ek add\n");
-                                    addIdentifierType(methodSymb, METHODCALL);
-                                    $$ = createTree(methodSymb, $3, NULL);
+                                    // Symbol *copySymbol = createSymbolWithParameter(methodSymb->type, methodSymb->name, NULL, 0, methodSymb->parameterList);
+                                    // addIdentifierType(copySymbol, METHODCALL);
+                                    $$ = createNewTreeWithParameters(methodSymb->type, $3, NULL, methodSymb->name, 0, methodSymb->parameterList, METHODCALL);
+                                    // $$ = createTree(copySymbol, $3, NULL);
                                 }
     ;
 
-exprList: expr      { $$ = $1; }
+exprList: expr      { $$ = createNextTree($1, NULL); }
 
     | expr ',' exprList { $$ = createNextTree($1, $3); }
     ;
@@ -277,7 +286,7 @@ expr: ID {  Symbol *s = search(&list, $1);
     | expr TOR expr     {   offset += 8;
                             $$ = createNewTree(UNDEFINED, $1, $3, "||", offset, TYPELESS); }
 
-    | '-' expr %prec UNARYPREC {
+    | TMENOS expr %prec UNARYPREC {
                         offset += 8;
                         $$ = createNewTree(UNDEFINED, $2, NULL, "-", offset, TYPELESS); }
 

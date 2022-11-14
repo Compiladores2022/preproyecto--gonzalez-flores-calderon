@@ -23,4 +23,8 @@ void printTreeInOrder(struct TreeNode *tree);
 
 int checkTypeTree(struct TreeNode *tree);
 
+int checkParameterTypes(struct TreeNode *tree, struct ParameterList *list);
+
+int checkParameters(struct TreeNode *tree,  struct ParameterNode *list);
+
 #endif

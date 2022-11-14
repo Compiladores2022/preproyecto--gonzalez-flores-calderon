@@ -1,3 +1,5 @@
+#include "../main/parameter_list/parameter_list.h"
+#include "../main/types/parameter.h"
 #include "../main/sintactic_analysis_tree/sintactic_analysis_tree.h"
 #include "../main/intermediate_code_generator/intermediate_code_generator.h"
 #include "../main/types/symbol.h"
@@ -6,16 +8,16 @@
 #include <stdlib.h>
 #include <string.h>
 
-struct TreeNode * defaultTreeAdd();
-struct TreeNode * defaultTreeSub();
-struct TreeNode * defaultTreeMult();
+struct TreeNode * defaultTreeAddFunction();
+struct TreeNode * defaultTreeNotFunction();
+struct TreeNode * defaultTreeMethodCall();
 struct TreeNode * defaultTreeAnd();
 struct TreeNode * defaultTreeOr();
 struct TreeNode * defaultTreeRet();
 struct TreeNode * defaultTree();
-int intermediteCodeGeneratorAdd();
-int intermediteCodeGeneratorSub();
-int intermediteCodeGeneratorMult();
+int intermediteCodeGeneratorAddFunction();
+int intermediteCodeGeneratorNotVoidFunction();
+int intermediteCodeGeneratorMethodCall();
 int intermediteCodeGeneratorAnd();
 int intermediteCodeGeneratorOr();
 int intermediteCodeGeneratorRet();
@@ -24,43 +26,46 @@ int intermediteCodeGenerator();
 int main(){
     int testsPassed = 0, totalTests = 0;
     
-    intermediteCodeGeneratorAdd() ? testsPassed++ : printf("\033[0;31mTest intermediate code add failed\033[0m \n"); totalTests++;
-    intermediteCodeGeneratorSub() ? testsPassed++ : printf("\033[0;31mTest intermediate code sub failed\033[0m \n"); totalTests++;
-    intermediteCodeGeneratorMult() ? testsPassed++ : printf("\033[0;31mTest intermediate code mult failed\033[0m \n"); totalTests++;
-    intermediteCodeGeneratorAnd() ? testsPassed++ : printf("\033[0;31mTest intermediate code and failed\033[0m \n"); totalTests++;
-    intermediteCodeGeneratorOr() ? testsPassed++ : printf("\033[0;31mTest intermediate code or failed\033[0m \n"); totalTests++;
-    intermediteCodeGeneratorRet() ? testsPassed++ : printf("\033[0;31mTest intermediate code ret failed\033[0m \n"); totalTests++;
-    intermediteCodeGenerator() ? testsPassed++ : printf("\033[0;31mTest intermediate code mega failed\033[0m \n"); totalTests++;    
+    intermediteCodeGeneratorAddFunction() ? testsPassed++ : printf("\033[0;31mTest intermediate code add function failed\033[0m \n"); totalTests++;
+    intermediteCodeGeneratorNotVoidFunction() ? testsPassed++ : printf("\033[0;31mTest intermediate code not void function failed\033[0m \n"); totalTests++;
+    intermediteCodeGeneratorMethodCall() ? testsPassed++ : printf("\033[0;31mTest intermediate code method call failed\033[0m \n"); totalTests++;
+    // intermediteCodeGeneratorAnd() ? testsPassed++ : printf("\033[0;31mTest intermediate code and failed\033[0m \n"); totalTests++;
+    // intermediteCodeGeneratorOr() ? testsPassed++ : printf("\033[0;31mTest intermediate code or failed\033[0m \n"); totalTests++;
+    // intermediteCodeGeneratorRet() ? testsPassed++ : printf("\033[0;31mTest intermediate code ret failed\033[0m \n"); totalTests++;
+    // intermediteCodeGenerator() ? testsPassed++ : printf("\033[0;31mTest intermediate code mega failed\033[0m \n"); totalTests++;    
 
     printf("Tests passed: %d out of %d\n", testsPassed, totalTests);
     return 0;
 }
 
-int intermediteCodeGeneratorAdd(){
+int intermediteCodeGeneratorAddFunction(){
 
-    struct TreeNode *treeDecorator =  defaultTreeAdd();
+    struct TreeNode *treeDecorator =  defaultTreeAddFunction();
     InstructionList *instructList = generateIntermediateCode(treeDecorator);
-    if(sizeList(instructList) == 2){
+    if(sizeList(instructList) == 3){
          return 1;
     }
     return 0;   
 }
 
-int intermediteCodeGeneratorSub(){
+int intermediteCodeGeneratorNotVoidFunction(){
     
-    struct TreeNode *treeDecorator =  defaultTreeSub();
+    struct TreeNode *treeDecorator =  defaultTreeNotFunction();
     InstructionList *instructList = generateIntermediateCode(treeDecorator);
-    if(sizeList(instructList) == 2){
+    if(sizeList(instructList) == 3){
          return 1;
     }
     return 0;   
 }
 
-int intermediteCodeGeneratorMult(){
+int intermediteCodeGeneratorMethodCall(){
     
-    struct TreeNode *treeDecorator =  defaultTreeMult();
+    struct TreeNode *treeDecorator =  defaultTreeMethodCall();
+    printTreeInOrder(treeDecorator);
+    printf("\n");
     InstructionList *instructList = generateIntermediateCode(treeDecorator);
-    if(sizeList(instructList) == 2){
+    printInstructionList(instructList);
+    if(sizeList(instructList) == 10){
          return 1;
     }
     return 0;   
@@ -247,105 +252,178 @@ struct TreeNode * defaultTreeAnd(){
     return prog;
 }
 
-struct TreeNode * defaultTreeMult(){
+/*
+int getNum() {
+    return 5 * 10;
+}
+
+void main() {
+    int x = -1;
+    x = x + 5 + getNum();
+}
+*/
+struct TreeNode * defaultTreeMethodCall(){
     int offset = 0;
-    int* four = (int*) malloc(sizeof(int));
-    *four = 4;
-    Symbol *sfour = createSymbol(TYPEINT, "4", four, 0);
-    int* five = (int*) malloc(sizeof(int));
-    *five = 5;
-    Symbol *sfive = createSymbol(TYPEINT, "5", five, 0);
+    int* a = (int*) malloc(sizeof(int));
+    *a = 5;
+    Symbol *five = createSymbol(TYPEINT, "5", a, 0);
     offset += 8;
     Symbol *mult = createSymbol(TYPEINT, "*", NULL, offset);
-    int* exis = (int*) malloc(sizeof(int));
-    *exis = 7;    
+    int* b = (int*) malloc(sizeof(int));
+    *b = 10;
+    Symbol *ten = createSymbol(TYPEINT, "10", b, 0);
+    //5 * 10
+    struct TreeNode *treeFive = createNode(five);
+    struct TreeNode *treeTen = createNode(ten);
+    struct TreeNode *treeMult = createTree(mult, treeFive, treeTen);
+    
+    Symbol *symbolRet = createSymbol(TYPEINT, "return", NULL, 0);
+    addIdentifierType(symbolRet, TYPELESS);
+    
+    struct TreeNode *treeRet = createTree(symbolRet, NULL, treeMult);
+
+    Symbol *next = createSymbol(UNDEFINED, "next", NULL, 0);
+
+    struct TreeNode *treeFstDecl = createTree(next, treeRet, NULL);
+
+    Symbol *method = createSymbol(TYPEINT, "getNum", NULL, 0);
+    addIdentifierType(method, METHOD);
+
+    treeFstDecl = createTree(method, treeFstDecl, NULL);
+
+    treeFstDecl = createTree(next, treeFstDecl, NULL);
+
+    //now creating main function
+    a = (int*) malloc(sizeof(int));
+    *a = 1;
+    Symbol *one = createSymbol(TYPEINT, "1", a, 0);
     offset += 8;
-    Symbol *x = createSymbol(TYPEINT, "x", exis, offset);
+    Symbol *menos = createSymbol(TYPEINT, "-", NULL, offset);
+    offset += 8;
+    Symbol *symbolX = createSymbol(TYPEINT, "x", NULL, offset);
     offset += 8;
     Symbol *assig = createSymbol(TYPEINT, "=", NULL, offset);
+    //x = 1
+    struct TreeNode *treeOne = createNode(one);
+    struct TreeNode *treeMenos = createTree(menos, treeOne, NULL);
+    struct TreeNode *treeX = createNode(symbolX);
+    struct TreeNode *treeAssig = createTree(assig, treeX, treeMenos);
+    struct TreeNode *tree = createTree(next, treeAssig, NULL);
     
-    // 4 * 5;
-    struct TreeNode *treeFour = createNode(sfour);
-    struct TreeNode *treeFive = createNode(sfive);
-    struct TreeNode *treeMult = createTree(mult, treeFour, treeFive);
+    // x = x + 5 + getNum()
+    a = (int*) malloc(sizeof(int));
+    five = createSymbol(TYPEINT, "5", a, 0);
+    offset += 8;
+    Symbol *suma1 = createSymbol(TYPEINT, "+", NULL, offset);
+    Symbol *suma2 = createSymbol(TYPEINT, "+", NULL, offset);
     
-    // x = 4 * 5;
-    struct TreeNode *treeX = createNode(x);
-    struct TreeNode *treeAssig = createTree(assig, treeX, treeMult);
+    treeFive = createNode(five);
 
-    Symbol *pyc = createSymbol(UNDEFINED, "next", NULL, 0);
+    Symbol *methodCall = createSymbol(method->type, method->name, NULL, 0);
+    addIdentifierType(methodCall, METHODCALL);
+    
+    struct TreeNode *treeMethod = createNode(methodCall);
+    struct TreeNode *treeSuma1 = createTree(suma1, treeFive, treeMethod);
+    
+    treeX = createNode(symbolX);
+    struct TreeNode *treeSuma2 = createTree(suma2, treeX, treeSuma1);
 
-    struct TreeNode *prog = createTree(pyc, treeAssig, NULL);
-        
-    return prog;
+    assig = createSymbol(TYPEINT, "=", NULL, offset);
+    treeX = createNode(symbolX);
+    struct TreeNode *tree2 = createTree(assig, treeX, treeSuma2);
+    tree2 = createTree(next, tree2, NULL);
+
+    //joining trees
+    tree->right = tree2;
+    //creating main
+    Symbol *mainMethod = createSymbol(TYPEVOID, "main", NULL, 0);
+    addIdentifierType(mainMethod, METHOD);
+
+    tree = createTree(mainMethod, tree, NULL);
+    tree = createTree(next, tree, NULL);
+
+    treeFstDecl->right = tree;
+
+    return treeFstDecl;
 }
 
-struct TreeNode * defaultTreeSub(){
-    int offset = 0;
-    int* ten = (int*) malloc(sizeof(int));
-    *ten = 10;
-    Symbol *sten = createSymbol(TYPEINT, "10", ten, 0);
-    int* six = (int*) malloc(sizeof(int));
-    *six = 6;
-    Symbol *ssix = createSymbol(TYPEINT, "6", six, 0);
+/*
+    void opposite(bool x) {
+        x = !x;
+    }
+*/
+struct TreeNode * defaultTreeNotFunction(){
+    int offset = 8;
+    Symbol *symbolX = createSymbol(TYPEBOOL, "x", NULL, offset);
     offset += 8;
-    Symbol *sub = createSymbol(TYPEINT, "-", NULL, offset);
-    int* exis = (int*) malloc(sizeof(int));
-    *exis = 7;    
+    Symbol *not = createSymbol(TYPEBOOL, "!", NULL, offset);
     offset += 8;
-    Symbol *x = createSymbol(TYPEINT, "x", exis, offset);
-    offset += 8;
-    Symbol *assig = createSymbol(TYPEINT, "=", NULL, offset);
-    
-    // 10 - 6;
-    struct TreeNode *treeTen = createNode(sten);
-    struct TreeNode *treeSix = createNode(ssix);
-    struct TreeNode *treeSub = createTree(sub, treeTen, treeSix);
-    
-    // x = 10 - 6;
-    struct TreeNode *treeX = createNode(x);
-    struct TreeNode *treeAssig = createTree(assig, treeX, treeSub);
+    Symbol *assig = createSymbol(TYPEBOOL, "=", NULL, offset);
 
-    Symbol *pyc = createSymbol(UNDEFINED, "next", NULL, 0);
+    struct TreeNode *treeX = createNode(symbolX);
+    struct TreeNode *treeNot = createTree(not, treeX, NULL);
+    struct TreeNode *treeAssig = createTree(assig, treeX, treeNot);
+    
+    Symbol *next = createSymbol(UNDEFINED, "next", NULL, 0);
 
-    struct TreeNode *prog = createTree(pyc, treeAssig, NULL);
-        
-    return prog;
+    struct TreeNode *tree = createTree(next, treeAssig, NULL);
+
+    //function parameters
+    struct ParameterList pList;
+    initializeP(&pList);
+    struct Parameter *parameter = createParameter(TYPEBOOL, "x");
+    insertParameter(&pList, parameter);
+
+    Symbol *method = createSymbolWithParameter(TYPEVOID, "opposite", NULL, 0, &pList);
+    addIdentifierType(method, METHOD);
+
+    tree = createTree(method, tree, NULL);
+
+    tree = createTree(next, tree, NULL);
+    
+    return tree;
 }
 
-struct TreeNode * defaultTreeAdd(){
+/*
+int inc(int x) {
+    return x + 1;
+}
+*/
+struct TreeNode * defaultTreeAddFunction(){
     int offset = 0;
-    int* tre = (int*) malloc(sizeof(int));
-    *tre = 3;
-    Symbol *tres = createSymbol(TYPEINT, "3", tre, 0);
-    int* cua = (int*) malloc(sizeof(int));
-    *cua = 4;
-    Symbol *cuatro = createSymbol(TYPEINT, "4", cua, 0);
+    int* a = (int*) malloc(sizeof(int));
+    *a = 1;
+    Symbol *one = createSymbol(TYPEINT, "1", a, 0);
+    offset += 8;
+    Symbol *symbolX = createSymbol(TYPEINT, "x", NULL, offset);
     offset += 8;
     Symbol *suma = createSymbol(TYPEINT, "+", NULL, offset);
-    int* exis = (int*) malloc(sizeof(int));
-    *exis = 7;    
-    offset += 8;
-    Symbol *x = createSymbol(TYPEINT, "x", exis, offset);
-    offset += 8;
-    Symbol *assignacion = createSymbol(TYPEINT, "=", NULL, offset);
     
-    // 3 + 4;
-    struct TreeNode *treeTres = createNode(tres);
-    struct TreeNode *treeCuatro = createNode(cuatro);
-    struct TreeNode *treeSuma = createTree(suma, treeTres, treeCuatro);
+    struct TreeNode *treeOne = createNode(one);
+    struct TreeNode *treeX = createNode(symbolX);
+    struct TreeNode *treeSuma = createTree(suma, treeX, treeOne);
     
-    // x = 3 + 4;
-    struct TreeNode *treeX = createNode(x);
-    struct TreeNode *treeAssignacion = createTree(assignacion, treeX, treeSuma);
+    Symbol *symbolRet = createSymbol(TYPEINT, "return", NULL, 0);
+    addIdentifierType(symbolRet, TYPELESS);
+    
+    struct TreeNode *treeRet = createTree(symbolRet, NULL, treeSuma);
 
-    Symbol *pyc = createSymbol(UNDEFINED, "next", NULL, 0);
+    Symbol *next = createSymbol(UNDEFINED, "next", NULL, 0);
 
-    struct TreeNode *prog = createTree(pyc, treeAssignacion, NULL);
+    struct TreeNode *tree = createTree(next, treeRet, NULL);
+
+    //function parameters
+    struct ParameterList pList;
+    initializeP(&pList);
+    struct Parameter *parameter = createParameter(TYPEINT, "x");
+    insertParameter(&pList, parameter);
+
+    Symbol *method = createSymbolWithParameter(TYPEINT, "inc", NULL, 0, &pList);
+    addIdentifierType(method, METHOD);
+
+    tree = createTree(method, tree, NULL);
+
+    tree = createTree(next, tree, NULL);
     
-    // char *p = malloc(sizeof(char));
-    // printTreeInOrder(prog, p);
-        
-    return prog;
+    return tree;
 }
-
