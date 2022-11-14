@@ -50,6 +50,14 @@ void processThreeAddressCode(struct Instruction * instruction, char * code) {
         case MULT:
             generateSimpleLogicArithmeticCode(instruction, code, "IMUL");
             break;
+
+        case DIV:
+            generateSimpleLogicArithmeticCode(instruction, code, "DIV");
+            break;
+
+        case MOD:
+            generateSimpleLogicArithmeticCode(instruction, code, "MOD");
+            break;
             
         case AND:
             generateSimpleLogicArithmeticCode(instruction, code, "AND");
@@ -57,6 +65,10 @@ void processThreeAddressCode(struct Instruction * instruction, char * code) {
             
         case OR:
             generateSimpleLogicArithmeticCode(instruction, code, "OR");
+            break;
+
+        case NOT:
+            generateSimpleLogicArithmeticCode(instruction, code, "NOT");
             break;
             
         case ASSIG: {
