@@ -81,9 +81,9 @@ prog: TProgram '{' declList methodDeclList '}'
     | TProgram '{' methodDeclList '}'
     ;
 
-methodDeclList: methodDecl
+methodDeclList: methodDeclList methodDecl
 
-    | methodDeclList methodDecl
+    | methodDecl
     ;
 
 methodDecl: type ID '('  ')' body
@@ -136,7 +136,7 @@ statement: ID '=' expr ';'
     
     | TIf '(' expr ')' TThen block TElse block
 
-    | TWhile expr block
+    | TWhile '(' expr ')' block
 
     | TReturn expr ';'
 
@@ -181,7 +181,7 @@ expr: ID
 
     | expr TOR expr
 
-    | '-' expr %prec UNARYPREC
+    | TMENOS expr %prec UNARYPREC
 
     | '!' expr %prec UNARYPREC
 
