@@ -101,7 +101,7 @@ int checkOperationsTypes(struct TreeNode * tree){
     else if(strcmp(tree->info->name, "==") == 0){
         return equalType(tree);
     }
-    else if(strcmp(tree->info->name, "==") == 0){
+    else if(strcmp(tree->info->name, "while") == 0){
         return whileType(tree);
     }
     else if(arithmeticOperation(tree->info->name) != 0){
@@ -206,16 +206,19 @@ int checkTypeTree(struct TreeNode *tree) {
     }
 
     if(tree->left != NULL && tree->left->info->it == METHODCALL){
-        validTree = validTree && checkTypeTree(tree->left->left);
-        validTree = validTree && checkParameters(tree->left->left, tree->left->info->parameterList->head);
+        if(tree->left->left != NULL){
+            validTree = validTree && checkTypeTree(tree->left->left);
+            validTree = validTree && checkParameters(tree->left->left, tree->left->info->parameterList->head);
+        }
     }
 
     if(tree->right != NULL && tree->right->info->it == METHODCALL){
-        validTree = validTree && checkTypeTree(tree->right->left);
-        validTree = validTree && checkParameters(tree->right->left, tree->right->info->parameterList->head);
+        if(tree->right->left != NULL){
+            validTree = validTree && checkTypeTree(tree->right->left);
+            validTree = validTree && checkParameters(tree->right->left, tree->right->info->parameterList->head);
+        }
     }
     
-    //checking the partner type for the operation    
     if(strcmp(tree->info->name, "next") != 0 && tree->left != NULL && tree->right != NULL){
         
         validTree = validTree && checkOperationsTypes(tree);
