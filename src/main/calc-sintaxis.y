@@ -76,11 +76,11 @@ int yylex();
 
 %%
 
-inil: {initialize(&list);} prog {   checkMain(&list);
+inil: {initialize(&list);} prog {   //checkMain(&list);
                                     printTree($2); 
                                     checkTypeTree($2);
-                                    InstructionList * intermediateCode = generateIntermediateCode($2);
-                                    printInstructionList(intermediateCode);
+                                    // InstructionList * intermediateCode = generateIntermediateCode($2);
+                                    // printInstructionList(intermediateCode);
                                 }
     ;    
 
@@ -211,7 +211,7 @@ statement: ID '=' expr ';'  {   //chequear que ese symbol no sea un metodo
     | TIf '(' expr ')' TThen block TElse block  {   struct TreeNode *ifElse = createNewTree(UNDEFINED, $6, $8, "ifelse", 0, TYPELESS);
                                                     $$ = createNewTree(UNDEFINED, $3, ifElse, "if", 0, TYPELESS); }
 
-    | TWhile expr block     { $$ = createNewTree(UNDEFINED, $2, $3, "while", 0, TYPELESS); }
+    | TWhile '(' expr ')' block     { $$ = createNewTree(UNDEFINED, $3, $5, "while", 0, TYPELESS); }
 
     | TReturn expr ';'  { $$ = createNewTree(UNDEFINED, NULL, $2, "return", 0, TYPELESS); }
 
