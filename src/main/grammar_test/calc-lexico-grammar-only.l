@@ -80,7 +80,7 @@ digito [0-9]
 
 "/\*"(.*|.*\n|\n)*"\*/"     ; /* ignore comments */
 
-{minuscula}({letra}|{digito}|'_')* { 
+{minuscula}({letra}|{digito}|_)* { 
 								printf("ID : %s\n",yytext);
 								yylval.s = (char *) malloc(sizeof(yytext)*yyleng);
     							strcpy(yylval.s, yytext);
