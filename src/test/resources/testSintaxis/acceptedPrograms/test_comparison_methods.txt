@@ -1,0 +1,33 @@
+program {
+
+    bool methodFalse() {
+        return false;
+    }
+    
+    bool methodTrue() {
+        return true;
+    }
+
+    bool comparison(int a, int b, bool comp) {
+        if (comp) then {
+            return a > b;
+        } else {
+            return a < b;
+        }
+    }
+
+    bool equals(int a, int b) {
+        return a == b;
+    }
+
+
+
+    void main(){
+        int a = 5;
+        int b = 10;
+        comparison(a, b, methodTrue());
+        comparison(a, b, methodFalse());
+        equals(a, b);
+    }
+
+}
