@@ -79,6 +79,8 @@ int yylex();
 inil: {initialize(&list);} prog {   checkMain(&list);
                                     printTree($2); 
                                     checkTypeTree($2);
+                                    InstructionList * intermediateCode = generateIntermediateCode($2);
+                                    printInstructionList(intermediateCode);
                                 }
     ;    
 
@@ -229,6 +231,20 @@ methodCall: ID '(' exprList ')' {   Symbol * methodSymb = search(&list, $1);
                                     // Symbol *copySymbol = createSymbolWithParameter(methodSymb->type, methodSymb->name, NULL, 0, methodSymb->parameterList);
                                     // addIdentifierType(copySymbol, METHODCALL);
                                     $$ = createNewTreeWithParameters(methodSymb->type, $3, NULL, methodSymb->name, 0, methodSymb->parameterList, METHODCALL);
+                                    // $$ = createTree(copySymbol, $3, NULL);
+                                }
+
+    | ID '(' ')' {   Symbol * methodSymb = search(&list, $1);
+                                    if ( methodSymb == NULL) {
+                                        printf("Undefined method: %s", $1);
+                                        yyerror();
+                                    }else if(methodSymb->it != METHOD){
+                                        printf("This name not a method: %s", $1);
+                                        yyerror();
+                                    }
+                                    // Symbol *copySymbol = createSymbolWithParameter(methodSymb->type, methodSymb->name, NULL, 0, methodSymb->parameterList);
+                                    // addIdentifierType(copySymbol, METHODCALL);
+                                    $$ = createNewTreeWithParameters(methodSymb->type, NULL, NULL, methodSymb->name, 0, methodSymb->parameterList, METHODCALL);
                                     // $$ = createTree(copySymbol, $3, NULL);
                                 }
     ;

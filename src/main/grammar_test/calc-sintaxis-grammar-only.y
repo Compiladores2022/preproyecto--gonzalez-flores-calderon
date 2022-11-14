@@ -146,6 +146,8 @@ statement: ID '=' expr ';'
     ; 
     
 methodCall: ID '(' exprList ')'
+
+    | ID '(' ')'
     ;
 
 exprList: expr
