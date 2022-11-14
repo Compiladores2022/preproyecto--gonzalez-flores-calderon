@@ -4,7 +4,7 @@ program {
         de multiple linea
         para testear el compilador*/
 
-    void main() {
+    int main() {
         int x = 10;
         //otro comentario
         x = x + 4 - 5 * 1;
