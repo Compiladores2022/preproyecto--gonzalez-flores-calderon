@@ -208,14 +208,14 @@ int checkTypeTree(struct TreeNode *tree) {
     if(tree->left != NULL && tree->left->info->it == METHODCALL){
         if(tree->left->left != NULL){
             validTree = validTree && checkTypeTree(tree->left->left);
-            validTree = validTree && checkParameters(tree->left->left, tree->left->info->parameterList->head);
+            validTree = validTree && checkParameters(tree->left->left, tree->left->info->parameterList->head, tree->left->info->name);
         }
     }
 
     if(tree->right != NULL && tree->right->info->it == METHODCALL){
         if(tree->right->left != NULL){
             validTree = validTree && checkTypeTree(tree->right->left);
-            validTree = validTree && checkParameters(tree->right->left, tree->right->info->parameterList->head);
+            validTree = validTree && checkParameters(tree->right->left, tree->right->info->parameterList->head, tree->right->info->name);
         }
     }
     
@@ -247,7 +247,7 @@ int checkTypeTree(struct TreeNode *tree) {
     return validTree;
 }   
 
-int checkParameters(struct TreeNode *tree,  struct ParameterNode *list){
+int checkParameters(struct TreeNode *tree,  struct ParameterNode *list, char *methodName){
     
     if(tree->left != NULL && tree->left->info->type != UNDEFINED){
         if(tree->left->info->type != list->info->type){
@@ -256,8 +256,13 @@ int checkParameters(struct TreeNode *tree,  struct ParameterNode *list){
         }
     }
 
-    if(tree->right != NULL && tree->right != NULL && strcmp(tree->right->info->name, "next") == 0){
-        checkParameters(tree->right, list->next);
+    if(tree->right == NULL && list != NULL){
+        printf("\033[0;31mERROR:\033[0m Too few arguments to method %s\n", methodName);
+        exit(0);
+    }
+
+    if(tree->right != NULL && strcmp(tree->right->info->name, "next") == 0){
+        checkParameters(tree->right, list->next, methodName);
     }
 
 }
