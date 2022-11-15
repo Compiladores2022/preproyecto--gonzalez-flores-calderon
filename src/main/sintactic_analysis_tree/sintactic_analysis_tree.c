@@ -248,16 +248,21 @@ int checkTypeTree(struct TreeNode *tree) {
 }   
 
 int checkParameters(struct TreeNode *tree,  struct ParameterNode *list, char *methodName){
-    
+
     if(tree->left != NULL && tree->left->info->type != UNDEFINED){
         if(tree->left->info->type != list->info->type){
             printf("\033[0;31mERROR:\033[0m Incompatible types: %s cannot be converted to %s\n", enumToString(tree->left->info->type), enumToString(list->info->type));
             exit(0);
         }
+    }   
+
+    if(tree->right == NULL && list->next != NULL){
+        printf("\033[0;31mERROR:\033[0m Too few arguments to method %s\n", methodName);
+        exit(0);
     }
 
-    if(tree->right == NULL && list != NULL){
-        printf("\033[0;31mERROR:\033[0m Too few arguments to method %s\n", methodName);
+    if(list->next == NULL && tree->right != NULL && strcmp(tree->right->info->name, "next") == 0){
+        printf("\033[0;31mERROR:\033[0m Too many arguments to method %s\n", methodName);
         exit(0);
     }
 
