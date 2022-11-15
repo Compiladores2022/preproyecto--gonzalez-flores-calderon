@@ -15,6 +15,10 @@ struct TreeNode * createNextTree(struct TreeNode *left, struct TreeNode *right);
 
 struct TreeNode * createNewTree(types symbolType, struct TreeNode *left, struct TreeNode *right, char *operation, int offset, identifierType identifiertype);
 
+struct TreeNode * createNewNodeWithParameters(types symbolType, char * operation, identifierType identifiertype, struct ParameterList * parameters);
+
+struct TreeNode * createNewNode(types symbolType, char * operation, identifierType identifiertype);
+
 int arithmeticOperation(char * operation);
 
 int booleanOperation(char * operation);

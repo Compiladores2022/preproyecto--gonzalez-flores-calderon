@@ -25,6 +25,6 @@ int checkTypeTree(struct TreeNode *tree);
 
 int checkParameterTypes(struct TreeNode *tree, struct ParameterList *list);
 
-int checkParameters(struct TreeNode *tree,  struct ParameterNode *list);
+int checkParameters(struct TreeNode *tree,  struct ParameterNode *list, char *methodName);
 
 #endif
