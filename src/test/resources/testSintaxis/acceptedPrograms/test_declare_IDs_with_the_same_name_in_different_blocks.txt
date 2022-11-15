@@ -1,0 +1,24 @@
+program {
+    int method1() {
+        int x1 = 5;
+        int x2 = 7;
+        return x2 + x1;
+    }
+
+    bool method2() {
+        bool x1 = true;
+        return x1;
+    }
+
+    bool method3() {
+        int x1 = 2;
+        int y1 = 4;
+        int y2 = 2;
+
+        return x1 == y1 - y2;
+    }
+
+    void main() {
+        method2() == method3();
+    }
+}
