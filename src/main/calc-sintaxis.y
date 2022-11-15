@@ -78,10 +78,9 @@ int yylex();
 
 inil: {initialize(&list);} prog {   //checkMain(&list);
                                     printTree($2); 
-                                    // printf("typs\n");
                                     checkTypeTree($2);
-                                    //InstructionList * intermediateCode = generateIntermediateCode($2);
-                                    //printInstructionList(intermediateCode);
+                                    // InstructionList * intermediateCode = generateIntermediateCode($2);
+                                    // printInstructionList(intermediateCode);
                                 }
     ;    
 
@@ -268,7 +267,13 @@ methodCall: ID '(' exprList ')' {   Symbol * methodSymb = search(&list, $1);
                                         printf("This name not a method: %s", $1);
                                         yyerror();
                                     }
-                                    $$ = createNewNode(methodSymb->type, methodSymb->name, METHODCALL); 
+                                    if(methodSymb->parameterList != NULL){
+                                        printf("aca\n");
+                                        $$ = createNewNodeWithParameters(methodSymb->type, methodSymb->name, METHODCALL, methodSymb->parameterList);
+                                    }
+                                    else{
+                                        $$ = createNewNode(methodSymb->type, methodSymb->name, METHODCALL); 
+                                    }
                                 }
     ;
 
