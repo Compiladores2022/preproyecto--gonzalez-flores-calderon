@@ -206,6 +206,12 @@ int checkTypeTree(struct TreeNode *tree) {
     }
 
     if(tree->left != NULL && tree->left->info->it == METHODCALL){
+        
+        if(tree->left->info->parameterList->head != NULL && tree->left->left == NULL){
+            printf("\033[0;31mERROR:\033[0m Too few arguments to method %s\n", tree->left->info->name);
+            exit(0);
+        }
+        
         if(tree->left->left != NULL){
             validTree = validTree && checkTypeTree(tree->left->left);
             validTree = validTree && checkParameters(tree->left->left, tree->left->info->parameterList->head, tree->left->info->name);
@@ -213,6 +219,12 @@ int checkTypeTree(struct TreeNode *tree) {
     }
 
     if(tree->right != NULL && tree->right->info->it == METHODCALL){
+        
+        if(tree->right->info->parameterList->head != NULL && tree->right->left == NULL){
+            printf("\033[0;31mERROR:\033[0m Too few arguments to method %s\n", tree->right->info->name);
+            exit(0);
+        }
+        
         if(tree->right->left != NULL){
             validTree = validTree && checkTypeTree(tree->right->left);
             validTree = validTree && checkParameters(tree->right->left, tree->right->info->parameterList->head, tree->right->info->name);
@@ -254,6 +266,10 @@ int checkParameters(struct TreeNode *tree,  struct ParameterNode *list, char *me
             printf("\033[0;31mERROR:\033[0m Incompatible types: %s cannot be converted to %s\n", enumToString(tree->left->info->type), enumToString(list->info->type));
             exit(0);
         }
+    }
+    
+    if(tree->left == NULL && list->next != NULL){
+
     }   
 
     if(tree->right == NULL && list->next != NULL){
