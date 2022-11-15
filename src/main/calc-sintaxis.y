@@ -76,11 +76,11 @@ int yylex();
 
 %%
 
-inil: {initialize(&list);} prog {   //checkMain(&list);
+inil: {initialize(&list);} prog {   checkMain(&list);
                                     printTree($2); 
                                     checkTypeTree($2);
-                                    // InstructionList * intermediateCode = generateIntermediateCode($2);
-                                    // printInstructionList(intermediateCode);
+                                    InstructionList * intermediateCode = generateIntermediateCode($2);
+                                    printInstructionList(intermediateCode);
                                 }
     ;    
 
