@@ -76,8 +76,9 @@ int yylex();
 
 %%
 
-inil: {initialize(&list);} prog {   checkMain(&list);
+inil: {initialize(&list);} prog {   //checkMain(&list);
                                     printTree($2); 
+                                    // printf("typs\n");
                                     checkTypeTree($2);
                                     //InstructionList * intermediateCode = generateIntermediateCode($2);
                                     //printInstructionList(intermediateCode);
@@ -99,36 +100,68 @@ methodDecl: type ID '('  ')' body   {   if(search(&list, $2) != NULL){
                                             printf("Already defined method: %s", $2);
                                             yyerror();
                                         }
-                                        struct TreeNode *treeMethod = createNewTree($1, $5, NULL, $2, 0, METHOD);
-                                        insert(&list, treeMethod->info);
-                                        $$ = treeMethod;    
+                                        if($5 == NULL){                                        
+                                            Symbol *symbol = createSymbol($1, $2, 0, 0);
+                                            addIdentifierType(symbol, METHOD);
+                                            struct TreeNode * node = createNode(symbol);
+                                            insert(&list, node->info);
+                                            $$ = node;    
+                                        } 
+                                        else{
+                                            struct TreeNode *treeMethod = createNewTree($1, $5, NULL, $2, 0, METHOD);
+                                            insert(&list, treeMethod->info);
+                                            $$ = treeMethod;    
+                                        }
                                     }
 
     | TVOID ID '('  ')' body    {   if(search(&list, $2) != NULL){
                                         printf("Already defined method: %s", $2);
                                         yyerror();
+                                    }
+                                    if($5 == NULL){
+                                            Symbol *symbol = createSymbol(TYPEVOID, $2, 0, 0);
+                                            addIdentifierType(symbol, METHOD);
+                                            struct TreeNode * node = createNode(symbol);
+                                            insert(&list, node->info);
+                                            $$ = node;    
                                     } 
-                                    struct TreeNode *treeMethod = createNewTree(TYPEVOID, $5, NULL, $2, 0, METHOD);
-                                    insert(&list, treeMethod->info);
-                                    $$ = treeMethod;
+                                    else{
+                                        struct TreeNode *treeMethod = createNewTree(TYPEVOID, $5, NULL, $2, 0, METHOD);
+                                        insert(&list, treeMethod->info);
+                                        $$ = treeMethod;
+                                    }
                                 }
 
     | type ID '(' { openLevel(&list); } listParameters ')' body {   closeLevel(&list);   
                                                                     if(search(&list, $2) != NULL){
                                                                         yyerror();
                                                                     }
-                                                                    struct TreeNode *treeMethod = createNewTreeWithParameters($1, $7, NULL, $2, 0, $5, METHOD);
-                                                                    insert(&list, treeMethod->info);
-                                                                    $$ = treeMethod;
+                                                                    if($7 == NULL){
+                                                                        struct TreeNode *tree =  createNewNodeWithParameters($1, $2, METHOD, $5);
+                                                                        insert(&list, tree->info);
+                                                                        $$ = tree;    
+                                                                    }
+                                                                    else{
+                                                                        struct TreeNode *treeMethod = createNewTreeWithParameters($1, $7, NULL, $2, 0, $5, METHOD);
+                                                                        insert(&list, treeMethod->info);
+                                                                        $$ = treeMethod;
+                                                                    }
                                                                 }
 
     | TVOID ID '(' { openLevel(&list);} listParameters ')' body {   closeLevel(&list);   
                                                                     if(search(&list, $2) != NULL){
                                                                         yyerror();
                                                                     }
-                                                                    struct TreeNode *treeMethod = createNewTreeWithParameters(TYPEVOID, $7, NULL, $2, 0, $5, METHOD);
-                                                                    insert(&list, treeMethod->info);
-                                                                    $$ = treeMethod;
+                                                                    if($7 == NULL){
+                                                                        struct TreeNode *tree =  createNewNodeWithParameters(TYPEVOID, $2, METHOD, $5);
+                                                                        insert(&list, tree->info);
+                                                                        $$ = tree;    
+                                                                    } 
+                                                                    else{                                                                   
+                                                                        struct TreeNode *treeMethod = createNewTreeWithParameters(TYPEVOID, $7, NULL, $2, 0, $5, METHOD);
+                                                                        insert(&list, treeMethod->info);
+                                                                        $$ = treeMethod;
+                                                                    }
                                                                 }
     ;
 
@@ -157,8 +190,10 @@ parameter: type ID  {   struct Parameter *parameter = createParameter($1, $2);
 block: '{' '}' { $$ = NULL; }
 
     | '{' { openLevel(&list); } declList statementList '}'  {   closeLevel(&list); 
-                                                                linkTreeRight($3, $4);
-                                                                $$ = $3;
+                                                                //VER ESTE CASO
+                                                                $$ = createNextTree($3, $4);
+                                                                //linkTreeRight($3, $4);
+                                                                //$$ = $3;
                                                             }
 
     | '{' statementList '}' { $$ = $2; }
@@ -218,6 +253,9 @@ methodCall: ID '(' exprList ')' {   Symbol * methodSymb = search(&list, $1);
                                     }else if(methodSymb->it != METHOD){
                                         printf("This name not a method: %s", $1);
                                         yyerror();
+                                    }else if(methodSymb->parameterList == NULL){
+                                        printf("Method %s cannot be applied to given types\n", $1);
+                                        yyerror();
                                     }
                                     $$ = createNewTreeWithParameters(methodSymb->type, $3, NULL, methodSymb->name, 0, methodSymb->parameterList, METHODCALL);
                                 }
@@ -230,7 +268,7 @@ methodCall: ID '(' exprList ')' {   Symbol * methodSymb = search(&list, $1);
                                         printf("This name not a method: %s", $1);
                                         yyerror();
                                     }
-                                    $$ = createNewTreeWithParameters(methodSymb->type, NULL, NULL, methodSymb->name, 0, methodSymb->parameterList, METHODCALL); 
+                                    $$ = createNewNode(methodSymb->type, methodSymb->name, METHODCALL); 
                                 }
     ;
 
@@ -320,9 +358,9 @@ VALORBOOL: TFALSE    { $$ = 1; }
     | TTRUE { $$ = 1; }
     ;
 
-type: TINT {/*Type int */ $$ = TYPEINT;}
+type: TINT { $$ = TYPEINT; }
 
-    | TBOOL {/*Type bool */$$ = TYPEBOOL;}
+    | TBOOL { $$ = TYPEBOOL; }
     ;
 
 %%
