@@ -5,9 +5,12 @@
 function testValidProgram {
     total_tests=total_tests+1
     file_output=$(./script_generated/a.out $file)
-    if [[ "$file_output" =~ $error_message ]]; #output contains error message
+    if [[ "$file_output" =~ $error_message ]]; #output contains error message or is empty due to segfault
     then
         printf "\n\n${RED}Test $file_number - $file failed:${NORMAL}\n\n$file_output"
+    elif [ -z "$file_output" ]
+    then
+        printf "\n\n${RED}Test $file_number - $file failed with segfault${NORMAL}\n\n$file_output"
     else
         passed_tests=passed_tests+1
     fi
@@ -22,6 +25,9 @@ function testInvalidProgram {
     if ! [[ "$file_output" =~ $error_message ]]; #output doesn't contains error message
     then
         printf "\n\n${RED}Test $file_number - $file failed, compiler didn't detect the error in:${NORMAL}\n\n$file_output"
+    elif [ -z "$file_output" ]
+    then
+        printf "\n\n${RED}Test $file_number - $file failed with segfault${NORMAL}\n\n$file_output"
     else
         passed_tests=passed_tests+1
     fi
