@@ -34,43 +34,13 @@ program {
         assertFalse(b);
     }
 
-    void test_fibonacci7() {
-        int value = fib(6);
-        assertEquals(8, value);
-    }
-
-    void test_fibonacci8() {
-        int value = fib(7);
-        assertEquals(13, value);
-    }
-
-    void test_fibonacci9() {
-        int value = fib(8);
-        assertEquals(21, value);
-    }
-
-    void test_fibonacci10() {
-        int value = fib(9);
-        assertEquals(34, value);
-    }
-
-    void test_fibonacci11() {
-        int value = fib(10);
-        assertEquals(55, value);
-    }
-
     void main() {
-        test_fibonacci1();
-        test_fibonacci2();
-        test_fibonacci3();
-        test_fibonacci4();
-        test_fibonacci5();
-        test_fibonacci6();
-        test_fibonacci7();
-        test_fibonacci8();
-        test_fibonacci9();
-        test_fibonacci10();
-        test_fibonacci11();
+        testEQ_1();
+        testEQ_2();
+        testEQ_3();
+        testEQ_4();
+        testEQ_5();
+        testEQ_6();
     }
 
 }
