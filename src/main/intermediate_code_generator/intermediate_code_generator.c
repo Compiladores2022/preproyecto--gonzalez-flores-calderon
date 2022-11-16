@@ -206,10 +206,15 @@ void createParameterInstructions(struct TreeNode *parameters, InstructionList * 
     if (parameters == NULL)
         return;
 
-    translateTreeIntoCode(parameters->left, codeList);  //calculate parameter expression result
-    Symbol *expressionResult = codeList->last->instruction->result;
+    Symbol *expressionResult;
+    if (isOperationSymbol(parameters->left->info->name)) {
+        translateTreeIntoCode(parameters, codeList);  //calculate parameter expression result
+        expressionResult = codeList->last->instruction->result;
+    } else {
+        expressionResult = parameters->left->info;
+    }
+    
     insertInstructionNode(codeList, createInstruction("PUSH", expressionResult, NULL, NULL)); //pushParameter
-
     createParameterInstructions(parameters->right, codeList);
 }
 

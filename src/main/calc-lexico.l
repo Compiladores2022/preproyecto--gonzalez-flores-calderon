@@ -101,7 +101,7 @@ digito [0-9]
 [+*%/=;()<>!{},]             {	printf("%s\n",yytext);
                                 return *yytext;}
 
-\n|" "                        ; /* ignore all the rest */
+\n|" "|\t                        ; /* ignore all the rest */
 
 
 .							{	printf("-> ERROR Simbolo invalido: %s: En linea : %d\n", yytext, yylineno); 
