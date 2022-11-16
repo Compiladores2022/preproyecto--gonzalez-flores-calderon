@@ -95,9 +95,9 @@ void processThreeAddressCode(struct Instruction * instruction, char * code) {
             //CHECK
             char * location = getSymbolLocation(instruction->fstOp); //get expression result
             generateInstructionCode(code, "MOV", location, "%rax");
-            generateInstructionCode(code, "MOV", "½eax", location);
-            generateInstructionCode(code, "MOV", "½edx", 1);
-            generateInstructionCode(code, "CMP", "½edx", "½eax");
+            generateInstructionCode(code, "MOV", "%eax", location);
+            generateInstructionCode(code, "MOV", "%edx", 1);
+            generateInstructionCode(code, "CMP", "%edx", "%eax");
             generateInstructionCode(code, "JNE", getSymbolLocation(instruction->result));
             //check the comparation dude
 
@@ -113,9 +113,9 @@ void processThreeAddressCode(struct Instruction * instruction, char * code) {
             //CHECK
             char * location = getSymbolLocation(instruction->fstOp);
             generateInstructionCode(code, "MOV", location, "%rax");
-            generateInstructionCode(code, "MOV", "½eax", location);
-            generateInstructionCode(code, "MOV", "½edx", 1);
-            generateInstructionCode(code, "CMP", "½edx", "½eax");
+            generateInstructionCode(code, "MOV", "%eax", location);
+            generateInstructionCode(code, "MOV", "%edx", 1);
+            generateInstructionCode(code, "CMP", "%edx", "%eax");
             generateInstructionCode(code, "JNE", getSymbolLocation(instruction->sndOp));
             //check the comparation dude
 
@@ -140,6 +140,16 @@ void processThreeAddressCode(struct Instruction * instruction, char * code) {
 
         case WHILE: {
             //TODO
+            char * location = getSymbolLocation(instruction->fstOp);
+            generateInstructionCode(code, "MOV", location, "%rax");
+            generateInstructionCode(code, "MOV", "%eax", location);
+            generateInstructionCode(code, "MOV", "%edx", 1);
+            generateInstructionCode(code, "CMP", "%edx", "%eax");
+            generateInstructionCode(code, "JE", getSymbolLocation(instruction->result));
+
+            while(%) {
+
+            }
 
             break;
         }
