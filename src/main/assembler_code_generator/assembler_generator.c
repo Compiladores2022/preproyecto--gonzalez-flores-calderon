@@ -28,7 +28,7 @@ char * generateAssemblerCode(InstructionList * intermediateCode, int maxOffset) 
         currentNode = currentNode->next;
     }
     code = strcat(code, "LEAVE\nRET\n");
-    
+
     return code;
 }
 
@@ -42,11 +42,11 @@ void processThreeAddressCode(struct Instruction * instruction, char * code) {
         case ADD:
             generateSimpleLogicArithmeticCode(instruction, code, "ADD");
             break;
-            
+
         case SUB:
             generateSimpleLogicArithmeticCode(instruction, code, "SUB");
             break;
-            
+
         case MULT:
             generateSimpleLogicArithmeticCode(instruction, code, "IMUL");
             break;
@@ -58,11 +58,11 @@ void processThreeAddressCode(struct Instruction * instruction, char * code) {
         case MOD:
             generateSimpleLogicArithmeticCode(instruction, code, "MOD");
             break;
-            
+
         case AND:
             generateSimpleLogicArithmeticCode(instruction, code, "AND");
             break;
-            
+
         case OR:
             generateSimpleLogicArithmeticCode(instruction, code, "OR");
             break;
@@ -70,7 +70,7 @@ void processThreeAddressCode(struct Instruction * instruction, char * code) {
         case NOT:
             generateSimpleLogicArithmeticCode(instruction, code, "NOT");
             break;
-            
+
         case ASSIG: {
             char * location = getSymbolLocation(instruction->fstOp);
             generateInstructionCode(code, "MOV", location, "%r10");
@@ -78,12 +78,77 @@ void processThreeAddressCode(struct Instruction * instruction, char * code) {
             location = getSymbolLocation(instruction->result);
             generateInstructionCode(code, "MOV", "%r10", location);
             break;
-        }    
+        }
+
+        case METHDECL: {
+            //TODO
+            break;
+        }
+
+        case METHCALL: {
+            //TODO
+            generateInstructionCode(code, "CALL", getSymbolLocation(instruction->fstOp->name));
+            break;
+        }
+
+        case IF: {
+            //CHECK
+            char * location = getSymbolLocation(instruction->fstOp); //get expression result
+            generateInstructionCode(code, "MOV", location, "%rax");
+            generateInstructionCode(code, "MOV", "½eax", location);
+            generateInstructionCode(code, "MOV", "½edx", 1);
+            generateInstructionCode(code, "CMP", "½edx", "½eax");
+            generateInstructionCode(code, "JNE", getSymbolLocation(instruction->result));
+            //check the comparation dude
+
+            while(strcmp(currentNode->instruction->name, instruction->result->name)) {
+                processThreeAddressCode(currentNode->instruction, code);
+                currentNode = currentNode->next;
+            }
+            generateInstructionCode(code, instruction->result, NULL, NULL);
+            break;
+        }
+
+        case IFELSE: {
+            //CHECK
+            char * location = getSymbolLocation(instruction->fstOp);
+            generateInstructionCode(code, "MOV", location, "%rax");
+            generateInstructionCode(code, "MOV", "½eax", location);
+            generateInstructionCode(code, "MOV", "½edx", 1);
+            generateInstructionCode(code, "CMP", "½edx", "½eax");
+            generateInstructionCode(code, "JNE", getSymbolLocation(instruction->sndOp));
+            //check the comparation dude
+
+            currentNode = currentNode->next;
+            while(strcmp(currentNode->instruction->name, instruction->sndOp->name)) {
+                processThreeAddressCode(currentNode->instruction, code);
+                currentNode = currentNode->next;
+            }
+            generateInstructionCode(code, "JMP", getSymbolLocation(instruction->result), NULL);
+            generateInstructionCode(code, instruction->sndOp, NULL, NULL);
+            while(strcmp(currentNode->instruction->name, instruction->result->name)) {
+                processThreeAddressCode(currentNode->instruction, code);
+                currentNode = currentNode->next;
+            }
+            generateInstructionCode(code, "JMP", getSymbolLocation(instruction->result), NULL); //is necessary?
+            generateInstructionCode(code, instruction->result, NULL, NULL);
+
+
+
+            break;
+        }
+
+        case WHILE: {
+            //TODO
+
+            break;
+        }
+
         case RET: {
             char * location = getSymbolLocation(instruction->result);
             generateInstructionCode(code, "MOV", location, "%rax");
             break;
-        }        
+        }
         default:
             printf("\nunrecognized operation: %s\nprocess terminated\n", instruction->name);
             exit(0);
