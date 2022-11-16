@@ -206,12 +206,16 @@ int checkTypeTree(struct TreeNode *tree) {
     }
 
     if(tree->left != NULL && tree->left->info->it == METHODCALL){
-        
         if(tree->left->info->parameterList->head != NULL && tree->left->left == NULL){
             printf("\033[0;31mERROR:\033[0m Too few arguments to method %s\n", tree->left->info->name);
             exit(0);
         }
-        
+
+        if(countExp(tree->left->left, 0) > sizeParameter(tree->left->info->parameterList->head)){
+            printf("\033[0;31mERROR:\033[0m Too many arguments to method %s\n", tree->left->info->name);
+            exit(0);
+        }
+
         if(tree->left->left != NULL){
             validTree = validTree && checkTypeTree(tree->left->left);
             validTree = validTree && checkParameters(tree->left->left, tree->left->info->parameterList->head, tree->left->info->name);
@@ -219,7 +223,6 @@ int checkTypeTree(struct TreeNode *tree) {
     }
 
     if(tree->right != NULL && tree->right->info->it == METHODCALL){
-        
         if(tree->right->info->parameterList->head != NULL && tree->right->left == NULL){
             printf("\033[0;31mERROR:\033[0m Too few arguments to method %s\n", tree->right->info->name);
             exit(0);
@@ -261,29 +264,33 @@ int checkTypeTree(struct TreeNode *tree) {
 
 int checkParameters(struct TreeNode *tree,  struct ParameterNode *list, char *methodName){
 
+
     if(tree->left != NULL && tree->left->info->type != UNDEFINED){
         if(tree->left->info->type != list->info->type){
             printf("\033[0;31mERROR:\033[0m Incompatible types: %s cannot be converted to %s\n", enumToString(tree->left->info->type), enumToString(list->info->type));
             exit(0);
         }
     }
-    
-    if(tree->left == NULL && list->next != NULL){
 
-    }   
-
-    if(tree->right == NULL && list->next != NULL){
+    if(list->next != NULL && tree->right == NULL){
         printf("\033[0;31mERROR:\033[0m Too few arguments to method %s\n", methodName);
         exit(0);
     }
-
-    if(list->next == NULL && tree->right != NULL && strcmp(tree->right->info->name, "next") == 0){
-        printf("\033[0;31mERROR:\033[0m Too many arguments to method %s\n", methodName);
-        exit(0);
-    }
-
-    if(tree->right != NULL && strcmp(tree->right->info->name, "next") == 0){
+    
+    if(list->next != NULL && tree->right != NULL && strcmp(tree->right->info->name, "next") == 0){
         checkParameters(tree->right, list->next, methodName);
     }
+        
+}
 
+int countExp(struct TreeNode *tree, int count){
+    if(tree->left != NULL){
+        count = count + 1;
+    }
+     
+    if(tree->right != NULL){
+        return countExp(tree->right, count);
+    }
+
+    return count;
 }

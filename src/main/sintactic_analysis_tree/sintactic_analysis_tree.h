@@ -27,4 +27,6 @@ int checkParameterTypes(struct TreeNode *tree, struct ParameterList *list);
 
 int checkParameters(struct TreeNode *tree,  struct ParameterNode *list, char *methodName);
 
+int countExp(struct TreeNode *tree, int count);
+
 #endif
