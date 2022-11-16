@@ -1,0 +1,10 @@
+program {
+    
+    int suma(int x, int y){
+        return x + y;    
+    }
+    
+    int main (){
+       suma(2, 5);
+    }
+}

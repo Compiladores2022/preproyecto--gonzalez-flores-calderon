@@ -1,24 +1,21 @@
-program
- {
-    int inc(int x) {
-        return x + 1;
-     }
-
-    int get_int() extern;
-
-    void print_int(int i) extern ;
+program {
     
-    void main()
-     {
-        int y = 0;
-        y = get_int();
-        if (y == 1) then
-         {
-            print_int(y);
-         }
-        else
-         {
-            return print_int(inc(y));
-         }
-     }
- }
+   int inc(int x) {
+     return x + 1;
+   }
+
+   int get_int() extern;
+
+   void print_int(int i) extern ;
+    
+   void main() {
+      int y = 0;
+      y = get_int();
+      if (y == 1) then {
+         print_int(y);
+      }
+      else {
+         print_int(inc(y));
+      }
+   }
+}

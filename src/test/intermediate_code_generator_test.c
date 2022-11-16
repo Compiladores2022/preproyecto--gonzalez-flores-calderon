@@ -61,10 +61,7 @@ int intermediteCodeGeneratorNotVoidFunction(){
 int intermediteCodeGeneratorMethodCall(){
     
     struct TreeNode *treeDecorator =  defaultTreeMethodCall();
-    printTreeInOrder(treeDecorator);
-    printf("\n");
     InstructionList *instructList = generateIntermediateCode(treeDecorator);
-    printInstructionList(instructList);
     if(sizeList(instructList) == 10){
          return 1;
     }

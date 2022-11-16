@@ -3,12 +3,17 @@
 #include <string.h>
 #include "sintactic_analysis_tree.h"
 #include "../utils/utils.h"
-#define COUNT 10
 
-int operationType(char * operation, types typeL, types typeR);
 int arithmeticOperation(char * operation);
 int booleanOperation(char * operation);
-int asignType(char * operation, types typeL, types typeR);
+int asignType(struct TreeNode * tree);
+int ifType(struct TreeNode * tree);
+int checkOperationsTypes(struct TreeNode * tree);
+int arithmeticType(struct TreeNode * tree);
+int booleanType(struct TreeNode * tree);
+int angleBracketsType(struct TreeNode * tree);
+int equalType(struct TreeNode * tree);
+int whileType(struct TreeNode * tree);
 
 int typeErrors = 0;
 types typeMethod;
@@ -85,34 +90,100 @@ void printTreeInOrder(struct TreeNode *tree) {
     
 }
 
-int asignType(char * operation, types typeL, types typeR){
-    if(typeL != typeR){
-        printf("\033[0;31merror:\033[0m Conflicting types for: =\nexpected: %s = %s\nfound: %s = %s \n", enumToString(typeL), enumToString(typeL), enumToString(typeL), enumToString(typeR));
+int checkOperationsTypes(struct TreeNode * tree){
+
+    if(strcmp(tree->info->name, "if") == 0){
+        return ifType(tree);
+    }
+    else if(strcmp(tree->info->name, "=") == 0){
+        return asignType(tree);
+    }
+    else if(strcmp(tree->info->name, "==") == 0){
+        return equalType(tree);
+    }
+    else if(strcmp(tree->info->name, "while") == 0){
+        return whileType(tree);
+    }
+    else if(arithmeticOperation(tree->info->name) != 0){
+        return arithmeticType(tree);
+    }
+    else if(booleanOperation(tree->info->name) != 0){
+        return booleanType(tree);
+    }
+
+
+}
+
+int whileType(struct TreeNode * tree){
+    if(tree->left->info->type != TYPEBOOL){
+        printf("\033[0;31m-> ERROR:\033[0m Incompatible types: %s cannot be converted to bool\n", enumToString(tree->left->info->type));
+        exit(0);        
+    }
+
+    return 1;
+}
+
+int equalType(struct TreeNode * tree){
+    if(tree->left->info->type != tree->right->info->type){
+        printf("\033[0;31m-> ERROR:\033[0m Conflicting types for: =\nexpected: %s = %s\nfound: %s = %s \n", enumToString(tree->left->info->type), enumToString(tree->left->info->type), enumToString(tree->left->info->type), enumToString(tree->right->info->type));
         exit(0);
-        return 0;
+    }
+    
+    tree->info->type = TYPEBOOL;
+}
+
+int asignType(struct TreeNode * tree){
+    if(tree->left->info->type != tree->right->info->type){
+        printf("\033[0;31m-> ERROR:\033[0m Conflicting types for: =\nexpected: %s = %s\nfound: %s = %s \n", enumToString(tree->left->info->type), enumToString(tree->left->info->type), enumToString(tree->left->info->type), enumToString(tree->right->info->type));
+        exit(0);
+    }
+    tree->info->type = tree->left->info->type;
+    
+    return 1;
+}
+
+int ifType(struct TreeNode * tree){
+    if(tree->left->info->type != TYPEBOOL){
+        printf("\033[0;31m-> ERROR:\033[0m Incompatible types: %s cannot be converted to bool\n", enumToString(tree->left->info->type));
+        exit(0);
     }
     return 1;
 }
 
-int operationType(char * operation, types typeL, types typeR) {
-    switch (typeL){
-    case TYPEINT:
-        if(arithmeticOperation(operation) == 0){
-            printf("\033[0;31merror:\033[0m Incompatible types for %s operation\nexpected: BOOL %s BOOL\nfound: %s %s %s \n", operation, operation, enumToString(typeR), operation, enumToString(typeL));
-            exit(0);
-            return 0;
-        }
-        break;
-    case TYPEBOOL:
-        if(booleanOperation(operation) == 0){
-            typeErrors++;
-            printf("\033[0;31merror:\033[0m Incompatible types for %s operation\nexpected: INT %s INT\n", operation, operation);
-            exit(0);
-            return 0;
-        }
-        break;
+int angleBracketsType(struct TreeNode * tree){
+    if(tree->left->info->type != TYPEINT || tree->right->info->type != TYPEINT){
+        printf("\033[0;31m-> ERROR:\033[0m Incompatible types for %s operation\nexpected: INT %s INT\nfound: %s %s %s \n", tree->info->name, tree->info->name, enumToString(tree->left->info->type), tree->info->name, enumToString(tree->right->info->type));
+        exit(0);
     }
+
+    tree->info->type = TYPEBOOL;
+    return 1;
+}
+
+int arithmeticType(struct TreeNode * tree){
+
+    if(tree->left->info->type != tree->right->info->type){
+        printf("\033[0;31m-> ERROR:\033[0m Incompatible types for %s operation\nexpected: INT %s INT\nfound: %s %s %s \n", tree->info->name, tree->info->name, enumToString(tree->left->info->type), tree->info->name, enumToString(tree->right->info->type));
+        exit(0);   
+    }
+
+    tree->info->type = TYPEINT;
+    return 1;
+}
+
+int booleanType(struct TreeNode * tree){
     
+    if(strcmp(tree->info->name, "<") == 0 || strcmp(tree->info->name, ">") == 0){
+        return angleBracketsType(tree);
+    }
+
+    if(tree->left->info->type != tree->right->info->type){
+        printf("\033[0;31m-> ERROR:\033[0m Incompatible types for %s operation\nexpected: BOOL %s BOOL\nfound: %s %s %s \n", tree->info->name, tree->info->name, enumToString(tree->left->info->type), tree->info->name, enumToString(tree->right->info->type));
+        exit(0);        
+    }
+
+    tree->info->type = TYPEBOOL;
+    return 1;
 }
 
 int checkTypeTree(struct TreeNode *tree) {
@@ -125,58 +196,71 @@ int checkTypeTree(struct TreeNode *tree) {
     if(tree->right != NULL && tree->right->info->type == UNDEFINED && strcmp(tree->right->info->name, "next") != 0){                
         validTree = validTree && checkTypeTree(tree->right);
     }
-    
+
     if(tree->left != NULL && tree->left->info->type == UNDEFINED){
         validTree = validTree && checkTypeTree(tree->left);  
     }
-
+    
     if(tree->left != NULL && tree->left->info->it == METHOD){
-        typeMethod = tree->left->info->it;
+        typeMethod = tree->left->info->type;
         validTree = validTree && checkTypeTree(tree->left);
     }
 
     if(tree->left != NULL && tree->left->info->it == METHODCALL){
-        validTree = validTree && checkTypeTree(tree->left->left);
-        validTree = validTree && checkParameters(tree->left->left, tree->left->info->parameterList->head);
+        if(tree->left->info->parameterList->head != NULL && tree->left->left == NULL){
+            printf("\033[0;31m-> ERROR:\033[0m Too few arguments to method %s\n", tree->left->info->name);
+            exit(0);
+        }
+
+        if(countExp(tree->left->left, 0) > sizeParameter(tree->left->info->parameterList->head)){
+            printf("\033[0;31mERROR:\033[0m Too many arguments to method %s\n", tree->left->info->name);
+            exit(0);
+        }
+
+        if(tree->left->left != NULL){
+            validTree = validTree && checkTypeTree(tree->left->left);
+            validTree = validTree && checkParameters(tree->left->left, tree->left->info->parameterList->head, tree->left->info->name);
+        }
     }
 
     if(tree->right != NULL && tree->right->info->it == METHODCALL){
-        validTree = validTree && checkTypeTree(tree->right->left);
-        validTree = validTree && checkParameters(tree->right->left, tree->right->info->parameterList->head);
+        if(tree->right->info->parameterList->head != NULL && tree->right->left == NULL){
+            printf("\033[0;31m-> ERROR:\033[0m Too few arguments to method %s\n", tree->right->info->name);
+            exit(0);
+        }
+        
+        if(tree->right->left != NULL){
+            validTree = validTree && checkTypeTree(tree->right->left);
+            validTree = validTree && checkParameters(tree->right->left, tree->right->info->parameterList->head, tree->right->info->name);
+        }
     }
     
-    //checking the partner type for the operation    
     if(strcmp(tree->info->name, "next") != 0 && tree->left != NULL && tree->right != NULL){
-        if(strcmp(tree->info->name, "=") == 0){
-            validTree = validTree && asignType(tree->info->name, tree->left->info->type, tree->right->info->type);
-        }   
-        else{
-            validTree = validTree && operationType(tree->info->name, tree->left->info->type, tree->right->info->type);
-        }
         
-        if(tree->left->info->type != tree->right->info->type){
-            if(booleanOperation(tree->info->name)){
-                validTree = validTree && 0;
-                printf("\033[0;31merror:\033[0m Incompatible types for %s operation\nexpected: BOOL %s BOOL \nfound:  %s %s %s\n", tree->info->name, tree->info->name, enumToString(tree->left->info->type), tree->info->name, enumToString(tree->right->info->type));
-                exit(0);
-            }
-            else if (arithmeticOperation(tree->info->name)){
-                validTree = validTree && 0;
-                printf("\033[0;31merror:\033[0m Incompatible types for %s operation\nexpected: INT %s INT \nfound:  %s %s %s\n", tree->info->name, tree->info->name, enumToString(tree->left->info->type), tree->info->name, enumToString(tree->right->info->type));                
-                exit(0);
-            }
-            
+        validTree = validTree && checkOperationsTypes(tree);
+    }
+    
+    if(strcmp(tree->info->name, "-") == 0){
+        if(tree->left->info->type != TYPEINT){
+            printf("\033[0;31mERROR:\033[0m Incompatible types: %s cannot be converted to int\n", enumToString(tree->left->info->type));
+            exit(0);  
         }
-        
-        //No se si en el return esta bien asi que sea a la izquierda o tendria que ser a la derecha,
-        // porque a la redecha en el return es donde esta el tipo
+
+        tree->info->type = TYPEINT;
+    }
+
+    if(strcmp(tree->info->name, "!") == 0){
+        if(tree->left->info->type != TYPEBOOL){
+            printf("\033[0;31m-> ERROR:\033[0m Incompatible types: %s cannot be converted to %s\n", enumToString(tree->left->info->type), enumToString(TYPEBOOL));         
+            exit(0);             
+        }
         tree->info->type = tree->left->info->type;
     }
 
     if(strcmp(tree->info->name, "return") == 0){
         tree->info->type = tree->right->info->type;
         if(tree->info->type != typeMethod){
-            printf("\033[0;31merror:\033[0m Incompatible types: %s cannot be converted to %s\n", enumToString(tree->info->type), enumToString(typeMethod));         
+            printf("\033[0;31m-> ERROR:\033[0m Incompatible types: %s cannot be converted to %s\n", enumToString(tree->info->type), enumToString(typeMethod));         
             exit(0);
         }
     }
@@ -188,17 +272,35 @@ int checkTypeTree(struct TreeNode *tree) {
     return validTree;
 }   
 
-int checkParameters(struct TreeNode *tree,  struct ParameterNode *list){
-    
+int checkParameters(struct TreeNode *tree,  struct ParameterNode *list, char *methodName){
+
+
     if(tree->left != NULL && tree->left->info->type != UNDEFINED){
         if(tree->left->info->type != list->info->type){
-            printf("\033[0;31merror:\033[0m Incompatible types: %s cannot be converted to %s\n", enumToString(tree->left->info->type), enumToString(list->info->type));
+            printf("\033[0;31m-> ERROR:\033[0m Incompatible types: %s cannot be converted to %s\n", enumToString(tree->left->info->type), enumToString(list->info->type));
             exit(0);
         }
     }
 
-    if(tree->right != NULL && tree->right != NULL && strcmp(tree->right->info->name, "next") == 0){
-        checkParameters(tree->right, list->next);
+    if(list->next != NULL && tree->right == NULL){
+        printf("\033[0;31m-> ERROR:\033[0m Too few arguments to method %s\n", methodName);
+        exit(0);
+    }
+    
+    if(list->next != NULL && tree->right != NULL && strcmp(tree->right->info->name, "next") == 0){
+        checkParameters(tree->right, list->next, methodName);
+    }
+        
+}
+
+int countExp(struct TreeNode *tree, int count){
+    if(tree->left != NULL){
+        count = count + 1;
+    }
+     
+    if(tree->right != NULL){
+        return countExp(tree->right, count);
     }
 
+    return count;
 }

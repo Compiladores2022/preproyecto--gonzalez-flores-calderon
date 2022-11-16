@@ -2,25 +2,14 @@
 
 #include <stdlib.h>
 #include <stdio.h>
-#include "sintactic_analysis_tree/sintactic_analysis_tree.h"
-#include "intermediate_code_generator/instruction.h"
-#include "intermediate_code_generator/intermediate_code_generator.h"
-#include "assembler_code_generator/assembler_generator.h"
-#include "utils/utils.h"
-#include "symbol_list/symbol_list.h"
 
-SymbolList list;
-SintacticAnalysisTree sat;
-InstructionList instructionlist;
-int offset = 0;
 void yyerror();
 int yylex();
 
 %}
 
 %union {int i;
-        char *s;
-        struct TreeNode *n;}
+        char *s;}
 
 %token INT
 %token ID
@@ -81,9 +70,9 @@ prog: TProgram '{' declList methodDeclList '}'
     | TProgram '{' methodDeclList '}'
     ;
 
-methodDeclList: methodDecl
+methodDeclList: methodDeclList methodDecl
 
-    | methodDeclList methodDecl
+    | methodDecl
     ;
 
 methodDecl: type ID '('  ')' body
@@ -136,7 +125,7 @@ statement: ID '=' expr ';'
     
     | TIf '(' expr ')' TThen block TElse block
 
-    | TWhile expr block
+    | TWhile '(' expr ')' block
 
     | TReturn expr ';'
 
@@ -146,6 +135,8 @@ statement: ID '=' expr ';'
     ; 
     
 methodCall: ID '(' exprList ')'
+
+    | ID '(' ')'
     ;
 
 exprList: expr
@@ -179,7 +170,7 @@ expr: ID
 
     | expr TOR expr
 
-    | '-' expr %prec UNARYPREC
+    | TMENOS expr %prec UNARYPREC
 
     | '!' expr %prec UNARYPREC
 

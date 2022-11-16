@@ -40,7 +40,7 @@ function checkAllTestsPassed {
 
 flex grammar_test/calc-lexico-grammar-only.l 
 bison -d grammar_test/calc-sintaxis-grammar-only.y
-gcc lex.yy.c calc-sintaxis-grammar-only.tab.c types/symbol.c symbol_list/symbol_list.c sintactic_analysis_tree/sintactic_analysis_tree.c utils/utils.c intermediate_code_generator/intermediate_code_generator.c intermediate_code_generator/instruction.c assembler_code_generator/assembler_generator.c
+gcc lex.yy.c calc-sintaxis-grammar-only.tab.c
 
 
 mv lex.yy.c script_generated/lex.yy.c

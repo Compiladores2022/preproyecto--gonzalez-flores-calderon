@@ -1,0 +1,45 @@
+program {
+	
+	void assertTrue(bool expression) extern;
+	
+	void assertFalse(bool expression) extern;
+	
+	void testEQ_1() {
+		bool b = 1 == 0;
+		assertFalse(b);
+	}
+	
+	void testEQ_2() {
+		bool b = 0 == 1;
+		assertFalse(b);
+	}
+	
+	void testEQ_3() {
+		bool b = 1 == 1;
+		assertTrue(b);
+	}
+	
+	void testEQ_4() {
+		bool b = -1 == 0;
+		assertFalse(b);
+	}
+	
+	void testEQ_5() {
+		bool b = -2 == 1;
+		assertFalse(b);
+	}
+	
+	void testEQ_6() {
+		bool b = 1 == -1;
+		assertFalse(b);
+	}
+
+	void main() {
+		testEQ_1();
+		testEQ_2();
+		testEQ_3();
+		testEQ_4();
+		testEQ_5();
+		testEQ_6();
+	}
+}

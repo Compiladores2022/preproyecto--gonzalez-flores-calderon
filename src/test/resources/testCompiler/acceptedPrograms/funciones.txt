@@ -1,0 +1,36 @@
+program{
+
+    bool x = false;
+    int y = 0;
+    bool z = true;
+
+    void printInt(int b) extern;
+
+    bool foo_0(){
+        bool a = true;
+        bool b = false;
+    
+    
+        return !(!(a == !b)); // true
+    }
+
+    bool foo_1(int x){
+        z = x < 5;
+        return true;
+    }
+
+
+    int foo_2(int x, int y){
+        return 2 * x + 3 * y;
+    }
+
+    int main(){
+        int b=1;
+        int c=20;    
+
+        y = foo_2(b, c) + 20;
+        foo_1(b);
+        printInt(y);
+        return y;
+    }
+}

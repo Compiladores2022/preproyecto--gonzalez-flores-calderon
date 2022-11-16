@@ -41,17 +41,45 @@ struct TreeNode * createNewTree(types symbolType, struct TreeNode *left, struct 
 
 struct TreeNode * createNewTreeWithParameters(types symbolType, struct TreeNode *left, struct TreeNode *right, char *operation, int offset, struct ParameterList *parameterList, identifierType identifiertype) {
     Symbol *s = createSymbolWithParameter(symbolType, operation, NULL, offset, parameterList);
-    addIdentifierType(s, identifiertype);   
+    addIdentifierType(s, identifiertype);
+    // if(identifiertype == METHODCALL){
+    //     struct TreeNode * newNode = createNode(s);
+    //     return newNode;
+    // }   
     struct TreeNode * newTree = createTree(s, left, right);
     return newTree;
 }
 
+struct TreeNode * createNewNode(types symbolType, char * operation, identifierType identifiertype){
+    
+    Symbol *s = createSymbol(symbolType, operation, 0, 0);
+    addIdentifierType(s, identifiertype);
+    struct TreeNode * newNode = createNode(s);
+    return newNode;
+}
+
+struct TreeNode * createNewNodeWithParameters(types symbolType, char * operation, identifierType identifiertype, struct ParameterList * parameters){
+    
+    Symbol *s = createSymbolWithParameter(symbolType, operation, 0, 0, parameters);
+    addIdentifierType(s, identifiertype);
+    struct TreeNode * newNode = createNode(s);
+    return newNode;
+}
+
 int arithmeticOperation(char * operation) {
-    return !(strcmp(operation, "+") && strcmp(operation, "-") && strcmp(operation, "*") && strcmp(operation, "/") && strcmp(operation, "%"));
+    return !(strcmp(operation, "+") && 
+                strcmp(operation, "-") && 
+                strcmp(operation, "*") && 
+                strcmp(operation, "/") && 
+                strcmp(operation, "%"));
 }
 
 int booleanOperation(char * operation) {
-    return !(strcmp(operation, "&&") && strcmp(operation, "||") && strcmp(operation, "!"));
+    return !(strcmp(operation, "&&") && 
+                strcmp(operation, "||") && 
+                strcmp(operation, "!") &&
+                strcmp(operation, "<") &&
+                strcmp(operation, ">"));
 }
 
 int digitLength(int number) {
@@ -159,10 +187,9 @@ void createAssemblerFile(char * assemblerCode){
 }
 
 int checkMain(SymbolList *symbolList){
-    Symbol *example = search(symbolList, "+");
-    // printf("%d\n", example->type);
+    Symbol *example = search(symbolList, "main");
     if(example == NULL){
-        printf("Main not define\n");
+        printf("\033[0;31m-> ERROR:\033[0m Main not defined\n");
         exit(0);
     }
     return 0;
