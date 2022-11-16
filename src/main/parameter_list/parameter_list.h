@@ -16,4 +16,6 @@ void initializeP(struct ParameterList *parameterList);
 
 void insertParameter(struct ParameterList *list, struct Parameter *parameter);
 
+int sizeParameter(struct ParameterNode *list);
+
 #endif  

@@ -268,7 +268,6 @@ methodCall: ID '(' exprList ')' {   Symbol * methodSymb = search(&list, $1);
                                         yyerror();
                                     }
                                     if(methodSymb->parameterList != NULL){
-                                        printf("aca\n");
                                         $$ = createNewNodeWithParameters(methodSymb->type, methodSymb->name, METHODCALL, methodSymb->parameterList);
                                     }
                                     else{
