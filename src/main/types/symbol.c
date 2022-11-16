@@ -13,7 +13,7 @@ Symbol * createSymbol(types type, char *name, void *value, int offset) {
         exit(EXIT_FAILURE);
     }
 
-    struct ParameterList *list;
+    struct ParameterList *list = NULL;
     
     newSymbol->type = type;
     newSymbol->name = name;
