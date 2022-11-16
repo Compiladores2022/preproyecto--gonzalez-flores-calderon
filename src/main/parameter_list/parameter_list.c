@@ -26,3 +26,16 @@ void insertParameter(struct ParameterList *list, struct Parameter *parameter){
 	p->next = list->head;
 	list->head = p;
 }
+
+int sizeParameter(struct ParameterNode *list){
+
+	struct ParameterNode *aux = list;
+
+	int count = 0;
+	while (aux != NULL){
+		count += 1;
+		aux = aux->next;
+	}
+
+	return count;
+}
