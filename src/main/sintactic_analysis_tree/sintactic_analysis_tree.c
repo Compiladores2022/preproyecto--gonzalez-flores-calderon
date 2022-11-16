@@ -92,11 +92,11 @@ void printTreeInOrder(struct TreeNode *tree) {
 
 int checkOperationsTypes(struct TreeNode * tree){
 
-    if(strcmp(tree->info->name, "=") == 0){
-        return asignType(tree);
-    }
-    else if(strcmp(tree->info->name, "if") == 0){
+    if(strcmp(tree->info->name, "if") == 0){
         return ifType(tree);
+    }
+    else if(strcmp(tree->info->name, "=") == 0){
+        return asignType(tree);
     }
     else if(strcmp(tree->info->name, "==") == 0){
         return equalType(tree);
@@ -125,10 +125,10 @@ int whileType(struct TreeNode * tree){
 
 int equalType(struct TreeNode * tree){
     if(tree->left->info->type != tree->right->info->type){
-        printf("\033[0;31mERROR:\033[0m Conflicting types for: =\nexpected: %s = %s\nfound: %s = %s \n", enumToString(tree->left->info->type), enumToString(tree->left->info->type), enumToString(tree->left->info->type), enumToString(tree->right->info->type));
+        printf("\033[0;31mERROR:\033[0m Conflicting types for: =\nexpected: %s == %s\nfound: %s == %s \n", enumToString(tree->left->info->type), enumToString(tree->left->info->type), enumToString(tree->left->info->type), enumToString(tree->right->info->type));
         exit(0);
     }
-
+    
     tree->info->type = TYPEBOOL;
 }
 
@@ -138,6 +138,7 @@ int asignType(struct TreeNode * tree){
         exit(0);
     }
     tree->info->type = tree->left->info->type;
+    
     return 1;
 }
 
@@ -237,6 +238,15 @@ int checkTypeTree(struct TreeNode *tree) {
     if(strcmp(tree->info->name, "next") != 0 && tree->left != NULL && tree->right != NULL){
         
         validTree = validTree && checkOperationsTypes(tree);
+    }
+    
+    if(strcmp(tree->info->name, "-") == 0){
+        if(tree->left->info->type != TYPEINT){
+            printf("\033[0;31mERROR:\033[0m Incompatible types: %s cannot be converted to int\n", enumToString(tree->left->info->type));
+            exit(0);  
+        }
+
+        tree->info->type = TYPEINT;
     }
 
     if(strcmp(tree->info->name, "!") == 0){
