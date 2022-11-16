@@ -2,25 +2,14 @@
 
 #include <stdlib.h>
 #include <stdio.h>
-#include "sintactic_analysis_tree/sintactic_analysis_tree.h"
-#include "intermediate_code_generator/instruction.h"
-#include "intermediate_code_generator/intermediate_code_generator.h"
-#include "assembler_code_generator/assembler_generator.h"
-#include "utils/utils.h"
-#include "symbol_list/symbol_list.h"
 
-SymbolList list;
-SintacticAnalysisTree sat;
-InstructionList instructionlist;
-int offset = 0;
 void yyerror();
 int yylex();
 
 %}
 
 %union {int i;
-        char *s;
-        struct TreeNode *n;}
+        char *s;}
 
 %token INT
 %token ID
