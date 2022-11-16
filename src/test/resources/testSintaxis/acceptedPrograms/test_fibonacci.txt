@@ -1,0 +1,86 @@
+program {
+    void print(int x) extern;
+
+    void assertEquals(int expected, int value) extern;
+
+    int fib(int n) {
+        if (n == 0) then {
+            return 0;
+        }
+
+        if (n == 1) then {
+            return 1;
+        }
+        return fib(n - 1) + fib(n - 2);
+    }
+
+    void test_fibonacci1() {
+        int value = fib(0);
+        assertEquals(0, value);
+    }
+
+    void test_fibonacci2() {
+        int value = fib(1);
+        assertEquals(1, value);
+    }
+
+    void test_fibonacci3() {
+        int value = fib(2);
+        assertEquals(1, value);
+    }
+
+    void test_fibonacci4() {
+        int value = fib(3);
+        assertEquals(2, value);
+    }
+
+    void test_fibonacci5() {
+        int value = fib(4);
+        assertEquals(3, value);
+    }
+
+    void test_fibonacci6() {
+        int value = fib(5);
+        assertEquals(5, value);
+    }
+
+    void test_fibonacci7() {
+        int value = fib(6);
+        assertEquals(8, value);
+    }
+
+    void test_fibonacci8() {
+        int value = fib(7);
+        assertEquals(13, value);
+    }
+
+    void test_fibonacci9() {
+        int value = fib(8);
+        assertEquals(21, value);
+    }
+
+    void test_fibonacci10() {
+        int value = fib(9);
+        assertEquals(34, value);
+    }
+
+    void test_fibonacci11() {
+        int value = fib(10);
+        assertEquals(55, value);
+    }
+
+    void main() {
+        test_fibonacci1();
+        test_fibonacci2();
+        test_fibonacci3();
+        test_fibonacci4();
+        test_fibonacci5();
+        test_fibonacci6();
+        test_fibonacci7();
+        test_fibonacci8();
+        test_fibonacci9();
+        test_fibonacci10();
+        test_fibonacci11();
+    }
+
+}
