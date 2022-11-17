@@ -147,8 +147,8 @@ void processThreeAddressCode(struct Instruction * instruction, char * code) {
             generateInstructionCode(code, "CMP", "%edx", "%eax");
             generateInstructionCode(code, "JE", getSymbolLocation(instruction->result));
 
-            while(%) {
-
+            while() {
+                generateInstructionCode(code, "JE", getSymbolLocation(instruction->result));
             }
 
             break;
