@@ -49,7 +49,7 @@ Symbol * createSymbolNoParameters(types type, char *name, void *value, int offse
     Symbol * newSymbol = (Symbol *) malloc (sizeof(Symbol));
     
     if(newSymbol == NULL){
-        printf("couldn't create symbol, exiting\n");
+        printf("-> ERROR: couldn't create symbol, exiting\n");
         exit(EXIT_FAILURE);
     }
 
@@ -70,7 +70,7 @@ Symbol * createSymbolFull(types type, char *name, void *value, int offset, struc
     Symbol * newSymbol = (Symbol *) malloc (sizeof(Symbol));
     
     if(newSymbol == NULL){
-        printf("couldn't create symbol, exiting\n");
+        printf("-> ERROR: couldn't create symbol, exiting\n");
         exit(EXIT_FAILURE);
     }
 
@@ -86,7 +86,7 @@ Symbol * createSymbolFull(types type, char *name, void *value, int offset, struc
 
 void addType(Symbol *symbol, types type) {
     if (symbol->type != UNDEFINED) {
-        printf("\033[0;31mError:\033[0m Symbol %s already has type %s setted\n", symbol->name, enumToString(symbol->type));
+        printf("\033[0;31m-> ERROR: :\033[0m Symbol %s already has type %s setted\n", symbol->name, enumToString(symbol->type));
         exit(0);
     }
     symbol->type = type;
@@ -94,7 +94,7 @@ void addType(Symbol *symbol, types type) {
 
 void addValue(Symbol *symbol, void *value) {
     if (symbol->value != NULL) {
-        printf("\033[0;31mError:\033[0m Symbol %s already has a value setted\n", symbol->name);
+        printf("\033[0;31m-> ERROR: :\033[0m Symbol %s already has a value setted\n", symbol->name);
         exit(0);
     }
     symbol->value = value;
@@ -102,7 +102,7 @@ void addValue(Symbol *symbol, void *value) {
 
 void addIdentifierType(Symbol *symbol, identifierType identifierType){
     if(symbol->it != TYPELESS){
-        printf("\033[0;31mError:\033[0m Symbol %s already has a identifier type setted\n", symbol->name);
+        printf("\033[0;31m-> ERROR: :\033[0m Symbol %s already has a identifier type setted\n", symbol->name);
         exit(0);
     }
     symbol->it = identifierType;
@@ -114,7 +114,7 @@ void replaceIdentifierType(Symbol *symbol, identifierType identifiertype){
 
 void addParemeters(Symbol *symbol, struct ParameterList *parameters){
     if(symbol->parameterList != NULL){
-        printf("\033[0;31mError:\033[0m Symbol %s already has a parameters setted\n", symbol->name);
+        printf("\033[0;31m-> ERROR: :\033[0m Symbol %s already has a parameters setted\n", symbol->name);
         exit(0);
     }
     symbol->parameterList = parameters;

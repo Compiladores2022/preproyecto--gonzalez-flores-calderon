@@ -96,7 +96,7 @@ methodDeclList: methodDecl methodDeclList    { $$ = createNextTree($1, $2); }
     ;
 
 methodDecl: type ID '('  ')'    {   if(search(&list, $2) != NULL){
-                                        printf("Already defined method: %s", $2);
+                                        printf("-> ERROR: Method %s is already defined", $2);
                                         yyerror();
                                     }
                                     Symbol * symbol = createSymbolNoParameters($1, $2, NULL, 0, METHOD);
@@ -117,7 +117,7 @@ methodDecl: type ID '('  ')'    {   if(search(&list, $2) != NULL){
                                 }
 
     | TVOID ID '('  ')' {   if(search(&list, $2) != NULL){
-                                printf("Already defined method: %s", $2);
+                                printf("-> ERROR: Method %s is already defined", $2);
                                 yyerror();
                             }
                             Symbol * symbol = createSymbolNoParameters(TYPEVOID, $2, NULL, 0, METHOD);
@@ -138,7 +138,7 @@ methodDecl: type ID '('  ')'    {   if(search(&list, $2) != NULL){
                         }
 
     | type ID '(' { openLevel(&list); } listParameters ')'  {   if(search(&list, $2) != NULL){
-                                                                    printf("Already defined method: %s", $2);
+                                                                    printf("-> ERROR: Method %s is already defined", $2);
                                                                     yyerror();
                                                                 }
                                                                 Symbol * symbol = createSymbolFull($1, $2, NULL, 0, $5, METHOD);
@@ -161,7 +161,7 @@ methodDecl: type ID '('  ')'    {   if(search(&list, $2) != NULL){
                                                             }
 
     | TVOID ID '(' { openLevel(&list);} listParameters ')'  {   if(search(&list, $2) != NULL){
-                                                                    printf("Already defined method: %s", $2);
+                                                                    printf("-> ERROR: Method %s is already defined", $2);
                                                                     yyerror();
                                                                 }
                                                                 Symbol * symbol = createSymbolFull(TYPEVOID, $2, NULL, 0, $5, METHOD);
@@ -224,7 +224,7 @@ declList: decl          {   $$ = createNextTree($1, NULL); }
     ;
 
 decl: type ID '=' expr ';'  {   if (searchInLevel(list.head->levelSymbols, $2) != NULL) {
-                                    printf("Multiple definitions of: %s", $2);
+                                    printf("-> ERROR: Multiple definitions of: %s", $2);
                                     yyerror();
                                 }
                                 offset += 8;
@@ -241,7 +241,7 @@ statementList:  statement       {   $$ = createNextTree($1, NULL); }
     
 statement: ID '=' expr ';'  {   Symbol * idSymbol = search(&list, $1);
                                 if (idSymbol == NULL) { 
-                                    printf("Undefined Symbol %s", $1);
+                                    printf("-> ERROR: Undefined Symbol %s", $1);
                                     yyerror();
                                 }
                                 struct TreeNode * idNode = createNode(idSymbol);
@@ -267,13 +267,13 @@ statement: ID '=' expr ';'  {   Symbol * idSymbol = search(&list, $1);
     
 methodCall: ID '(' exprList ')' {   Symbol * methodSymb = search(&list, $1);
                                     if ( methodSymb == NULL) {
-                                        printf("Undefined method: %s", $1);
+                                        printf("-> ERROR: Undefined method: %s", $1);
                                         yyerror();
                                     }else if(methodSymb->it != METHOD){
-                                        printf("This name not a method: %s", $1);
+                                        printf("-> ERROR: This identifier is not a method: %s", $1);
                                         yyerror();
                                     }else if(methodSymb->parameterList == NULL){
-                                        printf("Method %s cannot be applied to given types\n", $1);
+                                        printf("-> ERROR: Method %s cannot be applied to given types\n", $1);
                                         yyerror();
                                     }                                                                
                                     $$ = createNewTreeWithParameters(methodSymb->type, $3, NULL, methodSymb->name, 0, methodSymb->parameterList, METHODCALL);
@@ -281,10 +281,10 @@ methodCall: ID '(' exprList ')' {   Symbol * methodSymb = search(&list, $1);
 
     | ID '(' ')'                {   Symbol * methodSymb = search(&list, $1);
                                     if ( methodSymb == NULL) {
-                                        printf("Undefined method: %s", $1);
+                                        printf("-> ERROR: Undefined method: %s", $1);
                                         yyerror();
                                     }else if(methodSymb->it != METHOD){
-                                        printf("This name not a method: %s", $1);
+                                        printf("-> ERROR: This identifier is not a method: %s", $1);
                                         yyerror();
                                     }
                                     if(methodSymb->parameterList != NULL){
@@ -303,14 +303,14 @@ exprList: expr      { $$ = createNextTree($1, NULL); }
 
 expr: ID    {   Symbol *s = search(&list, $1);
                 if (s == NULL) {
-                    printf("Undefined symbol %s\n", $1);
+                    printf("-> ERROR: Undefined symbol %s\n", $1);
                     yyerror();
                 }
                 $$ = createNode(s); 
             }
 
     | methodCall        {   if($1->info->type == TYPEVOID){
-                                printf("Method void not use to expr: %s", $1->info->name);
+                                printf("-> ERROR: Method void cannot be used for expr: %s", $1->info->name);
                                 yyerror();
                             }    
                             $$ = $1; 

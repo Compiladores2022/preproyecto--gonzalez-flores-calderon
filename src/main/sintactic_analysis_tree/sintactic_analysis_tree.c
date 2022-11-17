@@ -24,7 +24,7 @@ struct TreeNode * CreateEmptyNode() {
 
     newNode = (struct TreeNode *) malloc (sizeof(struct TreeNode));
     if(newNode == NULL){
-        printf("couldn't create tree node, exiting\n");
+        printf("-> ERROR: couldn't create tree node, exiting\n");
         exit(EXIT_FAILURE);
     }
     else{
@@ -37,7 +37,7 @@ SintacticAnalysisTree * CreateEmptyTree() {
 
     newTree = (SintacticAnalysisTree *) malloc (sizeof(SintacticAnalysisTree));
     if(newTree == NULL){
-        printf("couldn't create tree node, exiting\n");
+        printf("-> ERROR: couldn't create tree node, exiting\n");
         exit(EXIT_FAILURE);
     }
     else{
@@ -116,7 +116,7 @@ int checkOperationsTypes(struct TreeNode * tree){
 
 int whileType(struct TreeNode * tree){
     if(tree->left->info->type != TYPEBOOL){
-        printf("\033[0;31mERROR:\033[0m Incompatible types for %s: %s cannot be converted to bool\n", tree->info->name, enumToString(tree->left->info->type));
+        printf("\033[0;31m-> ERROR:\033[0m Incompatible types for %s: %s cannot be converted to bool\n", tree->info->name, enumToString(tree->left->info->type));
         exit(0);        
     }
 
@@ -144,7 +144,7 @@ int asignType(struct TreeNode * tree){
 
 int ifType(struct TreeNode * tree){
     if(tree->left->info->type != TYPEBOOL){
-        printf("\033[0;31mERROR:\033[0m Incompatible types for %s: %s cannot be converted to bool\n", tree->info->name, enumToString(tree->left->info->type));
+        printf("\033[0;31m-> ERROR:\033[0m Incompatible types for %s: %s cannot be converted to bool\n", tree->info->name, enumToString(tree->left->info->type));
         exit(0);
     }
     return 1;
@@ -212,7 +212,7 @@ int checkTypeTree(struct TreeNode *tree) {
         }
 
         if(countExp(tree->left->left, 0) > sizeParameter(tree->left->info->parameterList->head)){
-            printf("\033[0;31mERROR:\033[0m Too many arguments to method %s\n", tree->left->info->name);
+            printf("\033[0;31m-> ERROR:\033[0m Too many arguments to method %s\n", tree->left->info->name);
             exit(0);
         }
 
@@ -241,7 +241,7 @@ int checkTypeTree(struct TreeNode *tree) {
     
     if(strcmp(tree->info->name, "-") == 0){
         if(tree->left->info->type != TYPEINT){
-            printf("\033[0;31mERROR:\033[0m Incompatible types for %s: %s cannot be converted to int\n", tree->info->name, enumToString(tree->left->info->type));
+            printf("\033[0;31m-> ERROR:\033[0m Incompatible types for %s: %s cannot be converted to int\n", tree->info->name, enumToString(tree->left->info->type));
             exit(0);  
         }
 
@@ -250,7 +250,7 @@ int checkTypeTree(struct TreeNode *tree) {
 
     if(strcmp(tree->info->name, "!") == 0){
         if(tree->left->info->type != TYPEBOOL){
-            printf("\033[0;31mERROR:\033[0m Incompatible types for %s: %s cannot be converted to %s\n", tree->info->name, enumToString(tree->left->info->type), enumToString(TYPEBOOL));         
+            printf("\033[0;31m-> ERROR:\033[0m Incompatible types for %s: %s cannot be converted to %s\n", tree->info->name, enumToString(tree->left->info->type), enumToString(TYPEBOOL));         
             exit(0);             
         }
         tree->info->type = tree->left->info->type;
@@ -260,7 +260,7 @@ int checkTypeTree(struct TreeNode *tree) {
         checkOperationsTypes(tree->right);
         tree->info->type = tree->right->info->type;
         if(tree->info->type != typeMethod){
-            printf("\033[0;31mERROR:\033[0m Incompatible types for %s: %s cannot be converted to %s\n", tree->info->name, enumToString(tree->info->type), enumToString(typeMethod));         
+            printf("\033[0;31m-> ERROR:\033[0m Incompatible types for %s: %s cannot be converted to %s\n", tree->info->name, enumToString(tree->info->type), enumToString(typeMethod));         
             exit(0);
         }
     }
@@ -276,7 +276,7 @@ int checkParameters(struct TreeNode *tree,  struct ParameterNode *list, char *me
 
     if(tree->left != NULL && tree->left->info->type != UNDEFINED){
         if(tree->left->info->type != list->info->type){
-            printf("\033[0;31mERROR:\033[0m Incompatible types for %s: %s cannot be converted to %s\n", tree->left->info->name, enumToString(tree->left->info->type), enumToString(list->info->type));
+            printf("\033[0;31m-> ERROR:\033[0m Incompatible types for %s: %s cannot be converted to %s\n", tree->left->info->name, enumToString(tree->left->info->type), enumToString(list->info->type));
             exit(0);
         }
     }
