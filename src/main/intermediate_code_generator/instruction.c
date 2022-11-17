@@ -14,7 +14,7 @@ struct Instruction * createInstruction(char *name, Symbol *fstOp, Symbol *sndOp,
 
     newInstruction = (struct Instruction *) malloc (sizeof(struct Instruction));
     if(newInstruction == NULL){
-        printf("couldn't create instruction, exiting\n");
+        printf("-> ERROR: couldn't create instruction, exiting\n");
         exit(EXIT_FAILURE);
     }
 
@@ -42,7 +42,7 @@ struct InstructionNode * createInstructionNode(char *name, Symbol *fstOp, Symbol
 
     newInstructionNode = (struct InstructionNode *) malloc (sizeof(struct InstructionNode));
     if(newInstructionNode == NULL){
-            printf("couldn't create instruction node, exiting\n");
+            printf("-> ERROR: couldn't create instruction node, exiting\n");
             exit(EXIT_FAILURE);
     }
     else{

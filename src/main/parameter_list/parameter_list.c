@@ -11,7 +11,8 @@ struct ParameterNode * createParameterNode(){
 	struct ParameterNode *newNode;
 	newNode = (struct ParameterNode *) malloc (sizeof(struct ParameterNode));
 	if (newNode == NULL){
-	 	exit(EXIT_FAILURE);
+	 	printf("-> ERROR: couldn't create parameter node, exiting\n");
+		exit(EXIT_FAILURE);
 	}
 	else {
 	 return newNode;

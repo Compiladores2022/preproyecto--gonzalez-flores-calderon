@@ -7,7 +7,7 @@ struct Parameter * createParameter(types type, char *id) {
 
     newParameter = (struct Parameter *) malloc (sizeof(struct Parameter));
     if(newParameter == NULL){
-        printf("couldn't create parameter, exiting\n");
+        printf("-> ERROR: couldn't create parameter, exiting\n");
         exit(EXIT_FAILURE);
     }
 
