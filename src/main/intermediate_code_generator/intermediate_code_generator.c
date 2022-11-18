@@ -30,7 +30,6 @@ InstructionList * generateIntermediateCode(struct TreeNode *tree) {
 }
 
 void translateTreeIntoCode(struct TreeNode *tree, InstructionList * codeList) {
-    
     generateSentenceCode(tree->left, codeList);   //left part cannot be a 'next' symbol, must be sentence or declaration
     if (tree->right != NULL) {  //right part is a next symbol if exists
         translateTreeIntoCode(tree->right, codeList);
@@ -82,7 +81,6 @@ Symbol * addCurrentInstruction(struct TreeNode *tree, InstructionList * codeList
     int *operationResult = (int*) malloc(sizeof(int));
     struct Instruction * instruction = NULL;
     char * operation = getOperationName(tree->info);
-    printf("operacion: %s, nombre orig: %s\n", operation, tree->info->name);
     switch (stringToOperation(operation)) { //creates the instruction
         case ADD:
             temp3 = tree->info;
@@ -129,11 +127,8 @@ Symbol * addCurrentInstruction(struct TreeNode *tree, InstructionList * codeList
             instruction = createInstruction("NOT", temp1, NULL, temp3);
             break;
         case ASSIG:
-            printf("check llamada metodo\n");
             checkMethodCall(NULL, tree->right, codeList);
-            printf("instruccion\n");
             instruction = createInstruction("ASSIG", temp2, NULL, temp1);
-            printf("asigno values\n");
             temp1->value = temp2->value;
             break;
         case EQUAL:
@@ -200,7 +195,7 @@ Symbol * addCurrentInstruction(struct TreeNode *tree, InstructionList * codeList
             
             instruction = createInstruction("WHILE", expressionResult, NULL, whileLabel);
             break;
-        default: printf("%s is not an operator\n", tree->info->name);
+        default: printf("-> ERROR: %s is not an operator\n", tree->info->name);
             exit(0);
     }
     
