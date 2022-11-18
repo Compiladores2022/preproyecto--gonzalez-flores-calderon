@@ -1,0 +1,10 @@
+program {
+    int duplicate(int value) {
+        return value + value;   //dont recognize the paramether value
+    }
+
+    int main() {
+        int x = 5;
+        return duplicate(x);
+    }
+}

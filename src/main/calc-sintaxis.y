@@ -235,7 +235,7 @@ statement: ID '=' expr ';'  {   Symbol * idSymbol = search(&list, $1);
                                 $$ = createNewTree(UNDEFINED, idNode, $3, "=", 0, TYPELESS); 
                             }
     
-    | methodCall ';' { $$ = $1; }   
+    | methodCall { $$ = $1; }
     
     | TIf '(' expr ')' TThen block { $$ = createNewTree(UNDEFINED, $3, $6, "if", 0, TYPELESS); }
     
@@ -246,6 +246,8 @@ statement: ID '=' expr ';'  {   Symbol * idSymbol = search(&list, $1);
     | TWhile '(' expr ')' block     { $$ = createNewTree(UNDEFINED, $3, $5, "while", 0, TYPELESS); }
 
     | TReturn expr ';'  { $$ = createNewTree(UNDEFINED, NULL, $2, "return", 0, TYPELESS); }
+
+    | TReturn ';'       {   $$ = NULL   }
 
     | ';'           { $$ = NULL; }
 

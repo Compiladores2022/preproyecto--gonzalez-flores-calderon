@@ -1,0 +1,6 @@
+program {
+    int a = 0;
+    void main() {
+        if (a) then { return a; }
+    }
+}

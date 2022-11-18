@@ -1,0 +1,11 @@
+program {
+    int x = 7;
+    bool localDecl() {
+        int x = 5;
+        return x == 5;
+    }
+
+    int main() {
+        return localDecl();
+    }
+}
