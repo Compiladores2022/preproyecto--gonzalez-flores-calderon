@@ -99,75 +99,83 @@ methodDecl: type ID '('  ')'    {   if(search(&list, $2) != NULL){
                                         printf("-> ERROR: Method %s is already defined", $2);
                                         yyerror();
                                     }
+                                    Symbol *s = createSymbol($1, $2, 0, 0);
+                                    insert(&list, s);
                                 } 
                                 body   
                                 {   
-                                    if($6 == NULL){                                        
-                                        struct TreeNode * node = createNewNode($1, $2, EXTERNMETHOD);
-                                        insert(&list, node->info);
-                                        $$ = node;
+                                    if($6 == NULL){
+                                        Symbol *s = search(&list, $2);
+                                        addIdentifierType(s, EXTERNMETHOD);
+                                        $$ = createNode(s);
                                     } else{
-                                        struct TreeNode *treeMethod = createNewTree($1, $6, NULL, $2, 0, METHOD);
-                                        insert(&list, treeMethod->info);
-                                        $$ = treeMethod;
+                                        Symbol *s = search(&list, $2);
+                                        addIdentifierType(s, METHOD);
+                                        $$ = createTree(s, $6, NULL);
                                     }
                                 }
 
     | TVOID ID '('  ')' {   if(search(&list, $2) != NULL){
                                 printf("-> ERROR: Method %s is already defined", $2);
                                 yyerror();
+                                Symbol *s = createSymbol(TYPEVOID, $2, 0, 0);
+                                insert(&list, s);
                             }
                         } 
                         body    
                         {   if($6 == NULL){
-                                struct TreeNode * node = createNewNode(TYPEVOID, $2, EXTERNMETHOD);
-                                insert(&list, node->info);
-                                $$ = node;    
+                                Symbol *s = search(&list, $2);
+                                addIdentifierType(s, EXTERNMETHOD);
+                                $$ = createNode(s);
                             } 
                             else{
-                                struct TreeNode *treeMethod = createNewTree(TYPEVOID, $6, NULL, $2, 0, METHOD);
-                                insert(&list, treeMethod->info);
-                                $$ = treeMethod;
+                                Symbol *s = search(&list, $2);
+                                addIdentifierType(s, METHOD);
+                                $$ = createTree(s, $6, NULL);
                             }
                         }
 
     | type ID '(' { openLevel(&list); } listParameters ')'  {   if(search(&list, $2) != NULL){
                                                                     printf("-> ERROR: Method %s is already defined", $2);
                                                                     yyerror();
+                                                                    Symbol *s = createSymbolWithParameter($1, $2, 0, 0, $5);
+                                                                    insert(&list, s);
                                                                 }
                                                             }
                                                             body 
                                                             {   
-                                                                closeLevel(&list);   
+                                                                closeLevel(&list);
                                                                 if($8 == NULL){
-                                                                    struct TreeNode * node = createNewNodeWithParameters($1, $2, EXTERNMETHOD, $5);
-                                                                    insert(&list, node->info);
-                                                                    $$ = node;   
+                                                                    Symbol *s = search(&list, $2);
+                                                                    addIdentifierType(s, EXTERNMETHOD);
+                                                                    $$ = createNode(s);
                                                                 }
                                                                 else{
-                                                                    struct TreeNode *treeMethod = createNewTreeWithParameters($1, $8, NULL, $2, 0, $5, METHOD);
-                                                                    insert(&list, treeMethod->info);
-                                                                    $$ = treeMethod;
+                                                                    Symbol *s = search(&list, $2);
+                                                                    addIdentifierType(s, METHOD);
+                                                                    $$ = createTree(s, $8, NULL);
                                                                 }
                                                             }
 
     | TVOID ID '(' { openLevel(&list);} listParameters ')'  {   if(search(&list, $2) != NULL){
                                                                     printf("-> ERROR: Method %s is already defined", $2);
                                                                     yyerror();
+                                                                    Symbol *s = createSymbolWithParameter(TYPEVOID, $2, 0, 0, $5);
+                                                                    insert(&list, s);
                                                                 }
                                                             }
                                                             body 
                                                             {   
                                                                 closeLevel(&list);   
                                                                 if($8 == NULL){
-                                                                    struct TreeNode * node = createNewNodeWithParameters(TYPEVOID, $2, EXTERNMETHOD, $5);
-                                                                    insert(&list, node->info);
-                                                                    $$ = node;    
+                                                                    Symbol *s = search(&list, $2);
+                                                                    addIdentifierType(s, EXTERNMETHOD);
+                                                                    $$ = createNode(s);
                                                                 } 
                                                                 else{                                                                   
-                                                                    struct TreeNode *treeMethod = createNewTreeWithParameters(TYPEVOID, $8, NULL, $2, 0, $5, METHOD);
-                                                                    insert(&list, treeMethod->info);
-                                                                    $$ = treeMethod;
+                                                                    Symbol *s = search(&list, $2);
+                                                                    addIdentifierType(s, METHOD);
+                                                                    $$ = createTree(s, $8, NULL);
                                                                 }
                                                             }
     ;
