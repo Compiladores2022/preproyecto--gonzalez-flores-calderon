@@ -143,6 +143,9 @@ int stringToOperation(char *string) {
     else if (strcmp(string, "methoddecl") == 0 || strcmp(string, "METHDECL") == 0){
         return METHDECL; 
     }
+    else if (strcmp(string, "externmethod") == 0 || strcmp(string, "EXTERNMETH") == 0){
+        return EXTERNMETH; 
+    }
     else if (strcmp(string, "methodcall") == 0 || strcmp(string, "METHCALL") == 0){
         return METHCALL; 
     }

@@ -82,6 +82,7 @@ Symbol * addCurrentInstruction(struct TreeNode *tree, InstructionList * codeList
     int *operationResult = (int*) malloc(sizeof(int));
     struct Instruction * instruction = NULL;
     char * operation = getOperationName(tree->info);
+    printf("operacion: %s, nombre orig: %s\n", operation, tree->info->name);
     switch (stringToOperation(operation)) { //creates the instruction
         case ADD:
             temp3 = tree->info;
@@ -128,8 +129,11 @@ Symbol * addCurrentInstruction(struct TreeNode *tree, InstructionList * codeList
             instruction = createInstruction("NOT", temp1, NULL, temp3);
             break;
         case ASSIG:
+            printf("check llamada metodo\n");
             checkMethodCall(NULL, tree->right, codeList);
+            printf("instruccion\n");
             instruction = createInstruction("ASSIG", temp2, NULL, temp1);
+            printf("asigno values\n");
             temp1->value = temp2->value;
             break;
         case EQUAL:
@@ -153,9 +157,13 @@ Symbol * addCurrentInstruction(struct TreeNode *tree, InstructionList * codeList
             instruction = createInstruction("RET", NULL, NULL, temp3);
             break;
         case METHDECL:
-            methodLabel = createSymbol(UNDEFINED, createLabel(tree->left->info->name), NULL, 0);
-            insertInstructionNode(codeList, createInstruction("METHDECL", methodLabel, tree->left->info, NULL));
+            methodLabel = createSymbol(UNDEFINED, createLabel(tree->info->name), NULL, 0);
+            insertInstructionNode(codeList, createInstruction("METHDECL", methodLabel, tree->info, NULL));
             translateTreeIntoCode(tree->left, codeList);    //load method content
+            break;
+        case EXTERNMETH:
+            methodLabel = createSymbol(UNDEFINED, createLabel(tree->info->name), NULL, 0);
+            insertInstructionNode(codeList, createInstruction("EXTERNMETH", methodLabel, tree->info, NULL));
             break;
         case METHCALL:
             createParameterInstructions(tree->left, codeList);
@@ -238,6 +246,8 @@ char * createLabel(char* name) {
 char * getOperationName(Symbol * s) {
     if (s->it == METHOD) {
         return "methoddecl";
+    } else if (s->it == EXTERNMETHOD) {
+        return "externmethod";
     } else if (s->it == METHODCALL) {
         return "methodcall";
     } else {
