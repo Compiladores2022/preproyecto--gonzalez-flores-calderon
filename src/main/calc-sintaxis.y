@@ -197,7 +197,6 @@ parameter: type ID  {   struct Parameter *parameter = createParameter($1, $2);
 block: '{' '}' { $$ = NULL; }
 
     | '{' { openLevel(&list); } declList statementList '}'  {   closeLevel(&list); 
-                                                                //VER ESTE CASO
                                                                 linkTreeRight($3, $4);
                                                                 $$ = $3;
                                                             }
