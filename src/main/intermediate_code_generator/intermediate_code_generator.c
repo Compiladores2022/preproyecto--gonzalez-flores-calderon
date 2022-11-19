@@ -158,8 +158,7 @@ Symbol * addCurrentInstruction(struct TreeNode *tree, InstructionList * codeList
             translateTreeIntoCode(tree->left, codeList);    //load method content
             } break;
         case EXTERNMETH: {
-            Symbol *methodLabel = createSymbol(UNDEFINED, createLabel(tree->info->name), NULL, 0);
-            insertInstructionNode(codeList, createInstruction("EXTERNMETH", methodLabel, tree->info, NULL));
+            // extern methods don't need to be handled in assembler they can just be called
             } break;
         case METHCALL: {
             createParameterInstructions(tree->left, codeList);
