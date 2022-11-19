@@ -163,23 +163,23 @@ Symbol * addCurrentInstruction(struct TreeNode *tree, InstructionList * codeList
             break;
         case METHCALL:
             createParameterInstructions(tree->left, codeList);
-            methodLabel = createSymbol(UNDEFINED, createLabel(tree->info->name), NULL, 0);
+            Symbol *methodLabel = createSymbol(UNDEFINED, createLabel(tree->info->name), NULL, 0);
             instruction = createInstruction("METHCALL", methodLabel, NULL, NULL);
-            break;
-        case IF:
+            } break;
+        case IF: {
             generateSentenceCode(tree->left, codeList);    //calculate expression result
-            endLabel = createSymbol(UNDEFINED, createGenericLabel("ENDIF"), NULL, 0);
-            expressionResult = codeList->last->instruction->result;
+            Symbol *endLabel = createSymbol(UNDEFINED, createGenericLabel("ENDIF"), NULL, 0);
+            Symbol *expressionResult = codeList->last->instruction->result;
             insertInstructionNode(codeList, createInstruction("JMPFALSE", expressionResult, NULL, endLabel));
             
             translateTreeIntoCode(tree->right, codeList); //generate code for 'then' block
             instruction = createInstruction(endLabel->name, NULL, NULL, NULL);
-            break;
-        case IFELSE:
+            } break;
+        case IFELSE: {
             generateSentenceCode(tree->left, codeList);    //calculate expression result
-            elseLabel = createSymbol(UNDEFINED, createGenericLabel("ELSE"), NULL, 0);
-            endLabel = createSymbol(UNDEFINED, createGenericLabel("ENDIF"), NULL, 0);
-            expressionResult = codeList->last->instruction->result;
+            Symbol *elseLabel = createSymbol(UNDEFINED, createGenericLabel("ELSE"), NULL, 0);
+            Symbol *endLabel = createSymbol(UNDEFINED, createGenericLabel("ENDIF"), NULL, 0);
+            Symbol *expressionResult = codeList->last->instruction->result;
             insertInstructionNode(codeList, createInstruction("JMPFALSE", expressionResult, NULL, elseLabel));
 
             translateTreeIntoCode(tree->right->left, codeList); //generate code for 'then' block
@@ -188,25 +188,22 @@ Symbol * addCurrentInstruction(struct TreeNode *tree, InstructionList * codeList
             insertInstructionNode(codeList, createInstruction(elseLabel->name, NULL, NULL, NULL));  //insert else label
             translateTreeIntoCode(tree->right->right, codeList); //generate code for 'else' block
 
-            insertInstructionNode(codeList, createInstruction("IFELSE", expressionResult, elseLabel, endLabel));
-            translateTreeIntoCode(tree->right->left, codeList); //generate code for 'then' block
-
             instruction = createInstruction(endLabel->name, NULL, NULL, NULL);
-            break;
-        case WHILE:
-            whileCheckLabel = createSymbol(UNDEFINED, createGenericLabel("WHILECHECK"), NULL, 0);
+            } break;
+        case WHILE: {
+            Symbol *whileCheckLabel = createSymbol(UNDEFINED, createGenericLabel("WHILECHECK"), NULL, 0);
             insertInstructionNode(codeList, createInstruction(whileCheckLabel->name, NULL, NULL, NULL));  //insert while check label
 
             generateSentenceCode(tree->left, codeList);    //calculate expression result
-            expressionResult = codeList->last->instruction->result;
-            endLabel = createSymbol(UNDEFINED, createGenericLabel("WHILEEND"), NULL, 0);
+            Symbol *expressionResult = codeList->last->instruction->result;
+            Symbol *endLabel = createSymbol(UNDEFINED, createGenericLabel("WHILEEND"), NULL, 0);
             insertInstructionNode(codeList, createInstruction("JMPFALSE", expressionResult, NULL, endLabel));
 
             translateTreeIntoCode(tree->right, codeList); //generate code for while block
             
             insertInstructionNode(codeList, createInstruction("JMP", NULL, NULL, whileCheckLabel));
             instruction = createInstruction(endLabel->name, NULL, NULL, NULL);  //insert while end label
-            break;
+            } break;
         case NEXTBLOCK: //this case happens when a new block is inserted inside another
             translateTreeIntoCode(tree, codeList);
             instruction = NULL;
