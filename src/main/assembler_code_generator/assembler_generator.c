@@ -9,7 +9,7 @@ void generateSimpleLogicArithmeticCode(struct Instruction * instruction, char * 
 void generateInstructionCode(char * code, char * operation, char * dest, char * value);
 void generateTwoAddressInstruction(char * code, char * operation, char * dest);
 char * getSymbolLocation(Symbol * symbol);
-int isLabel (struct Instruction * instruction);
+int isLabel(struct Instruction * instruction);
 
 char * generateAssemblerCode(InstructionList * intermediateCode, int maxOffset) {
     int requiredFrameSpace = maxOffset / 8;
@@ -90,30 +90,6 @@ void processThreeAddressCode(struct Instruction * instruction, char * code) {
         case METHCALL: {
             //TODO
             generateTwoAddressInstruction(code, "CALL", getSymbolLocation(instruction->fstOp));
-            break;
-        }
-
-        case IF: {
-            //CHECK
-            char * location = getSymbolLocation(instruction->fstOp); //get expression result
-            generateInstructionCode(code, "MOV", location, "%rax");
-            generateInstructionCode(code, "MOV", "%eax", location);
-            generateInstructionCode(code, "MOV", "%edx", "1");
-            generateInstructionCode(code, "CMP", "%edx", "%eax");
-            generateTwoAddressInstruction(code, "JNE", getSymbolLocation(instruction->result));
-            break;
-        }
-
-        case IFELSE: {
-            //this is the jmp of the else label
-            generateTwoAddressInstruction(code, "JMP", getSymbolLocation(instruction->result));
-
-            char * location = getSymbolLocation(instruction->fstOp);
-            generateInstructionCode(code, "MOV", location, "%rax");
-            generateInstructionCode(code, "MOV", "%eax", location);
-            generateInstructionCode(code, "MOV", "%edx", "1");
-            generateInstructionCode(code, "CMP", "%edx", "%eax");
-            generateTwoAddressInstruction(code, "JNE", getSymbolLocation(instruction->sndOp));
             break;
         }
 
@@ -203,7 +179,7 @@ char * getSymbolLocation(Symbol * symbol) {
     return location;
 }
 
-int isLabel (struct Instruction * instruction) {
+int isLabel(struct Instruction * instruction) {
     if(instruction->name != NULL && instruction->fstOp == NULL && instruction->sndOp == NULL && instruction->result == NULL) {
         return 1;
     }
