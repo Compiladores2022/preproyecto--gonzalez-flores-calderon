@@ -210,9 +210,6 @@ int checkTypeTree(struct TreeNode *tree) {
             printf("\033[0;31m-> ERROR:\033[0m Too few arguments to method %s\n", tree->left->info->name);
             exit(0);
         }
-
-        // printf("list: %d\n", sizeParameter(tree->left->info->parameterList->head));
-        // printf("count: %d\n", countExp(tree->left->left, 0));
         if(countExp(tree->left->left, 0) > sizeParameter(tree->left->info->parameterList->head)){
             printf("\033[0;31m-> ERROR:\033[0m Too many arguments to method %s\n", tree->left->info->name);
             exit(0);
