@@ -76,12 +76,11 @@ int yylex();
 
 %%
 
-inil: {initialize(&list);} prog {   //checkMain(&list);
+inil: {initialize(&list);} prog {   checkMain(&list);
                                     printTree($2); 
-                                    printf("\nErrores del chequeo de tipos\n\n");
                                     checkTypeTree($2);
-                                    //InstructionList * intermediateCode = generateIntermediateCode($2);
-                                    //printInstructionList(intermediateCode);
+                                    InstructionList * intermediateCode = generateIntermediateCode($2);
+                                    printInstructionList(intermediateCode);
                                 }
     ;    
 
@@ -150,17 +149,14 @@ methodDecl: type ID '('  ')'    {   if(search(&list, $2) != NULL){
                                                                     Symbol *s = search(&list, $2);
                                                                     addIdentifierType(s, EXTERNMETHOD);
                                                                     $$ = createNode(s);
-                                                                    // closeLevel(&list);
+                                                                    closeLevel(&list);
                                                                 }
                                                                 else{
                                                                     Symbol *s = search(&list, $2);
-                                                                    //addIdentifierType(s, METHOD);
                                                                     $$ = createTree(s, $8, NULL);
                                                                     closeLevel(&list);
                                                                     insert(&list, s);
                                                                 }
-                                                                // closeLevel(&list);
-                                                                // insert(&list, s);
                                                             }
 
     | TVOID ID '(' { openLevel(&list);} listParameters ')'  {   if(search(&list, $2) != NULL){
@@ -172,19 +168,13 @@ methodDecl: type ID '('  ')'    {   if(search(&list, $2) != NULL){
                                                             }
                                                             body 
                                                             {   
-                                                                // closeLevel(&list);   
                                                                 if($8 == NULL){
-                                                                    // printf("-----------------> aca\n");
                                                                     Symbol *s = search(&list, $2);
-                                                                    // printf("---------->list: %d\n", sizeParameter(s->parameterList->head));
                                                                     
                                                                     replaceIdentifierType(s, EXTERNMETHOD);
-                                                                    //$$ = createNode(s);
-                                                                    struct TreeNode *node = createNode(s);   
-                                                                    // printf("------------->s: %d\n", sizeParameter(node->info->parameterList->head));
+                                                                    $$ = createNode(s);
                                                                     closeLevel(&list);
                                                                     insert(&list, s);
-                                                                    
                                                                 } 
                                                                 else{                                                                   
                                                                     Symbol *s = search(&list, $2);
@@ -201,10 +191,10 @@ body: block         { $$ = $1; }
     | TExtern ';'   { $$ = NULL; }
     ; 
 
-listParameters: parameter           {   struct ParameterList pList;
-                                        initializeP(&pList);
-                                        insertParameter(&pList, $1);
-                                        $$ = &pList;
+listParameters: parameter           {   struct ParameterList *pList = (struct ParameterList*) malloc (sizeof(struct ParameterList*));
+                                        initializeP(pList);
+                                        insertParameter(pList, $1);
+                                        $$ = pList;
                                     }
     
     | listParameters ',' parameter  {   insertParameter($1, $3); 
