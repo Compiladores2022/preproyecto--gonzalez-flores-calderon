@@ -76,11 +76,12 @@ int yylex();
 
 %%
 
-inil: {initialize(&list);} prog {   checkMain(&list);
+inil: {initialize(&list);} prog {   //checkMain(&list);
                                     printTree($2); 
+                                    printf("\nErrores del chequeo de tipos\n\n");
                                     checkTypeTree($2);
-                                    InstructionList * intermediateCode = generateIntermediateCode($2);
-                                    printInstructionList(intermediateCode);
+                                    //InstructionList * intermediateCode = generateIntermediateCode($2);
+                                    //printInstructionList(intermediateCode);
                                 }
     ;    
 
@@ -118,9 +119,9 @@ methodDecl: type ID '('  ')'    {   if(search(&list, $2) != NULL){
     | TVOID ID '('  ')' {   if(search(&list, $2) != NULL){
                                 printf("-> ERROR: Method %s is already defined", $2);
                                 yyerror();
-                                Symbol *s = createSymbol(TYPEVOID, $2, 0, 0);
-                                insert(&list, s);
                             }
+                            Symbol *s = createSymbol(TYPEVOID, $2, 0, 0);
+                            insert(&list, s);
                         } 
                         body    
                         {   if($6 == NULL){
@@ -138,44 +139,59 @@ methodDecl: type ID '('  ')'    {   if(search(&list, $2) != NULL){
     | type ID '(' { openLevel(&list); } listParameters ')'  {   if(search(&list, $2) != NULL){
                                                                     printf("-> ERROR: Method %s is already defined", $2);
                                                                     yyerror();
-                                                                    Symbol *s = createSymbolWithParameter($1, $2, 0, 0, $5);
-                                                                    insert(&list, s);
                                                                 }
+                                                                Symbol *s = createSymbolFull($1, $2, 0, 0, $5, METHOD);
+                                                                insert(&list, s);
                                                             }
                                                             body 
                                                             {   
-                                                                closeLevel(&list);
+                                                                
                                                                 if($8 == NULL){
                                                                     Symbol *s = search(&list, $2);
                                                                     addIdentifierType(s, EXTERNMETHOD);
                                                                     $$ = createNode(s);
+                                                                    // closeLevel(&list);
                                                                 }
                                                                 else{
                                                                     Symbol *s = search(&list, $2);
-                                                                    addIdentifierType(s, METHOD);
+                                                                    //addIdentifierType(s, METHOD);
                                                                     $$ = createTree(s, $8, NULL);
+                                                                    closeLevel(&list);
+                                                                    insert(&list, s);
                                                                 }
+                                                                // closeLevel(&list);
+                                                                // insert(&list, s);
                                                             }
 
     | TVOID ID '(' { openLevel(&list);} listParameters ')'  {   if(search(&list, $2) != NULL){
                                                                     printf("-> ERROR: Method %s is already defined", $2);
                                                                     yyerror();
-                                                                    Symbol *s = createSymbolWithParameter(TYPEVOID, $2, 0, 0, $5);
-                                                                    insert(&list, s);
                                                                 }
+                                                                Symbol *s = createSymbolFull(TYPEVOID, $2, 0, 0, $5, METHOD);
+                                                                insert(&list, s);
                                                             }
                                                             body 
                                                             {   
-                                                                closeLevel(&list);   
+                                                                // closeLevel(&list);   
                                                                 if($8 == NULL){
+                                                                    // printf("-----------------> aca\n");
                                                                     Symbol *s = search(&list, $2);
-                                                                    addIdentifierType(s, EXTERNMETHOD);
-                                                                    $$ = createNode(s);
+                                                                    // printf("---------->list: %d\n", sizeParameter(s->parameterList->head));
+                                                                    
+                                                                    replaceIdentifierType(s, EXTERNMETHOD);
+                                                                    //$$ = createNode(s);
+                                                                    struct TreeNode *node = createNode(s);   
+                                                                    // printf("------------->s: %d\n", sizeParameter(node->info->parameterList->head));
+                                                                    closeLevel(&list);
+                                                                    insert(&list, s);
+                                                                    
                                                                 } 
                                                                 else{                                                                   
                                                                     Symbol *s = search(&list, $2);
                                                                     addIdentifierType(s, METHOD);
                                                                     $$ = createTree(s, $8, NULL);
+                                                                    closeLevel(&list);
+                                                                    insert(&list, s);
                                                                 }
                                                             }
     ;
@@ -262,11 +278,12 @@ statement: ID '=' expr ';'  {   Symbol * idSymbol = search(&list, $1);
     ; 
     
 methodCall: ID '(' exprList ')' {   Symbol * methodSymb = search(&list, $1);
+                                    printf("symbol: %s, type: %d, it: %d\n", methodSymb->name, methodSymb->type, methodSymb->it);
                                     if ( methodSymb == NULL) {
                                         printf("-> ERROR: Undefined method: %s", $1);
                                         yyerror();
                                     }else if(methodSymb->it != METHOD && methodSymb->it != EXTERNMETHOD){
-                                        printf("-> ERROR: This identifier is not a method: %s", $1);
+                                        printf("-> ERROR: This identifier is not a method: %s\n", $1);
                                         yyerror();
                                     }else if(methodSymb->parameterList == NULL){
                                         printf("-> ERROR: Method %s cannot be applied to given types\n", $1);
