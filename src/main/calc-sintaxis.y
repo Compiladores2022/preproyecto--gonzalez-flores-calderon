@@ -150,6 +150,7 @@ methodDecl: type ID '('  ')'    {   if(search(&list, $2) != NULL){
                                                                     addIdentifierType(s, EXTERNMETHOD);
                                                                     $$ = createNode(s);
                                                                     closeLevel(&list);
+                                                                    insert(&list, s);
                                                                 }
                                                                 else{
                                                                     Symbol *s = search(&list, $2);
@@ -170,7 +171,6 @@ methodDecl: type ID '('  ')'    {   if(search(&list, $2) != NULL){
                                                             {   
                                                                 if($8 == NULL){
                                                                     Symbol *s = search(&list, $2);
-                                                                    
                                                                     replaceIdentifierType(s, EXTERNMETHOD);
                                                                     $$ = createNode(s);
                                                                     closeLevel(&list);
@@ -178,7 +178,6 @@ methodDecl: type ID '('  ')'    {   if(search(&list, $2) != NULL){
                                                                 } 
                                                                 else{                                                                   
                                                                     Symbol *s = search(&list, $2);
-                                                                    addIdentifierType(s, METHOD);
                                                                     $$ = createTree(s, $8, NULL);
                                                                     closeLevel(&list);
                                                                     insert(&list, s);
