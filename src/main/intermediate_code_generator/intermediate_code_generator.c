@@ -78,7 +78,7 @@ Symbol * addCurrentInstruction(struct TreeNode *tree, InstructionList * codeList
     if(temp2 == NULL && tree->right != NULL) {
         temp2 = tree->right->info;
     }
-    Symbol *temp3 = NULL, *elseLabel = NULL, *endLabel = NULL, *whileCheckLabel = NULL, *whileEndLabel = NULL, *expressionResult = NULL, *methodLabel = NULL;
+    Symbol *temp3 = NULL, *elseLabel = NULL, *endLabel = NULL, *whileCheckLabel = NULL, *expressionResult = NULL, *methodLabel = NULL;
     int *operationResult = (int*) malloc(sizeof(int));
     struct Instruction * instruction = NULL;
     char * operation = getOperationName(tree->info);
@@ -170,8 +170,9 @@ Symbol * addCurrentInstruction(struct TreeNode *tree, InstructionList * codeList
             generateSentenceCode(tree->left, codeList);    //calculate expression result
             endLabel = createSymbol(UNDEFINED, createGenericLabel("ENDIF"), NULL, 0);
             expressionResult = codeList->last->instruction->result;
-            insertInstructionNode(codeList, createInstruction("IF", expressionResult, NULL, endLabel));
-            translateTreeIntoCode(tree->right, codeList);
+            insertInstructionNode(codeList, createInstruction("JMPFALSE", expressionResult, NULL, endLabel));
+            
+            translateTreeIntoCode(tree->right, codeList); //generate code for 'then' block
             instruction = createInstruction(endLabel->name, NULL, NULL, NULL);
             break;
         case IFELSE:
@@ -179,8 +180,10 @@ Symbol * addCurrentInstruction(struct TreeNode *tree, InstructionList * codeList
             elseLabel = createSymbol(UNDEFINED, createGenericLabel("ELSE"), NULL, 0);
             endLabel = createSymbol(UNDEFINED, createGenericLabel("ENDIF"), NULL, 0);
             expressionResult = codeList->last->instruction->result;
-            insertInstructionNode(codeList, createInstruction("IFELSE", expressionResult, elseLabel, endLabel));
+            insertInstructionNode(codeList, createInstruction("JMPFALSE", expressionResult, NULL, elseLabel));
+
             translateTreeIntoCode(tree->right->left, codeList); //generate code for 'then' block
+            insertInstructionNode(codeList, createInstruction("JMP", NULL, NULL, endLabel));
             
             insertInstructionNode(codeList, createInstruction(elseLabel->name, NULL, NULL, NULL));  //insert else label
             translateTreeIntoCode(tree->right->right, codeList); //generate code for 'else' block
@@ -192,13 +195,13 @@ Symbol * addCurrentInstruction(struct TreeNode *tree, InstructionList * codeList
 
             generateSentenceCode(tree->left, codeList);    //calculate expression result
             expressionResult = codeList->last->instruction->result;
-            whileEndLabel = createSymbol(UNDEFINED, createGenericLabel("WHILEEND"), NULL, 0);
-            insertInstructionNode(codeList, createInstruction("JMPFALSE", expressionResult, NULL, whileEndLabel));
+            endLabel = createSymbol(UNDEFINED, createGenericLabel("WHILEEND"), NULL, 0);
+            insertInstructionNode(codeList, createInstruction("JMPFALSE", expressionResult, NULL, endLabel));
 
             translateTreeIntoCode(tree->right, codeList); //generate code for while block
             
             insertInstructionNode(codeList, createInstruction("JMP", NULL, NULL, whileCheckLabel));
-            insertInstructionNode(codeList, createInstruction(whileEndLabel->name, NULL, NULL, NULL));  //insert while end label
+            instruction = createInstruction(endLabel->name, NULL, NULL, NULL);  //insert while end label
             break;
         case NEXTBLOCK: //this case happens when a new block is inserted inside another
             translateTreeIntoCode(tree, codeList);
