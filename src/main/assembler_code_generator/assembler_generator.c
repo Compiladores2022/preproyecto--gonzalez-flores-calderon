@@ -7,6 +7,7 @@
 void processThreeAddressCode(struct Instruction * instruction, char * code);
 void generateSimpleLogicArithmeticCode(struct Instruction * instruction, char * code, char * operation);
 void generateInstructionCode(char * code, char * operation, char * dest, char * value);
+void generateTwoAddressInstruction(char * code, char * operation, char * dest);
 char * getSymbolLocation(Symbol * symbol);
 
 char * generateAssemblerCode(InstructionList * intermediateCode, int maxOffset) {
@@ -98,36 +99,35 @@ void processThreeAddressCode(struct Instruction * instruction, char * code) {
             generateInstructionCode(code, "MOV", "%eax", location);
             generateInstructionCode(code, "MOV", "%edx", 1);
             generateInstructionCode(code, "CMP", "%edx", "%eax");
-            generateInstructionCode(code, "JNE", getSymbolLocation(instruction->result));
+            generateTwoAddressInstruction(code, "JNE", getSymbolLocation(instruction->result));
             break;
         }
 
         case IFELSE: {
             //this is the jmp of the else label
-            generateInstructionCode(code, "JMP", getSymbolLocation(instruction->result), NULL);
+            generateTwoAddressInstruction(code, "JMP", getSymbolLocation(instruction->result));
 
             char * location = getSymbolLocation(instruction->fstOp);
             generateInstructionCode(code, "MOV", location, "%rax");
             generateInstructionCode(code, "MOV", "%eax", location);
             generateInstructionCode(code, "MOV", "%edx", 1);
             generateInstructionCode(code, "CMP", "%edx", "%eax");
-            generateInstructionCode(code, "JNE", getSymbolLocation(instruction->sndOp));
+            generateTwoAddressInstruction(code, "JNE", getSymbolLocation(instruction->sndOp));
             break;
         }
 
-        case WHILE: {
-            //TODO
-            char * location = getSymbolLocation(instruction->fstOp);
-            generateInstructionCode(code, "MOV", location, "%rax");
-            generateInstructionCode(code, "MOV", "%eax", location);
-            generateInstructionCode(code, "MOV", "%edx", 1);
-            generateInstructionCode(code, "CMP", "%edx", "%eax");
-            generateInstructionCode(code, "JE", getSymbolLocation(instruction->result));
+        case JMP: {
+            generateTwoAddressInstruction(code, "JMP", getSymbolLocation(instruction->result);
+            break;
+        }
 
-            generateInstructionCode(code, "MOV", "%eax", "%rax");
-            generateInstructionCode(code, "MOV", "%eax", location);
+        case JMPFALSE: {
+            generateTwoAddressInstruction(code, "JNE", getSymbolLocation(instruction->result);
+            break;
+        }
 
-
+        case JMPTRUE: {
+            generateTwoAddressInstruction(code, "JE", getSymbolLocation(instruction->result);
             break;
         }
 
@@ -137,6 +137,9 @@ void processThreeAddressCode(struct Instruction * instruction, char * code) {
             break;
         }
         default:
+            if (isLabel(instruction)) {
+                generateTwoAddressInstruction(code, instruction->name);
+            }
             printf("\nunrecognized operation: %s\nprocess terminated\n", instruction->name);
             exit(0);
             break;
@@ -179,6 +182,13 @@ void generateInstructionCode(char * code, char * operation, char * dest, char * 
     strcat(code, "\n");
 }
 
+void generateTwoAddressInstruction(char * code, char * operation, char * dest) {
+    strcat(code, operation);
+    strcat(code, " ");
+    strcat(code, dest);
+    strcat(code, "\n");
+}
+
 char * getSymbolLocation(Symbol * symbol) {
     char * location = (char *) malloc(10 * sizeof(char *));
     if (symbol->offset == 0) {
@@ -190,4 +200,11 @@ char * getSymbolLocation(Symbol * symbol) {
         strcat(location, "(%rbp)");
     }
     return location;
+}
+
+int isLabel (struct Instruction * instruction) {
+    if(instruction->name != NULL && instruction->fstOp == NULL && instruction->sndOp == NULL && instruction->result == NULL) {
+        return 1;
+    }
+    return 0;
 }
