@@ -65,7 +65,6 @@ struct TreeNode * createTree(Symbol *symbol, struct TreeNode *left, struct TreeN
     newNode->info = symbol;
     newNode->right = right;
     newNode->left = left;
-
     return newNode;
 }
 
@@ -133,6 +132,7 @@ int equalType(struct TreeNode * tree){
 }
 
 int asignType(struct TreeNode * tree){
+    
     if(tree->left->info->type != tree->right->info->type){
         printf("\033[0;31m-> ERROR:\033[0m Conflicting types for: =\nexpected: %s = %s\nfound: %s = %s \n", enumToString(tree->left->info->type), enumToString(tree->left->info->type), enumToString(tree->left->info->type), enumToString(tree->right->info->type));
         exit(0);
@@ -205,12 +205,14 @@ int checkTypeTree(struct TreeNode *tree) {
         validTree = validTree && checkTypeTree(tree->left);
     }
 
-    if(tree->left != NULL && tree->left->info->it == METHODCALL){
+    if(tree->left != NULL && tree->left->info->it == METHODCALL && tree->left->info->parameterList != NULL){
         if(tree->left->info->parameterList->head != NULL && tree->left->left == NULL){
             printf("\033[0;31m-> ERROR:\033[0m Too few arguments to method %s\n", tree->left->info->name);
             exit(0);
         }
 
+        // printf("list: %d\n", sizeParameter(tree->left->info->parameterList->head));
+        // printf("count: %d\n", countExp(tree->left->left, 0));
         if(countExp(tree->left->left, 0) > sizeParameter(tree->left->info->parameterList->head)){
             printf("\033[0;31m-> ERROR:\033[0m Too many arguments to method %s\n", tree->left->info->name);
             exit(0);
@@ -222,9 +224,14 @@ int checkTypeTree(struct TreeNode *tree) {
         }
     }
 
-    if(tree->right != NULL && tree->right->info->it == METHODCALL){
+    if(tree->right != NULL && tree->right->info->it == METHODCALL && tree->right->info->parameterList != NULL){
         if(tree->right->info->parameterList->head != NULL && tree->right->left == NULL){
             printf("\033[0;31m-> ERROR:\033[0m Too few arguments to method %s\n", tree->right->info->name);
+            exit(0);
+        }
+
+        if(countExp(tree->right->left, 0) > sizeParameter(tree->right->info->parameterList->head)){
+            printf("\033[0;31m-> ERROR:\033[0m Too many arguments to method %s\n", tree->right->info->name);
             exit(0);
         }
         
