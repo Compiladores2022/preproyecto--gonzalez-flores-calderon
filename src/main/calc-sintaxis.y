@@ -8,7 +8,7 @@
 #include "sintactic_analysis_tree/sintactic_analysis_tree.h"
 #include "intermediate_code_generator/instruction.h"
 #include "intermediate_code_generator/intermediate_code_generator.h"
-#include "assembler_code_generator/assembler_generator.h"
+// #include "assembler_code_generator/assembler_generator.h"
 #include "utils/utils.h"
 #include "symbol_list/symbol_list.h"
 
@@ -76,11 +76,12 @@ int yylex();
 
 %%
 
-inil: {initialize(&list);} prog {   checkMain(&list);
+inil: {initialize(&list);} prog {   //checkMain(&list);
                                     printTree($2); 
+                                    printf("\nErrores del chequeo de tipos\n\n");
                                     checkTypeTree($2);
-                                    InstructionList * intermediateCode = generateIntermediateCode($2);
-                                    printInstructionList(intermediateCode);
+                                    //InstructionList * intermediateCode = generateIntermediateCode($2);
+                                    //printInstructionList(intermediateCode);
                                 }
     ;    
 
@@ -99,17 +100,19 @@ methodDecl: type ID '('  ')'    {   if(search(&list, $2) != NULL){
                                         printf("-> ERROR: Method %s is already defined", $2);
                                         yyerror();
                                     }
+                                    Symbol *s = createSymbol($1, $2, 0, 0);
+                                    insert(&list, s);
                                 } 
                                 body   
                                 {   
-                                    if($6 == NULL){                                        
-                                        struct TreeNode * node = createNewNode($1, $2, EXTERNMETHOD);
-                                        insert(&list, node->info);
-                                        $$ = node;
+                                    if($6 == NULL){
+                                        Symbol *s = search(&list, $2);
+                                        addIdentifierType(s, EXTERNMETHOD);
+                                        $$ = createNode(s);
                                     } else{
-                                        struct TreeNode *treeMethod = createNewTree($1, $6, NULL, $2, 0, METHOD);
-                                        insert(&list, treeMethod->info);
-                                        $$ = treeMethod;
+                                        Symbol *s = search(&list, $2);
+                                        addIdentifierType(s, METHOD);
+                                        $$ = createTree(s, $6, NULL);
                                     }
                                 }
 
@@ -117,17 +120,19 @@ methodDecl: type ID '('  ')'    {   if(search(&list, $2) != NULL){
                                 printf("-> ERROR: Method %s is already defined", $2);
                                 yyerror();
                             }
+                            Symbol *s = createSymbol(TYPEVOID, $2, 0, 0);
+                            insert(&list, s);
                         } 
                         body    
                         {   if($6 == NULL){
-                                struct TreeNode * node = createNewNode(TYPEVOID, $2, EXTERNMETHOD);
-                                insert(&list, node->info);
-                                $$ = node;    
+                                Symbol *s = search(&list, $2);
+                                addIdentifierType(s, EXTERNMETHOD);
+                                $$ = createNode(s);
                             } 
                             else{
-                                struct TreeNode *treeMethod = createNewTree(TYPEVOID, $6, NULL, $2, 0, METHOD);
-                                insert(&list, treeMethod->info);
-                                $$ = treeMethod;
+                                Symbol *s = search(&list, $2);
+                                addIdentifierType(s, METHOD);
+                                $$ = createTree(s, $6, NULL);
                             }
                         }
 
@@ -135,39 +140,58 @@ methodDecl: type ID '('  ')'    {   if(search(&list, $2) != NULL){
                                                                     printf("-> ERROR: Method %s is already defined", $2);
                                                                     yyerror();
                                                                 }
+                                                                Symbol *s = createSymbolFull($1, $2, 0, 0, $5, METHOD);
+                                                                insert(&list, s);
                                                             }
                                                             body 
                                                             {   
-                                                                closeLevel(&list);   
+                                                                
                                                                 if($8 == NULL){
-                                                                    struct TreeNode * node = createNewNodeWithParameters($1, $2, EXTERNMETHOD, $5);
-                                                                    insert(&list, node->info);
-                                                                    $$ = node;   
+                                                                    Symbol *s = search(&list, $2);
+                                                                    addIdentifierType(s, EXTERNMETHOD);
+                                                                    $$ = createNode(s);
+                                                                    // closeLevel(&list);
                                                                 }
                                                                 else{
-                                                                    struct TreeNode *treeMethod = createNewTreeWithParameters($1, $8, NULL, $2, 0, $5, METHOD);
-                                                                    insert(&list, treeMethod->info);
-                                                                    $$ = treeMethod;
+                                                                    Symbol *s = search(&list, $2);
+                                                                    //addIdentifierType(s, METHOD);
+                                                                    $$ = createTree(s, $8, NULL);
+                                                                    closeLevel(&list);
+                                                                    insert(&list, s);
                                                                 }
+                                                                // closeLevel(&list);
+                                                                // insert(&list, s);
                                                             }
 
     | TVOID ID '(' { openLevel(&list);} listParameters ')'  {   if(search(&list, $2) != NULL){
                                                                     printf("-> ERROR: Method %s is already defined", $2);
                                                                     yyerror();
                                                                 }
+                                                                Symbol *s = createSymbolFull(TYPEVOID, $2, 0, 0, $5, METHOD);
+                                                                insert(&list, s);
                                                             }
                                                             body 
                                                             {   
-                                                                closeLevel(&list);   
+                                                                // closeLevel(&list);   
                                                                 if($8 == NULL){
-                                                                    struct TreeNode * node = createNewNodeWithParameters(TYPEVOID, $2, EXTERNMETHOD, $5);
-                                                                    insert(&list, node->info);
-                                                                    $$ = node;    
+                                                                    // printf("-----------------> aca\n");
+                                                                    Symbol *s = search(&list, $2);
+                                                                    // printf("---------->list: %d\n", sizeParameter(s->parameterList->head));
+                                                                    
+                                                                    replaceIdentifierType(s, EXTERNMETHOD);
+                                                                    //$$ = createNode(s);
+                                                                    struct TreeNode *node = createNode(s);   
+                                                                    // printf("------------->s: %d\n", sizeParameter(node->info->parameterList->head));
+                                                                    closeLevel(&list);
+                                                                    insert(&list, s);
+                                                                    
                                                                 } 
                                                                 else{                                                                   
-                                                                    struct TreeNode *treeMethod = createNewTreeWithParameters(TYPEVOID, $8, NULL, $2, 0, $5, METHOD);
-                                                                    insert(&list, treeMethod->info);
-                                                                    $$ = treeMethod;
+                                                                    Symbol *s = search(&list, $2);
+                                                                    addIdentifierType(s, METHOD);
+                                                                    $$ = createTree(s, $8, NULL);
+                                                                    closeLevel(&list);
+                                                                    insert(&list, s);
                                                                 }
                                                             }
     ;
@@ -197,7 +221,6 @@ parameter: type ID  {   struct Parameter *parameter = createParameter($1, $2);
 block: '{' '}' { $$ = NULL; }
 
     | '{' { openLevel(&list); } declList statementList '}'  {   closeLevel(&list); 
-                                                                //VER ESTE CASO
                                                                 linkTreeRight($3, $4);
                                                                 $$ = $3;
                                                             }
@@ -247,7 +270,7 @@ statement: ID '=' expr ';'  {   Symbol * idSymbol = search(&list, $1);
 
     | TReturn expr ';'  { $$ = createNewTree(UNDEFINED, NULL, $2, "return", 0, TYPELESS); }
 
-    | TReturn ';'       {   $$ = NULL   }
+    | TReturn ';'       { $$ = NULL; }
 
     | ';'           { $$ = NULL; }
 
@@ -255,11 +278,12 @@ statement: ID '=' expr ';'  {   Symbol * idSymbol = search(&list, $1);
     ; 
     
 methodCall: ID '(' exprList ')' {   Symbol * methodSymb = search(&list, $1);
+                                    printf("symbol: %s, type: %d, it: %d\n", methodSymb->name, methodSymb->type, methodSymb->it);
                                     if ( methodSymb == NULL) {
                                         printf("-> ERROR: Undefined method: %s", $1);
                                         yyerror();
                                     }else if(methodSymb->it != METHOD && methodSymb->it != EXTERNMETHOD){
-                                        printf("-> ERROR: This identifier is not a method: %s", $1);
+                                        printf("-> ERROR: This identifier is not a method: %s\n", $1);
                                         yyerror();
                                     }else if(methodSymb->parameterList == NULL){
                                         printf("-> ERROR: Method %s cannot be applied to given types\n", $1);

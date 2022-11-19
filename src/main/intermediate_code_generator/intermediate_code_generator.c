@@ -25,13 +25,14 @@ InstructionList * generateIntermediateCode(struct TreeNode *tree) {
     InstructionList * codeList;
     codeList = (InstructionList *) malloc (sizeof(InstructionList));
     
-    translateTreeIntoCode(tree, codeList);   //left part cannot be a 'next' symbol, must be sentence or declaration
+    translateTreeIntoCode(tree, codeList);
     return codeList;   
 }
 
 void translateTreeIntoCode(struct TreeNode *tree, InstructionList * codeList) {
-    
-    generateSentenceCode(tree->left, codeList);   //left part cannot be a 'next' symbol, must be sentence or declaration
+    if (tree->left != NULL) {    //left part cannot be a 'next' symbol, must be sentence or declaration
+        generateSentenceCode(tree->left, codeList);
+    }
     if (tree->right != NULL) {  //right part is a next symbol if exists
         translateTreeIntoCode(tree->right, codeList);
     }
@@ -62,7 +63,6 @@ Symbol * generateSentenceCode(struct TreeNode *tree, InstructionList * codeList)
 
     }
     Symbol * temp3 = addCurrentInstruction(tree, codeList, temp1, temp2);
-    
     return temp3;
 }
 
@@ -82,7 +82,6 @@ Symbol * addCurrentInstruction(struct TreeNode *tree, InstructionList * codeList
     int *operationResult = (int*) malloc(sizeof(int));
     struct Instruction * instruction = NULL;
     char * operation = getOperationName(tree->info);
-    printf("operacion: %s, nombre orig: %s\n", operation, tree->info->name);
     switch (stringToOperation(operation)) { //creates the instruction
         case ADD:
             temp3 = tree->info;
@@ -129,11 +128,8 @@ Symbol * addCurrentInstruction(struct TreeNode *tree, InstructionList * codeList
             instruction = createInstruction("NOT", temp1, NULL, temp3);
             break;
         case ASSIG:
-            printf("check llamada metodo\n");
             checkMethodCall(NULL, tree->right, codeList);
-            printf("instruccion\n");
             instruction = createInstruction("ASSIG", temp2, NULL, temp1);
-            printf("asigno values\n");
             temp1->value = temp2->value;
             break;
         case EQUAL:
@@ -171,7 +167,7 @@ Symbol * addCurrentInstruction(struct TreeNode *tree, InstructionList * codeList
             instruction = createInstruction("METHCALL", methodLabel, NULL, NULL);
             break;
         case IF:
-            translateTreeIntoCode(tree->left, codeList);    //calculate expression result
+            generateSentenceCode(tree->left, codeList);    //calculate expression result
             endLabel = createSymbol(UNDEFINED, createGenericLabel(), NULL, 0);
             expressionResult = codeList->last->instruction->result;
             insertInstructionNode(codeList, createInstruction("IF", expressionResult, NULL, endLabel));
@@ -179,7 +175,7 @@ Symbol * addCurrentInstruction(struct TreeNode *tree, InstructionList * codeList
             instruction = createInstruction(endLabel->name, NULL, NULL, NULL);
             break;
         case IFELSE:
-            translateTreeIntoCode(tree->left, codeList);    //calculate expression result
+            generateSentenceCode(tree->left, codeList);    //calculate expression result
             elseLabel = createSymbol(UNDEFINED, createGenericLabel(), NULL, 0);
             endLabel = createSymbol(UNDEFINED, createGenericLabel(), NULL, 0);
             expressionResult = codeList->last->instruction->result;
@@ -193,7 +189,7 @@ Symbol * addCurrentInstruction(struct TreeNode *tree, InstructionList * codeList
             instruction = createInstruction(endLabel->name, NULL, NULL, NULL);
             break;
         case WHILE:
-            translateTreeIntoCode(tree->left, codeList);    //calculate expression result
+            generateSentenceCode(tree->left, codeList);    //calculate expression result
             expressionResult = codeList->last->instruction->result;
             whileLabel = createSymbol(UNDEFINED, createGenericLabel(), NULL, 0);
             insertInstructionNode(codeList, createInstruction(whileLabel->name, NULL, NULL, NULL));  //insert while label
@@ -202,7 +198,11 @@ Symbol * addCurrentInstruction(struct TreeNode *tree, InstructionList * codeList
 
             instruction = createInstruction("WHILE", expressionResult, NULL, whileLabel);
             break;
-        default: printf("%s is not an operator\n", tree->info->name);
+        case NEXTBLOCK: //this case happens when a new block is inserted inside another
+            translateTreeIntoCode(tree, codeList);
+            instruction = NULL;
+            break;
+        default: printf("-> ERROR: %s is not an operator\n", tree->info->name);
             exit(0);
     }
     

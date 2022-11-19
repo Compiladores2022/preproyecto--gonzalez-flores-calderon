@@ -129,6 +129,8 @@ statement: ID '=' expr ';'
 
     | TReturn expr ';'
 
+    | TReturn ';'
+
     | ';'
 
     | block

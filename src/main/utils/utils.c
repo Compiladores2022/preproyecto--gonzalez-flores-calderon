@@ -158,6 +158,9 @@ int stringToOperation(char *string) {
     else if (strcmp(string, "while") == 0 || strcmp(string, "WHILE") == 0){
         return WHILE; 
     }
+    else if (strcmp(string, "next") == 0 || strcmp(string, "NEXTBLOCK") == 0){
+        return NEXTBLOCK; 
+    }
     else if (strcmp(string, "PUSH") == 0){
         return PUSH; 
     }else {
