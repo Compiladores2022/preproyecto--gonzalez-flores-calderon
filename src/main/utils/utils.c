@@ -117,52 +117,61 @@ int stringToOperation(char *string) {
         return MOD;
     }
     else if (strcmp(string, "&&") == 0 || strcmp(string, "AND") == 0){
-        return AND; 
+        return AND;
     }
     else if (strcmp(string, "||") == 0 || strcmp(string, "OR") == 0){
-        return OR; 
+        return OR;
     }
     else if (strcmp(string, "!") == 0 || strcmp(string, "NOT") == 0){
-        return NOT; 
+        return NOT;
     }
     else if (strcmp(string, "=") == 0 || strcmp(string, "ASSIG") == 0){
-        return ASSIG; 
+        return ASSIG;
     }
     else if (strcmp(string, "==") == 0 || strcmp(string, "EQUAL") == 0){
-        return EQUAL; 
+        return EQUAL;
     }
     else if (strcmp(string, "<") == 0 || strcmp(string, "GREAT") == 0){
-        return GREAT; 
+        return GREAT;
     }
     else if (strcmp(string, ">") == 0 || strcmp(string, "LESS") == 0){
-        return LESS; 
+        return LESS;
     }
     else if (strcmp(string, "return") == 0 || strcmp(string, "RET") == 0){
-        return RET; 
+        return RET;
     }
     else if (strcmp(string, "methoddecl") == 0 || strcmp(string, "METHDECL") == 0){
-        return METHDECL; 
+        return METHDECL;
     }
-    else if (strcmp(string, "externmethod") == 0 || strcmp(string, "EXTERNMETH") == 0){
-        return EXTERNMETH; 
+    else if (strcmp(string, "externmethod") == 0){
+        return EXTERNMETH;
     }
     else if (strcmp(string, "methodcall") == 0 || strcmp(string, "METHCALL") == 0){
-        return METHCALL; 
+        return METHCALL;
     }
-    else if (strcmp(string, "if") == 0 || strcmp(string, "IF") == 0){
-        return IF; 
+    else if (strcmp(string, "if") == 0){
+        return IF;
     }
-    else if (strcmp(string, "ifelse") == 0 || strcmp(string, "IFELSE") == 0){
-        return IFELSE; 
+    else if (strcmp(string, "ifelse") == 0){
+        return IFELSE;
     }
-    else if (strcmp(string, "while") == 0 || strcmp(string, "WHILE") == 0){
-        return WHILE; 
+    else if (strcmp(string, "while") == 0){
+        return WHILE;
     }
-    else if (strcmp(string, "next") == 0 || strcmp(string, "NEXTBLOCK") == 0){
-        return NEXTBLOCK; 
+    else if (strcmp(string, "next") == 0){
+        return NEXTBLOCK;
     }
     else if (strcmp(string, "PUSH") == 0){
-        return PUSH; 
+        return PUSH;
+    }
+    else if (strcmp(string, "JMP") == 0){
+        return JMP;
+    }
+    else if (strcmp(string, "JMPFALSE") == 0){
+        return JMPFALSE;
+    }
+    else if (strcmp(string, "JMPTRUE") == 0){
+        return JMPTRUE;
     }else {
         return -1;
     }

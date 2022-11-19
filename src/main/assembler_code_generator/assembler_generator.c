@@ -9,7 +9,7 @@ void generateSimpleLogicArithmeticCode(struct Instruction * instruction, char * 
 void generateInstructionCode(char * code, char * operation, char * dest, char * value);
 void generateTwoAddressInstruction(char * code, char * operation, char * dest);
 char * getSymbolLocation(Symbol * symbol);
-int isLabel (struct Instruction * instruction);
+int isLabel(struct Instruction * instruction);
 
 char * generateAssemblerCode(InstructionList * intermediateCode, int maxOffset) {
     int requiredFrameSpace = maxOffset / 8;
@@ -93,6 +93,7 @@ void processThreeAddressCode(struct Instruction * instruction, char * code) {
             break;
         }
 
+<<<<<<< HEAD
         case JMP:
             generateTwoAddressInstruction(code, "JMP", getSymbolLocation(instruction->result));
             break;
@@ -104,6 +105,14 @@ void processThreeAddressCode(struct Instruction * instruction, char * code) {
             generateInstructionCode(code, "MOV", "%edx", "1");
             generateInstructionCode(code, "CMP", "%edx", "%eax");
 
+=======
+        case JMP: {
+            generateTwoAddressInstruction(code, "JMP", getSymbolLocation(instruction->result));
+            break;
+        }
+
+        case JMPFALSE: {
+>>>>>>> 58c1011fa36898914958a0154ba57c10b415d020
             generateTwoAddressInstruction(code, "JNE", getSymbolLocation(instruction->result));
             break;
         }
@@ -183,8 +192,6 @@ int isLabel (struct Instruction * instruction) {
     int value;
     if(instruction->name != NULL && instruction->fstOp == NULL && instruction->sndOp == NULL && instruction->result == NULL) {
         value = 1;
-    } else {
-        value = 0;
-    }
+    } else { value = 0; }
     return value;
 }
