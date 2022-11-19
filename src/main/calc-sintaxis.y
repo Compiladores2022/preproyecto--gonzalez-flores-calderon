@@ -8,7 +8,7 @@
 #include "sintactic_analysis_tree/sintactic_analysis_tree.h"
 #include "intermediate_code_generator/instruction.h"
 #include "intermediate_code_generator/intermediate_code_generator.h"
-// #include "assembler_code_generator/assembler_generator.h"
+#include "assembler_code_generator/assembler_generator.h"
 #include "utils/utils.h"
 #include "symbol_list/symbol_list.h"
 
