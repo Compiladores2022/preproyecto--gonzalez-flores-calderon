@@ -147,10 +147,10 @@ Symbol * addCurrentInstruction(struct TreeNode *tree, InstructionList * codeList
             checkMethodCall(tree->left, tree->right, codeList);
             instruction = createInstruction("LESS", temp1, temp2, temp3);
             break;
-        case RET:
+        case RETURNVAL:
             temp3 = temp2;
             checkMethodCall(tree->left, tree->right, codeList);
-            instruction = createInstruction("RET", NULL, NULL, temp3);
+            instruction = createInstruction("RETURNVAL", NULL, NULL, temp3);
             break;
         case METHDECL: {
             Symbol *methodLabel = createSymbol(UNDEFINED, createLabel(tree->info->name), NULL, 0);

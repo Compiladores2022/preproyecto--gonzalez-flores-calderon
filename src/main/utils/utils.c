@@ -137,17 +137,17 @@ int stringToOperation(char *string) {
     else if (strcmp(string, ">") == 0 || strcmp(string, "LESS") == 0){
         return LESS;
     }
-    else if (strcmp(string, "return") == 0 || strcmp(string, "RET") == 0){
-        return RET;
+    else if (strcmp(string, "return") == 0 || strcmp(string, "RETURNVAL") == 0){
+        return RETURNVAL;
     }
     else if (strcmp(string, "methoddecl") == 0 || strcmp(string, "METHDECL") == 0){
         return METHDECL;
     }
-    else if (strcmp(string, "externmethod") == 0){
-        return EXTERNMETH;
-    }
     else if (strcmp(string, "methodcall") == 0 || strcmp(string, "METHCALL") == 0){
         return METHCALL;
+    }
+    else if (strcmp(string, "externmethod") == 0){
+        return EXTERNMETH;
     }
     else if (strcmp(string, "if") == 0){
         return IF;

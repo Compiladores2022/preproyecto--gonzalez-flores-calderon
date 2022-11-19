@@ -108,7 +108,7 @@ void processThreeAddressCode(struct Instruction * instruction, char * code) {
             break;
         }
 
-        case RET: {
+        case RETURNVAL: {
             char * location = getSymbolLocation(instruction->result);
             generateInstructionCode(code, "MOV", location, "%rax");
             break;
