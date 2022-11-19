@@ -132,14 +132,16 @@ void processThreeAddressCode(struct Instruction * instruction, char * code) {
             }
             generateInstructionCode(code, "JMP", getSymbolLocation(instruction->result), NULL); //is necessary?
             generateInstructionCode(code, instruction->result, NULL, NULL);
-
-
-
             break;
-        }
 
-        case WHILE: {
-            //TODO
+        case JMP:
+            generateTwoAddressInstruction(code, "JMP", getSymbolLocation(instruction->result);
+            break;
+
+        case JMPFALSE:
+            generateTwoAddressInstruction(code, "JNE", getSymbolLocation(instruction->result);
+            break;
+        /*case WHILE: {
             char * location = getSymbolLocation(instruction->fstOp);
             generateInstructionCode(code, "MOV", location, "%rax");
             generateInstructionCode(code, "MOV", "%eax", location);
@@ -149,10 +151,12 @@ void processThreeAddressCode(struct Instruction * instruction, char * code) {
 
             while() {
                 generateInstructionCode(code, "JE", getSymbolLocation(instruction->result));
-            }
+            }*/
+
+        case JMPTRUE:
+            generateTwoAddressInstruction(code, "JE", getSymbolLocation(instruction->result);
 
             break;
-        }
 
         case RET: {
             char * location = getSymbolLocation(instruction->result);
@@ -199,6 +203,13 @@ void generateInstructionCode(char * code, char * operation, char * dest, char * 
     strcat(code, dest);
     strcat(code, ", ");
     strcat(code, value);
+    strcat(code, "\n");
+}
+
+void generateTwoAddressInstruction(char * code, char * operation, char * dest) {
+    strcat(code, operation);
+    strcat(code, " ");
+    strcat(code, dest);
     strcat(code, "\n");
 }
 
