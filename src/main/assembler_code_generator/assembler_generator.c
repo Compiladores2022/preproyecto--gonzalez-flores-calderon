@@ -103,8 +103,9 @@ void processThreeAddressCode(struct Instruction * instruction, char * code) {
         }
 
         case IFELSE: {
-            //CHECK
+            //this is the jmp of the else label
             generateInstructionCode(code, "JMP", getSymbolLocation(instruction->result), NULL);
+
             char * location = getSymbolLocation(instruction->fstOp);
             generateInstructionCode(code, "MOV", location, "%rax");
             generateInstructionCode(code, "MOV", "%eax", location);
