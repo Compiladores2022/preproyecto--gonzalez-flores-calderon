@@ -78,6 +78,7 @@ Symbol * createSymbolFull(types type, char *name, void *value, int offset, struc
     newSymbol->name = name;
     newSymbol->value = value;
     newSymbol->offset = offset;
+    newSymbol->parameterList = (struct ParameterList*) malloc (sizeof(struct ParameterList*));
     newSymbol->parameterList = parameterList;
     newSymbol->it = identifierType;
     
