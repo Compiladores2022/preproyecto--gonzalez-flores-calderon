@@ -183,11 +183,13 @@ Symbol * addCurrentInstruction(struct TreeNode *tree, InstructionList * codeList
             elseLabel = createSymbol(UNDEFINED, createGenericLabel(), NULL, 0);
             endLabel = createSymbol(UNDEFINED, createGenericLabel(), NULL, 0);
             expressionResult = codeList->last->instruction->result;
-            insertInstructionNode(codeList, createInstruction("IFELSE", expressionResult, elseLabel, endLabel));
-            translateTreeIntoCode(tree->right->left, codeList); //generate code for 'then' block
-            
+
             insertInstructionNode(codeList, createInstruction(elseLabel->name, NULL, NULL, NULL));  //insert else label
             translateTreeIntoCode(tree->right->right, codeList); //generate code for 'else' block
+
+            insertInstructionNode(codeList, createInstruction("IFELSE", expressionResult, elseLabel, endLabel));
+            translateTreeIntoCode(tree->right->left, codeList); //generate code for 'then' block
+
             instruction = createInstruction(endLabel->name, NULL, NULL, NULL);
             break;
         case WHILE:
@@ -195,9 +197,9 @@ Symbol * addCurrentInstruction(struct TreeNode *tree, InstructionList * codeList
             expressionResult = codeList->last->instruction->result;
             whileLabel = createSymbol(UNDEFINED, createGenericLabel(), NULL, 0);
             insertInstructionNode(codeList, createInstruction(whileLabel->name, NULL, NULL, NULL));  //insert while label
-            
+
             translateTreeIntoCode(tree->right, codeList); //generate code for while block
-            
+
             instruction = createInstruction("WHILE", expressionResult, NULL, whileLabel);
             break;
         default: printf("%s is not an operator\n", tree->info->name);

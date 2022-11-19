@@ -99,42 +99,18 @@ void processThreeAddressCode(struct Instruction * instruction, char * code) {
             generateInstructionCode(code, "MOV", "%edx", 1);
             generateInstructionCode(code, "CMP", "%edx", "%eax");
             generateInstructionCode(code, "JNE", getSymbolLocation(instruction->result));
-            //check the comparation dude
-
-            while(strcmp(currentNode->instruction->name, instruction->result->name)) {
-                processThreeAddressCode(currentNode->instruction, code);
-                currentNode = currentNode->next;
-            }
-            generateInstructionCode(code, instruction->result, NULL, NULL);
             break;
         }
 
         case IFELSE: {
             //CHECK
+            generateInstructionCode(code, "JMP", getSymbolLocation(instruction->result), NULL);
             char * location = getSymbolLocation(instruction->fstOp);
             generateInstructionCode(code, "MOV", location, "%rax");
             generateInstructionCode(code, "MOV", "%eax", location);
             generateInstructionCode(code, "MOV", "%edx", 1);
             generateInstructionCode(code, "CMP", "%edx", "%eax");
             generateInstructionCode(code, "JNE", getSymbolLocation(instruction->sndOp));
-            //check the comparation dude
-
-            currentNode = currentNode->next;
-            while(strcmp(currentNode->instruction->name, instruction->sndOp->name)) {
-                processThreeAddressCode(currentNode->instruction, code);
-                currentNode = currentNode->next;
-            }
-            generateInstructionCode(code, "JMP", getSymbolLocation(instruction->result), NULL);
-            generateInstructionCode(code, instruction->sndOp, NULL, NULL);
-            while(strcmp(currentNode->instruction->name, instruction->result->name)) {
-                processThreeAddressCode(currentNode->instruction, code);
-                currentNode = currentNode->next;
-            }
-            generateInstructionCode(code, "JMP", getSymbolLocation(instruction->result), NULL); //is necessary?
-            generateInstructionCode(code, instruction->result, NULL, NULL);
-
-
-
             break;
         }
 
@@ -147,9 +123,9 @@ void processThreeAddressCode(struct Instruction * instruction, char * code) {
             generateInstructionCode(code, "CMP", "%edx", "%eax");
             generateInstructionCode(code, "JE", getSymbolLocation(instruction->result));
 
-            while() {
-                generateInstructionCode(code, "JE", getSymbolLocation(instruction->result));
-            }
+            generateInstructionCode(code, "MOV", "%eax", "%rax");
+            generateInstructionCode(code, "MOV", "%eax", location);
+
 
             break;
         }
