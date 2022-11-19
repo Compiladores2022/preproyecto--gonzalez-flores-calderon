@@ -101,22 +101,12 @@ void processThreeAddressCode(struct Instruction * instruction, char * code) {
             char * location = getSymbolLocation(instruction->fstOp);
             generateInstructionCode(code, "MOV", location, "%rax");
             generateInstructionCode(code, "MOV", "%eax", "%rax");
-            generateInstructionCode(code, "MOV", "%edx", 1);
+            generateInstructionCode(code, "MOV", "%edx", "1");
             generateInstructionCode(code, "CMP", "%edx", "%eax");
 
             generateTwoAddressInstruction(code, "JNE", getSymbolLocation(instruction->result));
             break;
         }
-
-        case JMPTRUE: {
-            char * location = getSymbolLocation(instruction->fstOp);
-            generateInstructionCode(code, "MOV", location, "%rax");
-            generateInstructionCode(code, "MOV", "%eax", "%rax");
-            generateInstructionCode(code, "MOV", "%edx", 1);
-            generateInstructionCode(code, "CMP", "%edx", "%eax");
-
-            generateTwoAddressInstruction(code, "JE", getSymbolLocation(instruction->result));
-            break;
 
         case RET: {
             char * location = getSymbolLocation(instruction->result);
@@ -190,8 +180,11 @@ char * getSymbolLocation(Symbol * symbol) {
 }
 
 int isLabel (struct Instruction * instruction) {
+    int value;
     if(instruction->name != NULL && instruction->fstOp == NULL && instruction->sndOp == NULL && instruction->result == NULL) {
-        return 1;
+        value = 1;
+    } else {
+        value = 0;
     }
-    return 0;
+    return value;
 }

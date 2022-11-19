@@ -78,7 +78,7 @@ Symbol * addCurrentInstruction(struct TreeNode *tree, InstructionList * codeList
     if(temp2 == NULL && tree->right != NULL) {
         temp2 = tree->right->info;
     }
-    Symbol *temp3 = NULL, *elseLabel = NULL, *endLabel = NULL, *whileCheckLabel = NULL, *expressionResult = NULL, *methodLabel = NULL;
+    Symbol *temp3 = NULL;
     int *operationResult = (int*) malloc(sizeof(int));
     struct Instruction * instruction = NULL;
     char * operation = getOperationName(tree->info);
@@ -152,16 +152,16 @@ Symbol * addCurrentInstruction(struct TreeNode *tree, InstructionList * codeList
             checkMethodCall(tree->left, tree->right, codeList);
             instruction = createInstruction("RET", NULL, NULL, temp3);
             break;
-        case METHDECL:
-            methodLabel = createSymbol(UNDEFINED, createLabel(tree->info->name), NULL, 0);
+        case METHDECL: {
+            Symbol *methodLabel = createSymbol(UNDEFINED, createLabel(tree->info->name), NULL, 0);
             insertInstructionNode(codeList, createInstruction("METHDECL", methodLabel, tree->info, NULL));
             translateTreeIntoCode(tree->left, codeList);    //load method content
-            break;
-        case EXTERNMETH:
-            methodLabel = createSymbol(UNDEFINED, createLabel(tree->info->name), NULL, 0);
+            } break;
+        case EXTERNMETH: {
+            Symbol *methodLabel = createSymbol(UNDEFINED, createLabel(tree->info->name), NULL, 0);
             insertInstructionNode(codeList, createInstruction("EXTERNMETH", methodLabel, tree->info, NULL));
-            break;
-        case METHCALL:
+            } break;
+        case METHCALL: {
             createParameterInstructions(tree->left, codeList);
             Symbol *methodLabel = createSymbol(UNDEFINED, createLabel(tree->info->name), NULL, 0);
             instruction = createInstruction("METHCALL", methodLabel, NULL, NULL);
