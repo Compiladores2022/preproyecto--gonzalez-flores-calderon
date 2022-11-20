@@ -83,7 +83,11 @@ void processThreeAddressCode(struct Instruction * instruction, char * code) {
         }
 
         case METHDECL: {
-            //TODO
+            strcat(code, instruction->fstOp->name);
+            strcat(code, "\n");
+            generateTwoAddressInstruction(code, "PUSH", "ebp"); //Store the current stack frame
+            generateInstructionCode(code, "MOV", "ebp", "esp"); //Preserve ESP into EBP for argument references
+            generateInstructionCode(code, "AND", "esp", "0xfffffff0"); //Align the stack to allow library calls
             break;
         }
 
@@ -93,32 +97,42 @@ void processThreeAddressCode(struct Instruction * instruction, char * code) {
             break;
         }
 
-        case JMP: {
+        case PUSH:
+            generateTwoAddressInstruction(code, "PUSH", getSymbolLocation(instruction->fstOp));
+            break;
+
+        case JMP:
             generateTwoAddressInstruction(code, "JMP", getSymbolLocation(instruction->result));
             break;
-        }
 
-        case JMPFALSE: {
+        case JMPFALSE:
             generateTwoAddressInstruction(code, "JNE", getSymbolLocation(instruction->result));
             break;
-        }
 
-        case JMPTRUE: {
+        case JMPTRUE:
             generateTwoAddressInstruction(code, "JE", getSymbolLocation(instruction->result));
             break;
-        }
 
         case RETURNVAL: {
             char * location = getSymbolLocation(instruction->result);
             generateInstructionCode(code, "MOV", location, "%rax");
             break;
         }
+        
+        case RET:
+            generateInstructionCode(code, "MOV", "esp", "ebp"); //Restore the stack and ebp
+            generateTwoAddressInstruction(code, "POP", "ebp");
+            strcat(code, "RET\n");
+            break;
+
         default:
             if (isLabel(instruction)) {
                 strcat(code, instruction->name);
+                strcat(code, "\n");
+            } else {
+                printf("\n-> ERROR: unrecognized operation %s\nprocess terminated\n", instruction->name);
+                exit(0);
             }
-            printf("\nunrecognized operation: %s\nprocess terminated\n", instruction->name);
-            exit(0);
             break;
     }
 }
