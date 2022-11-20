@@ -82,18 +82,17 @@ void processThreeAddressCode(struct Instruction * instruction, char * code) {
             break;
         }
 
-        case METHDECL: {
+        case METHDECL:
             strcat(code, instruction->fstOp->name);
             strcat(code, "\n");
             generateTwoAddressInstruction(code, "PUSH", "ebp"); //Store the current stack frame
             generateInstructionCode(code, "MOV", "ebp", "esp"); //Preserve ESP into EBP for argument references
             generateInstructionCode(code, "AND", "esp", "0xfffffff0"); //Align the stack to allow library calls
             break;
-        }
 
         case METHCALL: {
-            //TODO
             generateTwoAddressInstruction(code, "CALL", getSymbolLocation(instruction->fstOp));
+            generateTwoAddressInstruction(code, "POP", "ebx");
             break;
         }
 
@@ -115,7 +114,7 @@ void processThreeAddressCode(struct Instruction * instruction, char * code) {
             generateTwoAddressInstruction(code, "JNE", getSymbolLocation(instruction->result));
             break;
         }
-        
+
         case RETURNVAL: {
             char * location = getSymbolLocation(instruction->result);
             generateInstructionCode(code, "MOV", location, "%rax");
