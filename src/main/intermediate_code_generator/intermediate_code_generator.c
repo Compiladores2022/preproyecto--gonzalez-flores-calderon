@@ -188,9 +188,6 @@ Symbol * addCurrentInstruction(struct TreeNode *tree, InstructionList * codeList
             insertInstructionNode(codeList, createInstruction(elseLabel->name, NULL, NULL, NULL));  //insert else label
             translateTreeIntoCode(tree->right->right, codeList); //generate code for 'else' block
 
-            insertInstructionNode(codeList, createInstruction("IFELSE", expressionResult, elseLabel, endLabel));
-            translateTreeIntoCode(tree->right->left, codeList); //generate code for 'then' block
-
             instruction = createInstruction(endLabel->name, NULL, NULL, NULL);
             } break;
         case WHILE: {
