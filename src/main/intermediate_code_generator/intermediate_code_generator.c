@@ -156,6 +156,7 @@ Symbol * addCurrentInstruction(struct TreeNode *tree, InstructionList * codeList
             Symbol *methodLabel = createSymbol(UNDEFINED, createLabel(tree->info->name), NULL, 0);
             insertInstructionNode(codeList, createInstruction("METHDECL", methodLabel, tree->info, NULL));
             translateTreeIntoCode(tree->left, codeList);    //load method content
+            instruction = createInstruction("RET", NULL, NULL, NULL);
             } break;
         case EXTERNMETH: {
             // extern methods don't need to be handled in assembler they can just be called

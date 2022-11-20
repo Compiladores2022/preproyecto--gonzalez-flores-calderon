@@ -172,7 +172,11 @@ int stringToOperation(char *string) {
     }
     else if (strcmp(string, "JMPTRUE") == 0){
         return JMPTRUE;
-    }else {
+    }
+    else if (strcmp(string, "RET") == 0){
+        return RET;
+    }
+    else {
         return -1;
     }
 }
