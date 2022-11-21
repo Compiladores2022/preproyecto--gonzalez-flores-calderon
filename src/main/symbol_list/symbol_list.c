@@ -69,6 +69,7 @@ Symbol * searchInLevel(struct TableNode *nodeList, char *name) {
 
 Symbol * search(SymbolList *symbolList, char *name) {
     if(symbolList == NULL){
+        printf("-> ERROR: Cannot cannot find symbol, list is NULL\n");
         exit(EXIT_FAILURE);
     }
 

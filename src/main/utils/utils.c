@@ -16,7 +16,9 @@ char * enumToString(types type) {
 
         case TYPEVOID: return "VOID";
 
-        default : exit(0);
+        default : 
+            printf("\033[0;31m-> ERROR: :\033[0m Couldn't match type %d to any of the known types\n", type);
+            exit(0);
     }
 }
 

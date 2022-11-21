@@ -81,6 +81,9 @@ inil: {initialize(&list);} prog {   checkMain(&list);
                                     checkTypeTree($2);
                                     InstructionList * intermediateCode = generateIntermediateCode($2);
                                     printInstructionList(intermediateCode);
+                                    char *assemblerCode = generateAssemblerCode(intermediateCode, offset);
+                                    printf("%s", assemblerCode);
+                                    createAssemblerFile(assemblerCode);
                                 }
     ;    
 
@@ -270,7 +273,6 @@ statement: ID '=' expr ';'  {   Symbol * idSymbol = search(&list, $1);
     ; 
     
 methodCall: ID '(' exprList ')' {   Symbol * methodSymb = search(&list, $1);
-                                    printf("symbol: %s, type: %d, it: %d\n", methodSymb->name, methodSymb->type, methodSymb->it);
                                     if ( methodSymb == NULL) {
                                         printf("-> ERROR: Undefined method: %s", $1);
                                         yyerror();

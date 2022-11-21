@@ -9,7 +9,7 @@ Symbol * createSymbol(types type, char *name, void *value, int offset) {
 
     newSymbol = (Symbol *) malloc (sizeof(Symbol));
     if(newSymbol == NULL){
-        printf("couldn't create symbol, exiting\n");
+        printf("-> ERROR: Couldn't create symbol, exiting\n");
         exit(EXIT_FAILURE);
     }
 
@@ -29,7 +29,7 @@ Symbol * createSymbolWithParameter(types type, char *name, void *value, int offs
 
     newSymbol = (Symbol *) malloc (sizeof(Symbol));
     if(newSymbol == NULL){
-        printf("couldn't create symbol, exiting\n");
+        printf("-> ERROR: Couldn't create symbol, exiting\n");
         exit(EXIT_FAILURE);
     }
 
@@ -49,7 +49,7 @@ Symbol * createSymbolNoParameters(types type, char *name, void *value, int offse
     Symbol * newSymbol = (Symbol *) malloc (sizeof(Symbol));
     
     if(newSymbol == NULL){
-        printf("-> ERROR: couldn't create symbol, exiting\n");
+        printf("-> ERROR: Couldn't create symbol, exiting\n");
         exit(EXIT_FAILURE);
     }
 
@@ -70,7 +70,7 @@ Symbol * createSymbolFull(types type, char *name, void *value, int offset, struc
     Symbol * newSymbol = (Symbol *) malloc (sizeof(Symbol));
     
     if(newSymbol == NULL){
-        printf("-> ERROR: couldn't create symbol, exiting\n");
+        printf("-> ERROR: Couldn't create symbol, exiting\n");
         exit(EXIT_FAILURE);
     }
 
