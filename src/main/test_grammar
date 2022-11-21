@@ -7,7 +7,7 @@ function testValidSyntaxis {
     file_output=$(./script_generated/a.out $file)
     if [[ "$file_output" =~ $error_message ]]; #output contains error message
     then
-        printf "\n\n${RED}Test $file_number - $file failed:${NORMAL}\n\n$file_output"
+        printf "\n\n${RED}Test $file_number - $file failed:${NORMAL}\n\n%s" "${file_output}"
     else
         passed_tests=passed_tests+1
     fi
@@ -21,7 +21,7 @@ function testInvalidSyntaxis {
     file_output=$(./script_generated/a.out $file)
     if ! [[ "$file_output" =~ $error_message ]]; #output doesn't contains error message
     then
-        printf "\n\n${RED}Test $file_number - $file failed, compiler didn't detect the error in:${NORMAL}\n\n$file_output"
+        printf "\n\n${RED}Test $file_number - $file failed, compiler didn't detect the error in:${NORMAL}\n\n%s" "${file_output}"
     else
         passed_tests=passed_tests+1
     fi
