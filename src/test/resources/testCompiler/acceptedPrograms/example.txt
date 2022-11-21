@@ -5,6 +5,6 @@ program {
     }
     
     int main (){
-       suma(2, 5);
+       return suma(2, 5);
     }
 }
