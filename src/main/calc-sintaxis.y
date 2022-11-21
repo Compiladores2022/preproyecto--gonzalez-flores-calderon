@@ -207,7 +207,7 @@ listParameters: parameter           {   struct ParameterList *pList = (struct Pa
     ;
 
 parameter: type ID  {   struct Parameter *parameter = createParameter($1, $2);
-                        parameter += 8;
+                        parameterOffset += 8;
                         insert(&list, createSymbol($1, $2, NULL, parameterOffset));
                         $$ = parameter;
                     }
