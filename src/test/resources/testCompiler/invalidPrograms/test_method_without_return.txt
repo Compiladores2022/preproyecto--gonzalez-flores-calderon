@@ -1,0 +1,12 @@
+program {
+    int a = 5;
+    int b = 10;
+
+    int suma(int x, int y) {
+        b = x + y;
+    }
+
+    void main() {
+        a = 5 + suma(4, 5);
+    }
+}

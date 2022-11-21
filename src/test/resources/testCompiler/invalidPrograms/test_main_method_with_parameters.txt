@@ -1,0 +1,7 @@
+program {
+
+    void main(int x, int c) {
+        int b = 5;
+        ;
+    }
+}
