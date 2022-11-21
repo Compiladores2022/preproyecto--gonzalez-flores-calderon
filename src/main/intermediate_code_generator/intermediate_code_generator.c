@@ -155,7 +155,11 @@ Symbol * addCurrentInstruction(struct TreeNode *tree, InstructionList * codeList
             break;
         case METHDECL: {
             Symbol *methodLabel = createSymbol(UNDEFINED, createLabel(tree->info->name), NULL, 0);
-            insertInstructionNode(codeList, createInstruction("METHDECL", methodLabel, tree->info, NULL));
+            if (strcmp(tree->info->name, "main") == 0) {
+                insertInstructionNode(codeList, createInstruction("MAINMETHOD", methodLabel, tree->info, NULL));
+            } else {
+                insertInstructionNode(codeList, createInstruction("METHDECL", methodLabel, tree->info, NULL));
+            }
             translateTreeIntoCode(tree->left, codeList);    //load method content
             instruction = createInstruction("RET", NULL, NULL, NULL);
             } break;

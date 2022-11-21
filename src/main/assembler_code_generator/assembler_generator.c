@@ -11,19 +11,16 @@ void generateTwoAddressInstruction(char * code, char * operation, char * dest);
 char * getSymbolLocation(Symbol * symbol);
 int isLabel(struct Instruction * instruction);
 
+int requiredFrameSpace = 0;
+
 char * generateAssemblerCode(InstructionList * intermediateCode, int maxOffset) {
-    int requiredFrameSpace = maxOffset / 8;
+    requiredFrameSpace = maxOffset / 8;
     if (requiredFrameSpace % 2 == 1) {  //make it pair to ensure required space is multiple of 16
         requiredFrameSpace++;
     }
-    char * code = (char *) malloc(50 * sizeof(char *)); //50 is the amount of characters in the below string + \0
-    strcpy(code, "	.globl	main\n	.type	main, @function\nmain:\n.LFB0:\n");
+    char * code = (char *) malloc(37 * sizeof(char *)); //37 is the amount of characters in the below string + \0
+    strcpy(code, "	.globl	main\n	.type	main, @function\n");
 
-    char * transformed = intToString(requiredFrameSpace);
-    char * requiredSpace = malloc(12 * sizeof(char *));
-    strcpy(requiredSpace, "$(8 * ");
-    strcat(requiredSpace, transformed);
-    generateInstructionCode(code, "ENTER", strcat(requiredSpace, ")"), "$0");
     struct InstructionNode * currentNode = intermediateCode->head;
     while(currentNode != NULL) {
         processThreeAddressCode(currentNode->instruction, code);
@@ -84,7 +81,7 @@ void processThreeAddressCode(struct Instruction * instruction, char * code) {
 
         case METHDECL:
             strcat(code, instruction->fstOp->name);
-            strcat(code, "\n");
+            strcat(code, ":\n");
             generateTwoAddressInstruction(code, "PUSH", "ebp"); //Store the current stack frame
             generateInstructionCode(code, "MOV", "ebp", "esp"); //Preserve ESP into EBP for argument references
             generateInstructionCode(code, "AND", "esp", "0xfffffff0"); //Align the stack to allow library calls
@@ -126,6 +123,15 @@ void processThreeAddressCode(struct Instruction * instruction, char * code) {
             generateTwoAddressInstruction(code, "POP", "ebp");
             strcat(code, "RET\n");
             break;
+        
+        case MAINMETHOD: {
+            strcat(code, "main:\n.LFB0:\n");
+            char * frameSpace = intToString(requiredFrameSpace);
+            char * requiredSpace = malloc(12 * sizeof(char *));
+            strcpy(requiredSpace, "$(8 * ");
+            strcat(requiredSpace, frameSpace);
+            generateInstructionCode(code, "ENTER", strcat(requiredSpace, ")"), "$0");
+            } break;
 
         default:
             if (isLabel(instruction)) {             //generate a new label

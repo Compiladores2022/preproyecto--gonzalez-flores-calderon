@@ -178,6 +178,9 @@ int stringToOperation(char *string) {
     else if (strcmp(string, "RET") == 0){
         return RET;
     }
+    else if (strcmp(string, "MAINMETHOD") == 0){
+        return MAINMETHOD;
+    }
     else {
         return -1;
     }
