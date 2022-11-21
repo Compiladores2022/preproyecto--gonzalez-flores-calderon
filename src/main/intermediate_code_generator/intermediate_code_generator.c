@@ -24,6 +24,7 @@ void checkMethodCall(struct TreeNode *left, struct TreeNode *right, InstructionL
 InstructionList * generateIntermediateCode(struct TreeNode *tree) {
     InstructionList * codeList;
     codeList = (InstructionList *) malloc (sizeof(InstructionList));
+    initializeInstructionList(codeList);
     
     translateTreeIntoCode(tree, codeList);
     return codeList;   

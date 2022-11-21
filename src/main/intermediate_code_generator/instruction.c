@@ -6,7 +6,7 @@
 
 void initializeInstructionList(InstructionList *list) {
     list->head = NULL;
-    list->head = NULL;
+    list->last = NULL;
 }
 
 struct Instruction * createInstruction(char *name, Symbol *fstOp, Symbol *sndOp, Symbol *result) {
@@ -53,9 +53,8 @@ struct InstructionNode * createInstructionNode(char *name, Symbol *fstOp, Symbol
 }
 
 void insertInstructionNode(InstructionList *codeList, struct Instruction *Instruction) {
-    
     struct InstructionNode *newNode = createInstructionNodeEmpty();
-    if (codeList->head == NULL){ 
+    if (codeList->head == NULL){
         newNode->instruction = Instruction;
         codeList->head = newNode;    
         newNode->next = NULL;
