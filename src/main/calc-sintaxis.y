@@ -255,10 +255,10 @@ statement: ID '=' expr ';'  {   Symbol * idSymbol = search(&list, $1);
     
     | methodCall { $$ = $1; }
     
-    | TIf '(' expr ')' TThen block { $$ = createNewTree(UNDEFINED, $3, $6, "if", 0, TYPELESS); }
+    | TIf '(' expr ')' TThen block { $$ = createNewTree(UNDEFINED, $3, $6, "if", 0, IF_); }
     
     | TIf '(' expr ')' TThen block TElse block  {   struct TreeNode *ifElse = createNewTree(UNDEFINED, $6, $8, "ifelse", 0, TYPELESS);
-                                                    $$ = createNewTree(UNDEFINED, $3, ifElse, "if", 0, TYPELESS); 
+                                                    $$ = createNewTree(UNDEFINED, $3, ifElse, "if", 0, IF_ELSE); 
                                                 }
 
     | TWhile '(' expr ')' block     { $$ = createNewTree(UNDEFINED, $3, $5, "while", 0, TYPELESS); }
