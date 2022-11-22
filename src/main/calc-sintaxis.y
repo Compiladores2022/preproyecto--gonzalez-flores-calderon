@@ -151,7 +151,7 @@ methodDecl: type ID '('  ')'    {   if(search(&list, $2) != NULL){
                                                                 
                                                                 if($8 == NULL){
                                                                     Symbol *s = search(&list, $2);
-                                                                    addIdentifierType(s, EXTERNMETHOD);
+                                                                    replaceIdentifierType(s, EXTERNMETHOD);
                                                                     $$ = createNode(s);
                                                                     closeLevel(&list);
                                                                     insert(&list, s);
@@ -239,7 +239,7 @@ decl: type ID '=' expr ';'  {   if (searchInLevel(list.head->levelSymbols, $2) !
                                 $$ = createNewTree(UNDEFINED, idNode, $4, "=", 0, TYPELESS); 
                             }   
     ;
-statementList:  statement       {   $$ = createNextTree($1, NULL); }
+statementList:  statement       { $$ = createNextTree($1, NULL); }
                                 
     | statementList statement   { $$ = createNextTree($2, $1); }
     ;
