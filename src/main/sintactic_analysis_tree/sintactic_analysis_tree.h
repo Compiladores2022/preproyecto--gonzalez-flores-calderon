@@ -29,14 +29,16 @@ int checkParameters(struct TreeNode *tree,  struct ParameterNode *list, char *me
 
 int countExp(struct TreeNode *tree, int count);
 
-int checkReturnInMethod(struct TreeNode *tree);
+// Funtions to check return in methods 
 
-int checkIfInMethod(struct TreeNode *tree);
+// int checkReturnInMethod(struct TreeNode *tree);
 
-int checkReturnInIf(struct TreeNode *tree);
+// int checkIfInMethod(struct TreeNode *tree);
 
-int checkIfElseInMethod(struct TreeNode *tree);
+// int checkReturnInIf(struct TreeNode *tree);
 
-int checkReturnInElse(struct TreeNode *tree);
+// int checkIfElseInMethod(struct TreeNode *tree);
+
+// int checkReturnInElse(struct TreeNode *tree);
 
 #endif
