@@ -201,6 +201,11 @@ int checkTypeTree(struct TreeNode *tree) {
     }
     
     if(tree->left != NULL && tree->left->info->it == METHOD){
+        if(strcmp(tree->left->info->name, "main") == 0 && tree->left->info->parameterList != NULL){
+            printf("\033[0;31m-> ERROR:\033[0m Defined method main with parameters \n");
+            exit(0);
+        }
+        
         typeMethod = tree->left->info->type;
         validTree = validTree && checkTypeTree(tree->left);
         
