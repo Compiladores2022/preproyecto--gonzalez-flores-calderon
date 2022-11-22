@@ -204,8 +204,8 @@ int checkTypeTree(struct TreeNode *tree) {
         typeMethod = tree->left->info->type;
         validTree = validTree && checkTypeTree(tree->left);
         if(tree->left->info->type != TYPEVOID || tree->left->info->type != UNDEFINED){
-            if(checkReturnInMethod(tree->left->left) == 0){
-                if(checkIfInMethod(tree->left->left) == 0){
+            if(tree->left->left != NULL && checkReturnInMethod(tree->left->left) == 0){
+                if(checkIfInMethod(tree->left->left) == 0 && checkIfElseInMethod(tree->left->left) == 0){
                     printf("\033[0;31m-> ERROR:\033[0m Method %s without return\n", tree->left->info->name);
                     exit(0);
                 }
@@ -323,7 +323,7 @@ int checkReturnInMethod(struct TreeNode *tree){
     }
     
     if(tree->left != NULL && strcmp(tree->left->info->name, "return") != 0 && tree->right != NULL){
-        checkReturnInMethod(tree->right);
+        return checkReturnInMethod(tree->right);
     }
 
     if(tree->right == NULL){
@@ -331,24 +331,57 @@ int checkReturnInMethod(struct TreeNode *tree){
     }
 }
 
-int countIfInMethod(struct TreeNode *tree, int count){
-
-    if(tree->left != NULL && strcmp(tree->left->info->name, "if") == 0){
-        count = count + 1;
+int checkIfElseInMethod(struct TreeNode *tree){
+    if(tree->left != NULL && strcmp(tree->left->info->name, "if") == 0 && tree->left->info->it == IF_ELSE){
+        if(tree->left->right != NULL && tree->left->right->left != NULL && checkReturnInIf(tree->left->right->left) == 1){
+            return 1;
+        }
+        if(tree->left->right != NULL && tree->left->right->right != NULL && checkReturnInElse(tree->left->right->right) == 1){
+            return 1;
+        }
     }
 
     if(tree->right != NULL){
-        return countIfInMethod(tree->right, count);    
+        return checkIfElseInMethod(tree->right);
     }
 
-    return count;
+    return 0;
+}
+
+int checkReturnInElse(struct TreeNode *tree){
+    if(tree->left != NULL && strcmp(tree->left->info->name, "return") == 0){
+        return 1;
+    }
+
+    if(tree->left != NULL && strcmp(tree->left->info->name, "if") == 0 && tree->left->info->it == IF_){
+        if(tree->left->right != NULL){
+            return checkReturnInIf(tree->left->right);
+        }
+    }
+
+    if(tree->left != NULL && strcmp(tree->left->info->name, "if") == 0 && tree->left->info->it == IF_ELSE){
+        if(tree->left->right != NULL && tree->left->right->left != NULL && checkReturnInIf(tree->left->right->left) == 1){
+            return 1;
+        }
+        if(tree->left->right != NULL && tree->left->right->right != NULL && checkReturnInElse(tree->left->right->right) == 1){
+            return 1;
+        }
+    }
+
+    if(tree->right != NULL){
+        return checkReturnInElse(tree->right);
+    }
+
+    return 0;
 }
 
 
 int checkIfInMethod(struct TreeNode *tree){
 
-    if(tree->left != NULL && strcmp(tree->left->info->name, "if") == 0){
-        return checkReturnInIf(tree->left->right);
+    if(tree->left != NULL && strcmp(tree->left->info->name, "if") == 0 && tree->left->info->it == IF_){
+        if(tree->left->right != NULL && checkReturnInIf(tree->left->right) == 1){
+            return 1;
+        }   
     }
 
     if(tree->right != NULL){
@@ -364,8 +397,19 @@ int checkReturnInIf(struct TreeNode *tree){
         return 1;
     }
 
-    if(tree->left != NULL && strcmp(tree->left->info->name, "if") == 0){
-        return checkReturnInIf(tree->left->right);
+    if(tree->left != NULL && strcmp(tree->left->info->name, "if") == 0 && tree->left->info->it == IF_){
+        if(tree->left->right != NULL){
+            return checkReturnInIf(tree->left->right);
+        }
+    }
+
+    if(tree->left != NULL && strcmp(tree->left->info->name, "if") == 0 && tree->left->info->it == IF_ELSE){
+        if(tree->left->right != NULL && tree->left->right->left != NULL && checkReturnInIf(tree->left->right->left) == 1){
+            return 1;
+        }
+        if(tree->left->right != NULL && tree->left->right->right != NULL && checkReturnInElse(tree->left->right->right) == 1){
+            return 1;
+        }
     }
     
     if(tree->right != NULL){

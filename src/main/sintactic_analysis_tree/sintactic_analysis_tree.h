@@ -31,10 +31,12 @@ int countExp(struct TreeNode *tree, int count);
 
 int checkReturnInMethod(struct TreeNode *tree);
 
-int countIfInMethod(struct TreeNode *tree, int count);
-
 int checkIfInMethod(struct TreeNode *tree);
 
 int checkReturnInIf(struct TreeNode *tree);
+
+int checkIfElseInMethod(struct TreeNode *tree);
+
+int checkReturnInElse(struct TreeNode *tree);
 
 #endif
