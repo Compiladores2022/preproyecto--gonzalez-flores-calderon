@@ -214,3 +214,15 @@ int checkMain(SymbolList *symbolList){
     }
     return 0;
 }
+
+void addParametersOffset(SymbolList *symbolList, struct TreeNode *body) {
+    if(body == NULL){
+        return;
+    }
+    addParametersOffset(symbolList, body->left);
+    Symbol * foundParameter = searchInLevel(symbolList->head->levelSymbols, body->info->name);
+    if (foundParameter != NULL) {
+        body->info->offset = -foundParameter->offset;
+    }
+    addParametersOffset(symbolList, body->right);
+}

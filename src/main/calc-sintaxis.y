@@ -157,6 +157,7 @@ methodDecl: type ID '('  ')'    {   if(search(&list, $2) != NULL){
                                                                     insert(&list, s);
                                                                 }
                                                                 else{
+                                                                    addParametersOffset(&list, $8);
                                                                     Symbol *s = search(&list, $2);
                                                                     $$ = createTree(s, $8, NULL);
                                                                     closeLevel(&list);
@@ -180,8 +181,9 @@ methodDecl: type ID '('  ')'    {   if(search(&list, $2) != NULL){
                                                                     $$ = createNode(s);
                                                                     closeLevel(&list);
                                                                     insert(&list, s);
-                                                                } 
-                                                                else{                                                                   
+                                                                }
+                                                                else{
+                                                                    addParametersOffset(&list, $8);                                      
                                                                     Symbol *s = search(&list, $2);
                                                                     $$ = createTree(s, $8, NULL);
                                                                     closeLevel(&list);

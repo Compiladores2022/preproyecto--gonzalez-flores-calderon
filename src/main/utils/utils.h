@@ -33,6 +33,8 @@ void createAssemblerFile(char * assemblerCode);
 
 int checkMain(SymbolList *symbolList);
 
+void addParametersOffset(SymbolList *symbolList, struct TreeNode * body);
+
 struct TreeNode * createNewTreeWithParameters(types symbolType, struct TreeNode *left, struct TreeNode *right, char *operation, int offset, struct ParameterList *parameterList, identifierType identifiertype);
 
 #endif

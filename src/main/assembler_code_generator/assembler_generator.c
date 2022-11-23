@@ -105,14 +105,14 @@ void processThreeAddressCode(struct Instruction * instruction, char * code) {
         case METHDECL:
             strcat(code, instruction->fstOp->name);
             strcat(code, ":\n");
-            generateTwoAddressInstruction(code, "PUSH", "%ebp"); //Store the current stack frame
+            generateTwoAddressInstruction(code, "PUSH", "ebp"); //Store the current stack frame
             generateInstructionCode(code, "MOV", "%ebp", "%esp"); //Preserve ESP into EBP for argument references
             generateInstructionCode(code, "AND", "%esp", "0xfffffff0"); //Align the stack to allow library calls
             break;
 
         case METHCALL: {
             generateTwoAddressInstruction(code, "CALL", instruction->fstOp->name);
-            generateTwoAddressInstruction(code, "POP", "%ebx");
+            generateTwoAddressInstruction(code, "POP", "ebx");
             if (instruction->sndOp != NULL) {
                 char * methodResult = getSymbolLocation(instruction->sndOp);
                 generateInstructionCode(code, "MOV", methodResult, "%rax");
@@ -144,7 +144,7 @@ void processThreeAddressCode(struct Instruction * instruction, char * code) {
         
         case RET:
             generateInstructionCode(code, "MOV", "%esp", "%ebp"); //Restore the stack and ebp
-            generateTwoAddressInstruction(code, "POP", "%ebp");
+            generateTwoAddressInstruction(code, "POP", "ebp");
             strcat(code, "RET\n\n");
             break;
         
@@ -217,10 +217,13 @@ char * getSymbolLocation(Symbol * symbol) {
     if (symbol->offset == 0) {
         strcpy(location, "$");
         strcat(location, intToString(*(int*)symbol->value));
-    } else {
+    } else if (symbol->offset > 0) {
         strcpy(location, "-");
         strcat(location, intToString(symbol->offset));
         strcat(location, "(%rbp)");
+    } else {
+        strcat(location, "(%ebp)+");
+        strcat(location, intToString(-1 * symbol->offset));
     }
     return location;
 }
