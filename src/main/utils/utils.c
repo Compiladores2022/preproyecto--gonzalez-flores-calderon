@@ -250,3 +250,15 @@ int foundMaxOffset(struct TreeNode *body, int maxOffset){
 int calculateFrameSpace(struct TreeNode *body){
     return foundMaxOffset(body, 0) / 8;
 }
+
+void setGlobal(struct TreeNode *declGlobal){
+
+    if(declGlobal->left != NULL){
+        declGlobal->left->info->isGlobal = YES;
+    }
+
+    if(declGlobal->right != NULL){
+        setGlobal(declGlobal->right);
+    }
+
+}

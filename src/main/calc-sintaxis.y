@@ -87,7 +87,8 @@ inil: {initialize(&list);} prog {   checkMain(&list);
                                 }
     ;    
 
-prog: TProgram '{' declList  methodDeclList '}' {   linkTreeRight($3, $4);
+prog: TProgram '{' declList  methodDeclList '}' {   setGlobal($3);
+                                                    linkTreeRight($3, $4);
                                                     $$ = $3; }
 
     | TProgram '{' methodDeclList '}'   { $$ = $3; }
