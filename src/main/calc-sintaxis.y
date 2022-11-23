@@ -116,6 +116,7 @@ methodDecl: type ID '('  ')'    {   if(search(&list, $2) != NULL){
                                     } else{
                                         Symbol *s = search(&list, $2);
                                         addIdentifierType(s, METHOD);
+                                        addFrameSpace(s, calculateFrameSpace($6));
                                         $$ = createTree(s, $6, NULL);
                                     }
                                 }
@@ -136,6 +137,7 @@ methodDecl: type ID '('  ')'    {   if(search(&list, $2) != NULL){
                             else{
                                 Symbol *s = search(&list, $2);
                                 addIdentifierType(s, METHOD);
+                                addFrameSpace(s, calculateFrameSpace($6));
                                 $$ = createTree(s, $6, NULL);
                             }
                         }
@@ -160,9 +162,8 @@ methodDecl: type ID '('  ')'    {   if(search(&list, $2) != NULL){
                                                                 }
                                                                 else{
                                                                     addParametersOffset(&list, $8);
-                                                                    //calculate framespace
-                                                                    //add framespace to symbol s
                                                                     Symbol *s = search(&list, $2);
+                                                                    addFrameSpace(s, calculateFrameSpace($8));
                                                                     $$ = createTree(s, $8, NULL);
                                                                     closeLevel(&list);
                                                                     insert(&list, s);
@@ -188,9 +189,8 @@ methodDecl: type ID '('  ')'    {   if(search(&list, $2) != NULL){
                                                                 }
                                                                 else{
                                                                     addParametersOffset(&list, $8);                                      
-                                                                    //calculate framespace
-                                                                    //add framespace to symbol s
                                                                     Symbol *s = search(&list, $2);
+                                                                    addFrameSpace(s, calculateFrameSpace($8));
                                                                     $$ = createTree(s, $8, NULL);
                                                                     closeLevel(&list);
                                                                     insert(&list, s);

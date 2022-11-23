@@ -226,3 +226,27 @@ void addParametersOffset(SymbolList *symbolList, struct TreeNode *body) {
     }
     addParametersOffset(symbolList, body->right);
 }
+
+int foundMaxOffset(struct TreeNode *body, int maxOffset){
+    if(body == NULL){
+        return maxOffset;
+    }
+
+    int maxOffsetleft = foundMaxOffset(body->left, maxOffset);
+    if(maxOffsetleft > maxOffset){
+        maxOffset = maxOffsetleft;
+    }
+
+    if(body->info->offset > maxOffset){
+        maxOffset = body->info->offset;
+    }
+    
+    int maxOffsetright = foundMaxOffset(body->right, maxOffset);
+    if(maxOffsetright > maxOffset){
+        maxOffset = maxOffsetright;
+    }
+}
+
+int calculateFrameSpace(struct TreeNode *body){
+    return foundMaxOffset(body, 0) / 8;
+}

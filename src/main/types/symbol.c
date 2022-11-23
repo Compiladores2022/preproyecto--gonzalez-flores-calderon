@@ -101,6 +101,17 @@ void addValue(Symbol *symbol, void *value) {
     symbol->value = value;
 }
 
+void addFrameSpace(Symbol *symbol, int frameSpace){
+    if(symbol->frameSpace != 0){
+        printf("\033[0;31m-> ERROR: \033[0m Symbol %s already has a frame space setted\n", symbol->name);
+        exit(0);
+    }
+    if(frameSpace % 2 != 0){
+        frameSpace++;
+    }
+    symbol->frameSpace = frameSpace;
+}
+
 void addIdentifierType(Symbol *symbol, identifierType identifierType){
     if(symbol->it != TYPELESS){
         printf("\033[0;31m-> ERROR: \033[0m Symbol %s already has a identifier type setted\n", symbol->name);

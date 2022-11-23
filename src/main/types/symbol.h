@@ -11,6 +11,7 @@ typedef struct {
     int offset;
     struct ParameterList *parameterList;
     identifierType it;
+    int frameSpace;
 }Symbol;
 
 Symbol * createSymbol(types type, char *name, void *value, int offset);
@@ -30,5 +31,7 @@ void addValue(Symbol *symbol, void *value);
 void replaceIdentifierType(Symbol *symbol, identifierType identifierType);
 
 void addParemeters(Symbol *symbol, struct ParameterList *parameters);
+
+void addFrameSpace(Symbol *symbol, int frameSpace);
 
 #endif

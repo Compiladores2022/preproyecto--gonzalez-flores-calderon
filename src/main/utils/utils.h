@@ -37,4 +37,8 @@ void addParametersOffset(SymbolList *symbolList, struct TreeNode * body);
 
 struct TreeNode * createNewTreeWithParameters(types symbolType, struct TreeNode *left, struct TreeNode *right, char *operation, int offset, struct ParameterList *parameterList, identifierType identifiertype);
 
+int calculateFrameSpace(struct TreeNode *body);
+
+int foundMaxOffset(struct TreeNode *body, int maxOffset);
+
 #endif
