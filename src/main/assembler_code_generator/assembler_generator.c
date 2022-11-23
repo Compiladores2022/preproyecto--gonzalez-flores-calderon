@@ -66,9 +66,17 @@ void processThreeAddressCode(struct Instruction * instruction, char * code) {
             generateSimpleLogicArithmeticCode(instruction, code, "OR");
             break;
 
-        case NOT:
-            generateSimpleLogicArithmeticCode(instruction, code, "NOT");
-            break;
+        case NOT: {
+            char * location = getSymbolLocation(instruction->fstOp);
+            generateInstructionCode(code, "MOV", location, "%r10");
+            //operation
+            free(location);
+            generateTwoAddressInstruction(code, "NOT", "%r10");
+            //moving result to the third symbol
+            location = getSymbolLocation(instruction->result);
+            generateInstructionCode(code, "MOV", "%r10", location);
+            free(location);
+        } break;
 
         case ASSIG: {
             char * location = getSymbolLocation(instruction->fstOp);
@@ -103,6 +111,7 @@ void processThreeAddressCode(struct Instruction * instruction, char * code) {
         } break;
 
         case METHDECL:
+            strcat(code, "\n");
             strcat(code, instruction->fstOp->name);
             strcat(code, ":\n");
             generateTwoAddressInstruction(code, "PUSH", "ebp"); //Store the current stack frame
@@ -145,11 +154,11 @@ void processThreeAddressCode(struct Instruction * instruction, char * code) {
         case RET:
             generateInstructionCode(code, "MOV", "%esp", "%ebp"); //Restore the stack and ebp
             generateTwoAddressInstruction(code, "POP", "ebp");
-            strcat(code, "RET\n\n");
+            strcat(code, "RET\n");
             break;
         
         case MAINMETHOD: {
-            strcat(code, "main:\n.LFB0:\n");
+            strcat(code, "\nmain:\n.LFB0:\n");
             char * frameSpace = intToString(requiredFrameSpace);
             char * requiredSpace = malloc(12 * sizeof(char *));
             strcpy(requiredSpace, "$(8 * ");
@@ -222,8 +231,8 @@ char * getSymbolLocation(Symbol * symbol) {
         strcat(location, intToString(symbol->offset));
         strcat(location, "(%rbp)");
     } else {
-        strcat(location, "(%ebp)+");
         strcat(location, intToString(-1 * symbol->offset));
+        strcat(location, "(%ebp)");
     }
     return location;
 }
