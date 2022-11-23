@@ -193,10 +193,13 @@ int checkTypeTree(struct TreeNode *tree) {
     }
     
     if(tree->right != NULL && tree->right->info->type == UNDEFINED && strcmp(tree->right->info->name, "next") != 0){                
+        // printf("symbol: %s\n", tree->right-/>info->name);
+
         validTree = validTree && checkTypeTree(tree->right);
     }
 
     if(tree->left != NULL && tree->left->info->type == UNDEFINED){
+        // printf("symbol: %s\n", tree->left->info->name);
         validTree = validTree && checkTypeTree(tree->left);  
     }
     
@@ -205,7 +208,6 @@ int checkTypeTree(struct TreeNode *tree) {
             printf("\033[0;31m-> ERROR:\033[0m Defined method main with parameters \n");
             exit(0);
         }
-        
         typeMethod = tree->left->info->type;
         validTree = validTree && checkTypeTree(tree->left);
         
@@ -222,6 +224,12 @@ int checkTypeTree(struct TreeNode *tree) {
         //         }
         //     }
         // }
+    }
+
+    if(strcmp(tree->info->name, "next") != 0 && tree->left != NULL && tree->right != NULL){
+        validTree = validTree && checkTypeTree(tree->left);
+        validTree = validTree && checkTypeTree(tree->right);
+        validTree = validTree && checkOperationsTypes(tree);
     }
 
     if(tree->left != NULL && tree->left->info->it == METHODCALL && tree->left->info->parameterList != NULL){
@@ -257,11 +265,6 @@ int checkTypeTree(struct TreeNode *tree) {
         }
     }
     
-    if(strcmp(tree->info->name, "next") != 0 && tree->left != NULL && tree->right != NULL){
-        
-        validTree = validTree && checkOperationsTypes(tree);
-    }
-    
     if(strcmp(tree->info->name, "-") == 0){
         if(tree->left->info->type != TYPEINT){
             printf("\033[0;31m-> ERROR:\033[0m Incompatible types for %s: %s cannot be converted to int\n", tree->info->name, enumToString(tree->left->info->type));
@@ -280,8 +283,6 @@ int checkTypeTree(struct TreeNode *tree) {
     }
 
     if(strcmp(tree->info->name, "return") == 0){
-        
-        checkOperationsTypes(tree->right);
         tree->info->type = tree->right->info->type;
         if(tree->info->type != typeMethod){
             printf("\033[0;31m-> ERROR:\033[0m Incompatible types for %s: %s cannot be converted to %s\n", tree->info->name, enumToString(tree->info->type), enumToString(typeMethod));         

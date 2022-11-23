@@ -402,7 +402,7 @@ literal: VALORINT   {   char *str = intToString($1);
 VALORINT: INT { $$ = $1; }
     ;
 
-VALORBOOL: TFALSE    { $$ = 1; }
+VALORBOOL: TFALSE    { $$ = 0; }
 
     | TTRUE { $$ = 1; }
     ;
