@@ -105,14 +105,14 @@ void processThreeAddressCode(struct Instruction * instruction, char * code) {
         case METHDECL:
             strcat(code, instruction->fstOp->name);
             strcat(code, ":\n");
-            generateTwoAddressInstruction(code, "PUSH", "ebp"); //Store the current stack frame
-            generateInstructionCode(code, "MOV", "ebp", "esp"); //Preserve ESP into EBP for argument references
-            generateInstructionCode(code, "AND", "esp", "0xfffffff0"); //Align the stack to allow library calls
+            generateTwoAddressInstruction(code, "PUSH", "%ebp"); //Store the current stack frame
+            generateInstructionCode(code, "MOV", "%ebp", "%esp"); //Preserve ESP into EBP for argument references
+            generateInstructionCode(code, "AND", "%esp", "0xfffffff0"); //Align the stack to allow library calls
             break;
 
         case METHCALL: {
             generateTwoAddressInstruction(code, "CALL", instruction->fstOp->name);
-            generateTwoAddressInstruction(code, "POP", "ebx");
+            generateTwoAddressInstruction(code, "POP", "%ebx");
             if (instruction->sndOp != NULL) {
                 char * methodResult = getSymbolLocation(instruction->sndOp);
                 generateInstructionCode(code, "MOV", methodResult, "%rax");
@@ -139,13 +139,13 @@ void processThreeAddressCode(struct Instruction * instruction, char * code) {
 
         case RETURNVAL: {
             char * location = getSymbolLocation(instruction->result);
-            generateInstructionCode(code, "MOV", "%rax", location);
+            generateInstructionCode(code, "MOV", location, "%rax");
         } break;
         
         case RET:
-            generateInstructionCode(code, "MOV", "esp", "ebp"); //Restore the stack and ebp
-            generateTwoAddressInstruction(code, "POP", "ebp");
-            strcat(code, "RET\n");
+            generateInstructionCode(code, "MOV", "%esp", "%ebp"); //Restore the stack and ebp
+            generateTwoAddressInstruction(code, "POP", "%ebp");
+            strcat(code, "RET\n\n");
             break;
         
         case MAINMETHOD: {
