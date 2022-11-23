@@ -76,8 +76,31 @@ void processThreeAddressCode(struct Instruction * instruction, char * code) {
 
             location = getSymbolLocation(instruction->result);
             generateInstructionCode(code, "MOV", "%r10", location);
-            break;
-        }
+        } break;
+        
+        case EQUAL: {
+            char * location1 = getSymbolLocation(instruction->fstOp);
+            char * location2 = getSymbolLocation(instruction->sndOp);
+            generateInstructionCode(code, "CMP", location1, location2);
+            char * location3 = getSymbolLocation(instruction->result);
+            generateTwoAddressInstruction(code, "SET", location3);
+        } break;
+        
+        case GREAT: {
+            char * location1 = getSymbolLocation(instruction->fstOp);
+            char * location2 = getSymbolLocation(instruction->sndOp);
+            generateInstructionCode(code, "CMP", location1, location2);
+            char * location3 = getSymbolLocation(instruction->result);
+            generateTwoAddressInstruction(code, "SET", location3);
+        } break;
+        
+        case LESS: {
+            char * location1 = getSymbolLocation(instruction->fstOp);
+            char * location2 = getSymbolLocation(instruction->sndOp);
+            generateInstructionCode(code, "CMP", location1, location2);
+            char * location3 = getSymbolLocation(instruction->result);
+            generateTwoAddressInstruction(code, "SET", location3);
+        } break;
 
         case METHDECL:
             strcat(code, instruction->fstOp->name);
@@ -88,17 +111,20 @@ void processThreeAddressCode(struct Instruction * instruction, char * code) {
             break;
 
         case METHCALL: {
-            generateTwoAddressInstruction(code, "CALL", getSymbolLocation(instruction->fstOp));
+            generateTwoAddressInstruction(code, "CALL", instruction->fstOp->name);
             generateTwoAddressInstruction(code, "POP", "ebx");
-            break;
-        }
+            if (instruction->sndOp != NULL) {
+                char * methodResult = getSymbolLocation(instruction->sndOp);
+                generateInstructionCode(code, "MOV", methodResult, "%rax");
+            }
+        } break;
 
         case PUSH:
             generateTwoAddressInstruction(code, "PUSH", getSymbolLocation(instruction->fstOp));
             break;
 
         case JMP:
-            generateTwoAddressInstruction(code, "JMP", getSymbolLocation(instruction->result));
+            generateTwoAddressInstruction(code, "JMP", instruction->result->name);
             break;
 
         case JMPFALSE: {
@@ -108,15 +134,13 @@ void processThreeAddressCode(struct Instruction * instruction, char * code) {
             generateInstructionCode(code, "MOV", "%edx", "1");
             generateInstructionCode(code, "CMP", "%edx", "%eax");
 
-            generateTwoAddressInstruction(code, "JNE", getSymbolLocation(instruction->result));
-            break;
-        }
+            generateTwoAddressInstruction(code, "JNE", instruction->result->name);
+        } break;
 
         case RETURNVAL: {
             char * location = getSymbolLocation(instruction->result);
-            generateInstructionCode(code, "MOV", location, "%rax");
-            break;
-        }
+            generateInstructionCode(code, "MOV", "%rax", location);
+        } break;
         
         case RET:
             generateInstructionCode(code, "MOV", "esp", "ebp"); //Restore the stack and ebp
@@ -131,7 +155,7 @@ void processThreeAddressCode(struct Instruction * instruction, char * code) {
             strcpy(requiredSpace, "$(8 * ");
             strcat(requiredSpace, frameSpace);
             generateInstructionCode(code, "ENTER", strcat(requiredSpace, ")"), "$0");
-            } break;
+        } break;
 
         default:
             if (isLabel(instruction)) {             //generate a new label
