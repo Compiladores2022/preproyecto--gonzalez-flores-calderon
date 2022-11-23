@@ -1,0 +1,17 @@
+program {
+    
+    int suma(int x, int y){
+        return x + y + b;       //this should throw undeclared variable
+    }
+    
+    int suma2(int x, int y){
+        int b = 10;
+        return suma(x + y);    
+    }
+
+    int main (){
+       int b = 5;
+       suma(2, 5);
+       return suma2(2, 5);
+    }
+}
