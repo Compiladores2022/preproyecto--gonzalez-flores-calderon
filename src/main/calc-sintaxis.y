@@ -93,9 +93,11 @@ prog: TProgram '{' declList  methodDeclList '}' {   linkTreeRight($3, $4);
     | TProgram '{' methodDeclList '}'   { $$ = $3; }
     ;
 
-methodDeclList: methodDecl methodDeclList    { $$ = createNextTree($1, $2); }
+methodDeclList: methodDecl methodDeclList    { $$ = createNextTree($1, $2);
+                                                offset = 0; }
     
-    | methodDecl          { $$ = createNextTree($1, NULL); }
+    | methodDecl          { $$ = createNextTree($1, NULL);
+                            offset = 0; }
     ;
 
 methodDecl: type ID '('  ')'    {   if(search(&list, $2) != NULL){
@@ -158,6 +160,8 @@ methodDecl: type ID '('  ')'    {   if(search(&list, $2) != NULL){
                                                                 }
                                                                 else{
                                                                     addParametersOffset(&list, $8);
+                                                                    //calculate framespace
+                                                                    //add framespace to symbol s
                                                                     Symbol *s = search(&list, $2);
                                                                     $$ = createTree(s, $8, NULL);
                                                                     closeLevel(&list);
@@ -184,6 +188,8 @@ methodDecl: type ID '('  ')'    {   if(search(&list, $2) != NULL){
                                                                 }
                                                                 else{
                                                                     addParametersOffset(&list, $8);                                      
+                                                                    //calculate framespace
+                                                                    //add framespace to symbol s
                                                                     Symbol *s = search(&list, $2);
                                                                     $$ = createTree(s, $8, NULL);
                                                                     closeLevel(&list);
