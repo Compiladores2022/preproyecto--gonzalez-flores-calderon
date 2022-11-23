@@ -16,7 +16,6 @@ void createParameterInstructions(struct TreeNode *parameters, InstructionList * 
 char * createLabel(char *name);
 char * createGenericLabel();
 char * getOperationName(Symbol * s);
-void checkMethodCall(struct TreeNode *left, struct TreeNode *right, InstructionList * codeList);
 
 /*
  * takes a decorated tree and returns an equivalent three address code program as a list of instructions
@@ -44,18 +43,18 @@ void translateTreeIntoCode(struct TreeNode *tree, InstructionList * codeList) {
  * returns the temporal symbol created to store the result of the current instruction
 */
 Symbol * generateSentenceCode(struct TreeNode *tree, InstructionList * codeList) {
-    Symbol * temp1 = NULL; 
+    Symbol * temp1 = NULL;
     Symbol * temp2 = NULL;
     if (tree->left != NULL) {
-        if(isOperationSymbol(tree->left->info->name)){
-            temp1 = generateSentenceCode(tree->left, codeList);   //generate left sentence if left is an operator            
+        if(isOperationSymbol(tree->left->info->name) || tree->left->info->it == METHODCALL ){
+            temp1 = generateSentenceCode(tree->left, codeList);   //generate left sentence if left is an operator
         }
         else{
             temp1 = tree->left->info;
         }   
     }
     if (tree->right != NULL) {
-        if(isOperationSymbol(tree->right->info->name)){
+        if(isOperationSymbol(tree->right->info->name) || tree->info->it == METHODCALL){
             temp2 = generateSentenceCode(tree->right, codeList);   //generate right sentence if right is an operator
         }
         else{
@@ -79,6 +78,7 @@ Symbol * addCurrentInstruction(struct TreeNode *tree, InstructionList * codeList
     if(temp2 == NULL && tree->right != NULL) {
         temp2 = tree->right->info;
     }
+    
     Symbol *temp3 = NULL;
     int *operationResult = (int*) malloc(sizeof(int));
     struct Instruction * instruction = NULL;
@@ -86,12 +86,10 @@ Symbol * addCurrentInstruction(struct TreeNode *tree, InstructionList * codeList
     switch (stringToOperation(operation)) { //creates the instruction
         case ADD:
             temp3 = tree->info;
-            checkMethodCall(tree->left, tree->right, codeList);
             instruction = createInstruction("ADD", temp1, temp2, temp3);
             break;
         case SUB:
             temp3 = tree->info;
-            checkMethodCall(tree->left, tree->right, codeList);
             if (temp2 == NULL) {
                 instruction = createInstruction("SUB", temp1, NULL, temp3);
             } else {
@@ -100,57 +98,46 @@ Symbol * addCurrentInstruction(struct TreeNode *tree, InstructionList * codeList
             break;
         case MULT:
             temp3 = tree->info;
-            checkMethodCall(tree->left, tree->right, codeList);
             instruction = createInstruction("MULT", temp1, temp2, temp3);
             break;
         case DIV:
             temp3 = tree->info;
-            checkMethodCall(tree->left, tree->right, codeList);
             instruction = createInstruction("DIV", temp1, temp2, temp3);
             break;
         case MOD:
             temp3 = tree->info;
-            checkMethodCall(tree->left, tree->right, codeList);
             instruction = createInstruction("MOD", temp1, temp2, temp3);
             break;
         case AND:
             temp3 = tree->info;
-            checkMethodCall(tree->left, tree->right, codeList);
             instruction = createInstruction("AND", temp1, temp2, temp3);
             break;
         case OR:
             temp3 = tree->info;
-            checkMethodCall(tree->left, tree->right, codeList);
             instruction = createInstruction("OR", temp1, temp2, temp3);
             break;
         case NOT:
             temp3 = tree->info;
-            checkMethodCall(tree->left, NULL, codeList);
             instruction = createInstruction("NOT", temp1, NULL, temp3);
             break;
         case ASSIG:
-            checkMethodCall(NULL, tree->right, codeList);
             instruction = createInstruction("ASSIG", temp2, NULL, temp1);
             temp1->value = temp2->value;
             break;
         case EQUAL:
             temp3 = tree->info;
-            checkMethodCall(tree->left, tree->right, codeList);
             instruction = createInstruction("EQUAL", temp1, temp2, temp3);
             break;
         case GREAT:
             temp3 = tree->info;
-            checkMethodCall(tree->left, tree->right, codeList);
             instruction = createInstruction("GREAT", temp1, temp2, temp3);
             break;
         case LESS:
             temp3 = tree->info;
-            checkMethodCall(tree->left, tree->right, codeList);
             instruction = createInstruction("LESS", temp1, temp2, temp3);
             break;
         case RETURNVAL:
             temp3 = temp2;
-            checkMethodCall(tree->left, tree->right, codeList);
             instruction = createInstruction("RETURNVAL", NULL, NULL, temp3);
             break;
         case METHDECL: {
@@ -169,7 +156,11 @@ Symbol * addCurrentInstruction(struct TreeNode *tree, InstructionList * codeList
         case METHCALL: {
             createParameterInstructions(tree->left, codeList);
             Symbol *methodLabel = createSymbol(UNDEFINED, createLabel(tree->info->name), NULL, 0);
-            instruction = createInstruction("METHCALL", methodLabel, NULL, NULL);
+            if (tree->info->type != TYPEVOID) {
+                instruction = createInstruction("METHCALL", methodLabel, tree->info, NULL);
+            } else {
+                instruction = createInstruction("METHCALL", methodLabel, NULL, NULL);
+            }
             } break;
         case IF: {
             generateSentenceCode(tree->left, codeList);    //calculate expression result
@@ -189,7 +180,7 @@ Symbol * addCurrentInstruction(struct TreeNode *tree, InstructionList * codeList
 
             translateTreeIntoCode(tree->right->left, codeList); //generate code for 'then' block
             insertInstructionNode(codeList, createInstruction("JMP", NULL, NULL, endLabel));
-            
+
             insertInstructionNode(codeList, createInstruction(elseLabel->name, NULL, NULL, NULL));  //insert else label
             translateTreeIntoCode(tree->right->right, codeList); //generate code for 'else' block
 
@@ -209,7 +200,7 @@ Symbol * addCurrentInstruction(struct TreeNode *tree, InstructionList * codeList
             insertInstructionNode(codeList, createInstruction("JMP", NULL, NULL, whileCheckLabel));
             instruction = createInstruction(endLabel->name, NULL, NULL, NULL);  //insert while end label
             } break;
-        case NEXTBLOCK: //this case happens when a new block is inserted inside another
+        case NEXTBLOCK: //this case happens when a new block is inserted inside another block
             translateTreeIntoCode(tree, codeList);
             instruction = NULL;
             break;
@@ -266,15 +257,5 @@ char * getOperationName(Symbol * s) {
         return "methodcall";
     } else {
         return s->name;
-    }
-}
-
-void checkMethodCall(struct TreeNode *left, struct TreeNode *right, InstructionList * codeList) {
-    if (left != NULL && left->info->it == METHODCALL) {
-        generateSentenceCode(left, codeList);
-    }
-
-    if (right != NULL && right->info->it == METHODCALL) {
-        generateSentenceCode(right, codeList);
     }
 }
