@@ -201,8 +201,27 @@ int checkTypeTree(struct TreeNode *tree) {
     }
     
     if(tree->left != NULL && tree->left->info->it == METHOD){
+        if(strcmp(tree->left->info->name, "main") == 0 && tree->left->info->parameterList != NULL){
+            printf("\033[0;31m-> ERROR:\033[0m Defined method main with parameters \n");
+            exit(0);
+        }
+        
         typeMethod = tree->left->info->type;
         validTree = validTree && checkTypeTree(tree->left);
+        
+        
+        // Check return in methods
+
+        // if(tree->left->info->type != TYPEVOID || tree->left->info->type != UNDEFINED){
+        //     if(tree->left->left != NULL && checkReturnInMethod(tree->left->left) == 0){
+        //         printf("IF: %d\n", checkIfInMethod(tree->left->left));
+        //         printf("IFELSE: %d\n", checkIfElseInMethod(tree->left->left));
+        //         if(checkIfInMethod(tree->left->left) == 0 && checkIfElseInMethod(tree->left->left) == 0){
+        //             printf("\033[0;31m-> ERROR:\033[0m Method %s without return\n", tree->left->info->name);
+        //             exit(0);
+        //         }
+        //     }
+        // }
     }
 
     if(tree->left != NULL && tree->left->info->it == METHODCALL && tree->left->info->parameterList != NULL){
@@ -261,6 +280,7 @@ int checkTypeTree(struct TreeNode *tree) {
     }
 
     if(strcmp(tree->info->name, "return") == 0){
+        
         checkOperationsTypes(tree->right);
         tree->info->type = tree->right->info->type;
         if(tree->info->type != typeMethod){
@@ -307,3 +327,110 @@ int countExp(struct TreeNode *tree, int count){
 
     return count;
 }
+
+// Functions to check return in methods
+
+// int checkReturnInMethod(struct TreeNode *tree){
+
+//     if(tree->left != NULL && strcmp(tree->left->info->name, "return") == 0){
+//         return 1;
+//     }
+    
+//     if(tree->left != NULL && strcmp(tree->left->info->name, "return") != 0 && tree->right != NULL){
+//         return checkReturnInMethod(tree->right);
+//     }
+
+//     if(tree->right == NULL){
+//         return 0;
+//     }
+// }
+
+// int checkIfElseInMethod(struct TreeNode *tree){
+//     if(tree->left != NULL && strcmp(tree->left->info->name, "if") == 0 && tree->left->info->it == IF_ELSE){
+//         // printf("paso\n");
+//         // printf("EL IF DEL IFELSE: %d\n", checkReturnInIf(tree->left->right->left));
+//         // printf("tree: %s\n", tree->left->right->left->right->left->info->name);
+//         if(tree->left->right != NULL && tree->left->right->left != NULL && checkReturnInIf(tree->left->right->left) == 1){
+//             printf("paso\n");
+//             if(tree->left->right != NULL && tree->left->right->right != NULL && checkReturnInElse(tree->left->right->right) == 1){
+//                 return 1;
+//             }
+//         }
+//     }
+
+//     if(tree->right != NULL){
+//         return checkIfElseInMethod(tree->right);
+//     }
+
+//     return 0;
+// }
+
+// int checkReturnInElse(struct TreeNode *tree){
+//     if(tree->left != NULL && strcmp(tree->left->info->name, "return") == 0){
+//         return 1;
+//     }
+
+//     if(tree->left != NULL && strcmp(tree->left->info->name, "if") == 0 && tree->left->info->it == IF_){
+//         if(tree->left->right != NULL){
+//             return checkReturnInIf(tree->left->right);
+//         }
+//     }
+
+//     if(tree->left != NULL && strcmp(tree->left->info->name, "if") == 0 && tree->left->info->it == IF_ELSE){
+//         if(tree->left->right != NULL && tree->left->right->left != NULL && checkReturnInIf(tree->left->right->left) == 1){
+//             if(tree->left->right != NULL && tree->left->right->right != NULL && checkReturnInElse(tree->left->right->right) == 1){
+//                 return 1;
+//             }
+//         }
+//     }
+
+//     if(tree->right != NULL){
+//         return checkReturnInElse(tree->right);
+//     }
+
+//     return 0;
+// }
+
+
+// int checkIfInMethod(struct TreeNode *tree){
+
+//     if(tree->left != NULL && strcmp(tree->left->info->name, "if") == 0 && tree->left->info->it == IF_){
+//         if(tree->left->right != NULL && checkReturnInIf(tree->left->right) == 1){
+//             return 1;
+//         }   
+//     }
+
+//     if(tree->right != NULL){
+//         return checkIfInMethod(tree->right);    
+//     }
+
+//     return 0;
+// }
+
+// int checkReturnInIf(struct TreeNode *tree){
+
+//     if(tree->left != NULL && strcmp(tree->left->info->name, "return") == 0){
+//         printf("aca return\n\n\n");
+//         return 1;
+//     }
+
+//     if(tree->left != NULL && strcmp(tree->left->info->name, "if") == 0 && tree->left->info->it == IF_){
+//         if(tree->left->right != NULL){
+//             return checkReturnInIf(tree->left->right);
+//         }
+//     }
+
+//     if(tree->left != NULL && strcmp(tree->left->info->name, "if") == 0 && tree->left->info->it == IF_ELSE){
+//         if(tree->left->right != NULL && tree->left->right->left != NULL && checkReturnInIf(tree->left->right->left) == 1){
+//             if(tree->left->right != NULL && tree->left->right->right != NULL && checkReturnInElse(tree->left->right->right) == 1){
+//                 return 1;
+//             }
+//         }
+//     }
+    
+//     if(tree->right != NULL){
+//         return checkReturnInIf(tree->right);
+//     }
+
+//     return 0;
+// }

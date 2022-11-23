@@ -151,7 +151,7 @@ methodDecl: type ID '('  ')'    {   if(search(&list, $2) != NULL){
                                                                 
                                                                 if($8 == NULL){
                                                                     Symbol *s = search(&list, $2);
-                                                                    addIdentifierType(s, EXTERNMETHOD);
+                                                                    replaceIdentifierType(s, EXTERNMETHOD);
                                                                     $$ = createNode(s);
                                                                     closeLevel(&list);
                                                                     insert(&list, s);
@@ -261,7 +261,7 @@ statement: ID '=' expr ';'  {   Symbol * idSymbol = search(&list, $1);
     
     | methodCall ';' { $$ = $1; }
     
-    | TIf '(' expr ')' TThen block { $$ = createNewTree(UNDEFINED, $3, $6, "if", 0, TYPELESS); }
+    | TIf '(' expr ')' TThen block { $$ = createNewTree(UNDEFINED, $3, $6, "if", 0, IF_); }
     
     | TIf '(' expr ')' TThen block TElse block  {   struct TreeNode *ifElse = createNewTree(UNDEFINED, $6, $8, "ifelseblocks", 0, TYPELESS);
                                                     $$ = createNewTree(UNDEFINED, $3, ifElse, "ifelse", 0, TYPELESS); 
