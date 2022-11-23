@@ -239,9 +239,15 @@ decl: type ID '=' expr ';'  {   if (searchInLevel(list.head->levelSymbols, $2) !
                                 $$ = createNewTree(UNDEFINED, idNode, $4, "=", 0, TYPELESS); 
                             }   
     ;
-statementList:  statement       { $$ = createNextTree($1, NULL); }
-                                
-    | statementList statement   { $$ = createNextTree($2, $1); }
+
+statementList:  statement       {   $$ = createNextTree($1, NULL); }
+
+    | statementList statement   {   if ($2 == NULL) {
+                                        $$ = $1;
+                                    } else {
+                                        $$ = createNextTree($2, $1);
+                                    }   
+                                }
     ;
     
 statement: ID '=' expr ';'  {   Symbol * idSymbol = search(&list, $1);
@@ -253,12 +259,12 @@ statement: ID '=' expr ';'  {   Symbol * idSymbol = search(&list, $1);
                                 $$ = createNewTree(UNDEFINED, idNode, $3, "=", 0, TYPELESS); 
                             }
     
-    | methodCall { $$ = $1; }
+    | methodCall ';' { $$ = $1; }
     
     | TIf '(' expr ')' TThen block { $$ = createNewTree(UNDEFINED, $3, $6, "if", 0, IF_); }
     
-    | TIf '(' expr ')' TThen block TElse block  {   struct TreeNode *ifElse = createNewTree(UNDEFINED, $6, $8, "ifelse", 0, TYPELESS);
-                                                    $$ = createNewTree(UNDEFINED, $3, ifElse, "if", 0, IF_ELSE); 
+    | TIf '(' expr ')' TThen block TElse block  {   struct TreeNode *ifElse = createNewTree(UNDEFINED, $6, $8, "ifelseblocks", 0, TYPELESS);
+                                                    $$ = createNewTree(UNDEFINED, $3, ifElse, "ifelse", 0, TYPELESS); 
                                                 }
 
     | TWhile '(' expr ')' block     { $$ = createNewTree(UNDEFINED, $3, $5, "while", 0, TYPELESS); }
@@ -283,7 +289,12 @@ methodCall: ID '(' exprList ')' {   Symbol * methodSymb = search(&list, $1);
                                         printf("-> ERROR: Method %s cannot be applied to given types\n", $1);
                                         yyerror();
                                     }                                                                
-                                    $$ = createNewTreeWithParameters(methodSymb->type, $3, NULL, methodSymb->name, 0, methodSymb->parameterList, METHODCALL);
+                                    if (methodSymb->type != TYPEVOID) {
+                                        offset+=8;
+                                        $$ = createNewTreeWithParameters(methodSymb->type, $3, NULL, methodSymb->name, offset, methodSymb->parameterList, METHODCALL);
+                                    } else {
+                                        $$ = createNewTreeWithParameters(methodSymb->type, $3, NULL, methodSymb->name, 0, methodSymb->parameterList, METHODCALL);
+                                    }
                                 }
 
     | ID '(' ')'                {   Symbol * methodSymb = search(&list, $1);
@@ -293,12 +304,17 @@ methodCall: ID '(' exprList ')' {   Symbol * methodSymb = search(&list, $1);
                                     }else if(methodSymb->it != METHOD && methodSymb->it != EXTERNMETHOD){
                                         printf("-> ERROR: This identifier is not a method: %s", $1);
                                         yyerror();
+                                    }else if(methodSymb->parameterList != NULL){
+                                        printf("-> ERROR: This method requires parameters: %s", $1);
+                                        yyerror();
                                     }
-                                    if(methodSymb->parameterList != NULL){
-                                        $$ = createNewNodeWithParameters(methodSymb->type, methodSymb->name, METHODCALL, methodSymb->parameterList);
-                                    }
-                                    else{
-                                        $$ = createNewNode(methodSymb->type, methodSymb->name, METHODCALL); 
+                                    if (methodSymb->type != TYPEVOID) {
+                                        offset+=8;
+                                        Symbol *s = createSymbol(methodSymb->type, methodSymb->name, 0, offset);
+                                        addIdentifierType(s, METHODCALL);
+                                        $$ = createNode(s);
+                                    } else {
+                                        $$ = createNewNode(methodSymb->type, methodSymb->name, METHODCALL);
                                     }
                                 }
     ;
