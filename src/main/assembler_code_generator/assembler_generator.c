@@ -114,6 +114,13 @@ void processThreeAddressCode(struct Instruction * instruction, char * code) {
             strcat(code, "\n");
             strcat(code, instruction->fstOp->name);
             strcat(code, ":\n");
+            
+            char * frameSpace = intToString(instruction->sndOp->frameSpace);
+            char * requiredSpace = malloc(12 * sizeof(char *));
+            strcpy(requiredSpace, "$(8 * ");
+            strcat(requiredSpace, frameSpace);
+            generateInstructionCode(code, "ENTER", strcat(requiredSpace, ")"), "$0");
+
             generateTwoAddressInstruction(code, "PUSH", "ebp"); //Store the current stack frame
             generateInstructionCode(code, "MOV", "%ebp", "%esp"); //Preserve ESP into EBP for argument references
             generateInstructionCode(code, "AND", "%esp", "0xfffffff0"); //Align the stack to allow library calls
