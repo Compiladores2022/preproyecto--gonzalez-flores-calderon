@@ -54,7 +54,7 @@ Symbol * generateSentenceCode(struct TreeNode *tree, InstructionList * codeList)
         }   
     }
     if (tree->right != NULL) {
-        if(isOperationSymbol(tree->right->info->name) || tree->info->it == METHODCALL){
+        if(isOperationSymbol(tree->right->info->name) || tree->right->info->it == METHODCALL){
             temp2 = generateSentenceCode(tree->right, codeList);   //generate right sentence if right is an operator
         }
         else{

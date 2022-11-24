@@ -11,13 +11,7 @@ void generateTwoAddressInstruction(char * code, char * operation, char * dest);
 char * getSymbolLocation(Symbol * symbol);
 int isLabel(struct Instruction * instruction);
 
-int requiredFrameSpace = 0;
-
-char * generateAssemblerCode(InstructionList * intermediateCode, int maxOffset) {
-    requiredFrameSpace = maxOffset / 8;
-    if (requiredFrameSpace % 2 == 1) {  //make it pair to ensure required space is multiple of 16
-        requiredFrameSpace++;
-    }
+char * generateAssemblerCode(InstructionList * intermediateCode) {
     char * code = (char *) malloc(37 * sizeof(char *)); //37 is the amount of characters in the below string + \0
     strcpy(code, "	.globl	main\n	.type	main, @function\n");
 
@@ -26,7 +20,6 @@ char * generateAssemblerCode(InstructionList * intermediateCode, int maxOffset) 
         processThreeAddressCode(currentNode->instruction, code);
         currentNode = currentNode->next;
     }
-    code = strcat(code, "LEAVE\nRET\n");
 
     return code;
 }
@@ -120,15 +113,10 @@ void processThreeAddressCode(struct Instruction * instruction, char * code) {
             strcpy(requiredSpace, "$(8 * ");
             strcat(requiredSpace, frameSpace);
             generateInstructionCode(code, "ENTER", strcat(requiredSpace, ")"), "$0");
-
-            generateTwoAddressInstruction(code, "PUSH", "ebp"); //Store the current stack frame
-            generateInstructionCode(code, "MOV", "%ebp", "%esp"); //Preserve ESP into EBP for argument references
-            generateInstructionCode(code, "AND", "%esp", "0xfffffff0"); //Align the stack to allow library calls
             break;
 
         case METHCALL: {
             generateTwoAddressInstruction(code, "CALL", instruction->fstOp->name);
-            generateTwoAddressInstruction(code, "POP", "ebx");
             if (instruction->sndOp != NULL) {
                 char * methodResult = getSymbolLocation(instruction->sndOp);
                 generateInstructionCode(code, "MOV", methodResult, "%rax");
@@ -159,14 +147,13 @@ void processThreeAddressCode(struct Instruction * instruction, char * code) {
         } break;
         
         case RET:
-            generateInstructionCode(code, "MOV", "%esp", "%ebp"); //Restore the stack and ebp
-            generateTwoAddressInstruction(code, "POP", "ebp");
+            strcat(code, "LEAVE\n");
             strcat(code, "RET\n");
             break;
         
         case MAINMETHOD: {
             strcat(code, "\nmain:\n.LFB0:\n");
-            char * frameSpace = intToString(requiredFrameSpace);
+            char * frameSpace = intToString(instruction->sndOp->frameSpace);
             char * requiredSpace = malloc(12 * sizeof(char *));
             strcpy(requiredSpace, "$(8 * ");
             strcat(requiredSpace, frameSpace);
