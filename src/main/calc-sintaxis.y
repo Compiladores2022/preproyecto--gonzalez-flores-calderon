@@ -15,7 +15,7 @@
 SymbolList list;
 SintacticAnalysisTree sat;
 InstructionList instructionlist;
-int offset = 0, parameterOffset = 0;
+int offset = 0, parameterOffset = 8;
 void yyerror();
 int yylex();
 
@@ -149,7 +149,7 @@ methodDecl: type ID '('  ')'    {   if(search(&list, $2) != NULL){
                                                                 }
                                                                 Symbol *s = createSymbolFull($1, $2, 0, 0, $5, METHOD);
                                                                 insert(&list, s);
-                                                                parameterOffset = 0;
+                                                                parameterOffset = 8;
                                                             }
                                                             body 
                                                             {   
@@ -177,7 +177,7 @@ methodDecl: type ID '('  ')'    {   if(search(&list, $2) != NULL){
                                                                 }
                                                                 Symbol *s = createSymbolFull(TYPEVOID, $2, 0, 0, $5, METHOD);
                                                                 insert(&list, s);
-                                                                parameterOffset = 0;
+                                                                parameterOffset = 8;
                                                             }
                                                             body 
                                                             {   

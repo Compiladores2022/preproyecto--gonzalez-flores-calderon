@@ -118,8 +118,7 @@ void processThreeAddressCode(struct Instruction * instruction, char * code) {
         case METHCALL: {
             generateTwoAddressInstruction(code, "CALL", instruction->fstOp->name);
             if (instruction->sndOp != NULL) {
-                char * methodResult = getSymbolLocation(instruction->sndOp);
-                generateInstructionCode(code, "MOV", methodResult, "%rax");
+                generateInstructionCode(code, "MOV", "%rax", getSymbolLocation(instruction->sndOp));
             }
         } break;
 
@@ -137,6 +136,8 @@ void processThreeAddressCode(struct Instruction * instruction, char * code) {
             generateInstructionCode(code, "MOV", "%eax", "%rax");
             generateInstructionCode(code, "MOV", "%edx", "1");
             generateInstructionCode(code, "CMP", "%edx", "%eax");
+            //esto podria ser solo CMP location, 1
+            //                     JNE label
 
             generateTwoAddressInstruction(code, "JNE", instruction->result->name);
         } break;
@@ -226,7 +227,7 @@ char * getSymbolLocation(Symbol * symbol) {
         strcat(location, "(%rbp)");
     } else {
         strcat(location, intToString(-1 * symbol->offset));
-        strcat(location, "(%ebp)");
+        strcat(location, "(%rbp)");
     }
     return location;
 }
