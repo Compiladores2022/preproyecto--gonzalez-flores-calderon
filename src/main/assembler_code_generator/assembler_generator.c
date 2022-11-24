@@ -173,6 +173,20 @@ void processThreeAddressCode(struct Instruction * instruction, char * code) {
             generateInstructionCode(code, "ENTER", strcat(requiredSpace, ")"), "$0");
         } break;
 
+        case VARIABLEGLOBAL: {
+            int value =  *(int*)instruction->result->value;
+            
+            strcat(code, "\n.global \t");
+            strcat(code, instruction->result->name);
+            strcat(code, "\n.align 4\ntype\t");
+            strcat(code, instruction->result->name);
+            strcat(code, ", @object\n");
+            strcat(code, instruction->result->name);
+            strcat(code, ":\n\t.long\t");
+            strcat(code, intToString(value));
+            strcat(code, "\n");
+        } break;
+
         default:
             if (isLabel(instruction)) {             //generate a new label
                 strcat(code, instruction->name);
@@ -230,16 +244,22 @@ void generateTwoAddressInstruction(char * code, char * operation, char * dest) {
 
 char * getSymbolLocation(Symbol * symbol) {
     char * location = (char *) malloc(10 * sizeof(char *));
-    if (symbol->offset == 0) {
-        strcpy(location, "$");
-        strcat(location, intToString(*(int*)symbol->value));
-    } else if (symbol->offset > 0) {
-        strcpy(location, "-");
-        strcat(location, intToString(symbol->offset));
-        strcat(location, "(%rbp)");
-    } else {
-        strcat(location, intToString(-1 * symbol->offset));
-        strcat(location, "(%ebp)");
+    if(symbol->isGlobal == YES){
+        strcpy(location, symbol->name);
+        strcat(location, "(%rip)");
+    }
+    else{
+        if (symbol->offset == 0) {
+            strcpy(location, "$");
+            strcat(location, intToString(*(int*)symbol->value));
+        } else if (symbol->offset > 0) {
+            strcpy(location, "-");
+            strcat(location, intToString(symbol->offset));
+            strcat(location, "(%rbp)");
+        } else {
+            strcat(location, intToString(-1 * symbol->offset));
+            strcat(location, "(%ebp)");
+        }
     }
     return location;
 }
