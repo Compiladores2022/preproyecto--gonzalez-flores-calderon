@@ -10,6 +10,9 @@ void generateInstructionCode(char * code, char * operation, char * dest, char * 
 void generateTwoAddressInstruction(char * code, char * operation, char * dest);
 char * getSymbolLocation(Symbol * symbol);
 int isLabel(struct Instruction * instruction);
+char * getRegister(int param);
+
+int paramNum = 1;
 
 char * generateAssemblerCode(InstructionList * intermediateCode) {
     char * code = (char *) malloc(37 * sizeof(char *)); //37 is the amount of characters in the below string + \0
@@ -116,15 +119,20 @@ void processThreeAddressCode(struct Instruction * instruction, char * code) {
             break;
 
         case METHCALL: {
+            paramNum = 1;
             generateTwoAddressInstruction(code, "CALL", instruction->fstOp->name);
             if (instruction->sndOp != NULL) {
-                char * methodResult = getSymbolLocation(instruction->sndOp);
-                generateInstructionCode(code, "MOV", methodResult, "%rax");
+                generateInstructionCode(code, "MOV", "%rax", getSymbolLocation(instruction->sndOp));
             }
         } break;
 
         case PUSH:
-            generateTwoAddressInstruction(code, "PUSH", getSymbolLocation(instruction->fstOp));
+            if (paramNum > 6) {
+                generateTwoAddressInstruction(code, "PUSH", getSymbolLocation(instruction->fstOp));
+            } else {
+                generateInstructionCode(code, "MOV", getSymbolLocation(instruction->fstOp), getRegister(paramNum));
+                paramNum++;
+            }
             break;
 
         case JMP:
@@ -137,6 +145,8 @@ void processThreeAddressCode(struct Instruction * instruction, char * code) {
             generateInstructionCode(code, "MOV", "%eax", "%rax");
             generateInstructionCode(code, "MOV", "%edx", "1");
             generateInstructionCode(code, "CMP", "%edx", "%eax");
+            //esto podria ser solo CMP location, 1
+            //                     JNE label
 
             generateTwoAddressInstruction(code, "JNE", instruction->result->name);
         } break;
@@ -238,7 +248,7 @@ char * getSymbolLocation(Symbol * symbol) {
         strcpy(location,    symbol->name);
         strcat(location, "(%rip)");
     }
-    else{
+    else{ 
         if (symbol->offset == 0) {
             strcpy(location, "$");
             strcat(location, intToString(*(int*)symbol->value));
@@ -247,8 +257,15 @@ char * getSymbolLocation(Symbol * symbol) {
             strcat(location, intToString(symbol->offset));
             strcat(location, "(%rbp)");
         } else {
-            strcat(location, intToString(-1 * symbol->offset));
-            strcat(location, "(%ebp)");
+            int offset = -1 * symbol->offset; //to make it positive
+            if (offset < 56) {
+                offset -= 8;
+                strcpy(location, getRegister(offset / 8));
+            } else {
+                offset += 8 * 7;    //this parameters go after the convention registers for parameters
+                strcat(location, intToString(offset));
+                strcat(location, "(%rbp)");
+            }
         }
     }
     return location;
@@ -260,4 +277,30 @@ int isLabel (struct Instruction * instruction) {
         value = 1;
     } else { value = 0; }
     return value;
+}
+
+char * getRegister(int param) {
+    switch (param) {
+        case 1:
+            return "%rdi";
+            break;
+        case 2:
+            return "%rsi";
+            break;
+        case 3:
+            return "%rdx";
+            break;
+        case 4:
+            return "%rcx";
+            break;
+        case 5:
+            return "%r8";
+            break;
+        case 6:
+            return "%r9";
+            break;
+        default:
+            printf("\n-> ERROR: invalid param number %d\nprocess terminated\n", param);
+            exit(0);
+    }
 }
