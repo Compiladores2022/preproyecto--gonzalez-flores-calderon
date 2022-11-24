@@ -21,6 +21,7 @@ Symbol * createSymbol(types type, char *name, void *value, int offset) {
     newSymbol->offset = offset;
     newSymbol->parameterList = list;
     newSymbol->it = TYPELESS;
+    newSymbol->isGlobal = NO;
     return newSymbol;
 }
 
@@ -38,6 +39,7 @@ Symbol * createSymbolWithParameter(types type, char *name, void *value, int offs
     newSymbol->value = value;
     newSymbol->offset = offset;
     newSymbol->it = TYPELESS;
+    newSymbol->isGlobal = NO;
     
     newSymbol->parameterList = parameterList;
     
@@ -61,6 +63,7 @@ Symbol * createSymbolNoParameters(types type, char *name, void *value, int offse
     newSymbol->offset = offset;
     newSymbol->parameterList = list;
     newSymbol->it = identifierType;
+    newSymbol->isGlobal = NO;
     
     return newSymbol;
 }
@@ -81,6 +84,7 @@ Symbol * createSymbolFull(types type, char *name, void *value, int offset, struc
     newSymbol->parameterList = (struct ParameterList*) malloc (sizeof(struct ParameterList*));
     newSymbol->parameterList = parameterList;
     newSymbol->it = identifierType;
+    newSymbol->isGlobal = NO;
     
     return newSymbol;
 }
@@ -122,6 +126,10 @@ void addIdentifierType(Symbol *symbol, identifierType identifierType){
 
 void replaceIdentifierType(Symbol *symbol, identifierType identifiertype){
     symbol->it = identifiertype;
+}
+
+void replaceIsGlobal(Symbol *symbol, Global isglobal){
+    symbol->isGlobal = isglobal;
 }
 
 void addParemeters(Symbol *symbol, struct ParameterList *parameters){

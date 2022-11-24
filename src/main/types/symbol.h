@@ -12,6 +12,7 @@ typedef struct {
     struct ParameterList *parameterList;
     identifierType it;
     int frameSpace;
+    Global isGlobal;
 }Symbol;
 
 Symbol * createSymbol(types type, char *name, void *value, int offset);

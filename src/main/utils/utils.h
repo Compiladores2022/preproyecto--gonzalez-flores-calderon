@@ -41,4 +41,6 @@ int calculateFrameSpace(struct TreeNode *body);
 
 int foundMaxOffset(struct TreeNode *body, int maxOffset);
 
+void setGlobal(struct TreeNode *declGlobal);
+
 #endif
