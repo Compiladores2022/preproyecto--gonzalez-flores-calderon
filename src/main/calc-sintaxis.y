@@ -81,7 +81,7 @@ inil: {initialize(&list);} prog {   checkMain(&list);
                                     checkTypeTree($2);
                                     InstructionList * intermediateCode = generateIntermediateCode($2);
                                     printInstructionList(intermediateCode);
-                                    char *assemblerCode = generateAssemblerCode(intermediateCode, offset);
+                                    char *assemblerCode = generateAssemblerCode(intermediateCode);
                                     printf("%s", assemblerCode);
                                     createAssemblerFile(assemblerCode);
                                 }

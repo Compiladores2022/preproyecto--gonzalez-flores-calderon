@@ -3,6 +3,6 @@
 #ifndef ASSEMBLER_GENERATOR_H
 #define ASSEMBLER_GENERATOR_H
 
-char * generateAssemblerCode(InstructionList * intermediateCode, int maxOffset);
+char * generateAssemblerCode(InstructionList * intermediateCode);
 
 #endif
