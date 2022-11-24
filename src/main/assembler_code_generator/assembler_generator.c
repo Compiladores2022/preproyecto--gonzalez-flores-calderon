@@ -14,13 +14,13 @@ int isLabel(struct Instruction * instruction);
 char * generateAssemblerCode(InstructionList * intermediateCode) {
     char * code = (char *) malloc(37 * sizeof(char *)); //37 is the amount of characters in the below string + \0
     strcpy(code, "	.globl	main\n	.type	main, @function\n");
-
+    
     struct InstructionNode * currentNode = intermediateCode->head;
     while(currentNode != NULL) {
         processThreeAddressCode(currentNode->instruction, code);
         currentNode = currentNode->next;
     }
-
+    
     return code;
 }
 
@@ -161,13 +161,15 @@ void processThreeAddressCode(struct Instruction * instruction, char * code) {
         } break;
 
         case VARIABLEGLOBAL: {
-            int value =  *(int*)instruction->result->value;
-            
-            strcat(code, "\n.global \t");
+            int value = *(int*)instruction->result->value;
+            strcat(code, "\n.globl \t");
             strcat(code, instruction->result->name);
-            strcat(code, "\n.align 4\ntype\t");
+            strcat(code, "\n.align 4\n.type\t");
             strcat(code, instruction->result->name);
             strcat(code, ", @object\n");
+            strcat(code, ".size\t");
+            strcat(code, instruction->result->name);
+            strcat(code, ", 4\n");
             strcat(code, instruction->result->name);
             strcat(code, ":\n\t.long\t");
             strcat(code, intToString(value));
@@ -231,8 +233,9 @@ void generateTwoAddressInstruction(char * code, char * operation, char * dest) {
 
 char * getSymbolLocation(Symbol * symbol) {
     char * location = (char *) malloc(10 * sizeof(char *));
+    
     if(symbol->isGlobal == YES){
-        strcpy(location, symbol->name);
+        strcpy(location,    symbol->name);
         strcat(location, "(%rip)");
     }
     else{
