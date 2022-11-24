@@ -181,6 +181,9 @@ int stringToOperation(char *string) {
     else if (strcmp(string, "MAINMETHOD") == 0){
         return MAINMETHOD;
     }
+    else if (strcmp(string, "VARIABLEGLOGAL") == 0){
+        return VARIABLEGLOBAL;
+    }
     else {
         return -1;
     }
@@ -255,8 +258,10 @@ void setGlobal(struct TreeNode *declGlobal){
 
     if(declGlobal->left != NULL){
         declGlobal->left->info->isGlobal = YES;
+        if(declGlobal->left->left != NULL){
+            declGlobal->left->left->info->isGlobal = YES;
+        }
     }
-
     if(declGlobal->right != NULL){
         setGlobal(declGlobal->right);
     }
