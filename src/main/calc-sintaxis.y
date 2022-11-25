@@ -338,7 +338,7 @@ methodCall: ID '(' exprList ')' {   Symbol * methodSymb = search(&list, $1);
                                     }
                                     if (methodSymb->type != TYPEVOID) {
                                         offset+=8;
-                                        Symbol *s = createSymbol(methodSymb->type, methodSymb->name, 0, offset);
+                                        Symbol *s = createSymbol(methodSymb->type, methodSymb->name, NULL, offset);
                                         addIdentifierType(s, METHODCALL);
                                         $$ = createNode(s);
                                     } else {
