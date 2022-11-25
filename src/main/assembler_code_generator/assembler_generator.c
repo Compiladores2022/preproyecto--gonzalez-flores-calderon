@@ -207,11 +207,9 @@ void generateSimpleLogicArithmeticCode(struct Instruction * instruction, char * 
     char * location = getSymbolLocation(instruction->fstOp);
     generateInstructionCode(code, "MOV", location, "%r10");
     //second symbol and operation
-    free(location);
     location = getSymbolLocation(instruction->sndOp);
     generateInstructionCode(code, operation, location, "%r10");
     //moving result to the third symbol
-    free(location);
     location = getSymbolLocation(instruction->result);
     generateInstructionCode(code, "MOV", "%r10", location);
     free(location);
@@ -240,7 +238,7 @@ void generateTwoAddressInstruction(char * code, char * operation, char * dest) {
 }
 
 char * getSymbolLocation(Symbol * symbol) {
-    char * location = (char *) malloc(10 * sizeof(char *));
+    char * location = (char *) malloc(11 * sizeof(char *));
     if(symbol->isGlobal == YES){
         strcpy(location, symbol->name);
         strcat(location, "(%rip)");
@@ -253,11 +251,9 @@ char * getSymbolLocation(Symbol * symbol) {
         strcat(location, "(%rbp)");
     } else {
         int offset = -1 * symbol->offset; //to make it positive
-        if (offset < 56) {
-            offset -= 8;
-            strcpy(location, getRegister(offset / 8));
-        } else {
-            offset += 8 * 7;    //this parameters go after the convention registers for parameters
+        if (offset < 7) {     //case of convention registers (rdi, rsi, etc)
+            strcpy(location, getRegister(offset));
+        } else {    //case of pushed in the stack
             strcat(location, intToString(offset));
             strcat(location, "(%rbp)");
         }

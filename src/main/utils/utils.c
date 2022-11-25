@@ -267,3 +267,19 @@ void setGlobal(struct TreeNode *declGlobal){
     }
 
 }
+
+void setParameterListOffsets(SymbolList *symbolList, struct ParameterList *paramList) {
+    int size = sizeParameter(paramList->head);
+    if(size < 7){
+        return;
+    }
+    
+    struct ParameterNode * currentNode = paramList->head;
+    int offset = 16;
+    for (int i = 1; i <= size - 6; i++) {
+        Symbol * parameter = searchInLevel(symbolList->head->levelSymbols, currentNode->info->id);
+        parameter->offset = offset;
+        offset += 8;
+        currentNode = currentNode->next;
+    }
+}

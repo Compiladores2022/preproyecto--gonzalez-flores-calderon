@@ -15,7 +15,7 @@
 SymbolList list;
 SintacticAnalysisTree sat;
 InstructionList instructionlist;
-int offset = 0, parameterOffset = 8;
+int offset = 0, parameterOffset = 1;
 void yyerror();
 int yylex();
 
@@ -149,7 +149,7 @@ methodDecl: type ID '('  ')'    {   if(search(&list, $2) != NULL){
                                                                 }
                                                                 Symbol *s = createSymbolFull($1, $2, 0, 0, $5, METHOD);
                                                                 insert(&list, s);
-                                                                parameterOffset = 8;
+                                                                parameterOffset = 1;
                                                             }
                                                             body 
                                                             {   
@@ -162,6 +162,7 @@ methodDecl: type ID '('  ')'    {   if(search(&list, $2) != NULL){
                                                                     insert(&list, s);
                                                                 }
                                                                 else{
+                                                                    setParameterListOffsets(&list, $5);
                                                                     addParametersOffset(&list, $8);
                                                                     Symbol *s = search(&list, $2);
                                                                     addFrameSpace(s, calculateFrameSpace($8));
@@ -177,7 +178,7 @@ methodDecl: type ID '('  ')'    {   if(search(&list, $2) != NULL){
                                                                 }
                                                                 Symbol *s = createSymbolFull(TYPEVOID, $2, 0, 0, $5, METHOD);
                                                                 insert(&list, s);
-                                                                parameterOffset = 8;
+                                                                parameterOffset = 1;
                                                             }
                                                             body 
                                                             {   
@@ -189,6 +190,7 @@ methodDecl: type ID '('  ')'    {   if(search(&list, $2) != NULL){
                                                                     insert(&list, s);
                                                                 }
                                                                 else{
+                                                                    setParameterListOffsets(&list, $5);
                                                                     addParametersOffset(&list, $8);                                      
                                                                     Symbol *s = search(&list, $2);
                                                                     addFrameSpace(s, calculateFrameSpace($8));
@@ -216,8 +218,12 @@ listParameters: parameter           {   struct ParameterList *pList = (struct Pa
     ;
 
 parameter: type ID  {   struct Parameter *parameter = createParameter($1, $2);
-                        parameterOffset += 8;
-                        insert(&list, createSymbol($1, $2, NULL, parameterOffset));
+                        if (parameterOffset == 7) {
+                            insert(&list, createSymbol($1, $2, NULL, 0));
+                        } else {
+                            insert(&list, createSymbol($1, $2, NULL, parameterOffset));
+                            parameterOffset++;
+                        }
                         $$ = parameter;
                     }
     ;
