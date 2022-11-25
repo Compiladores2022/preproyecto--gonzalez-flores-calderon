@@ -11,6 +11,7 @@ void generateTwoAddressInstruction(char * code, char * operation, char * dest);
 char * getSymbolLocation(Symbol * symbol);
 int isLabel(struct Instruction * instruction);
 char * getRegister(int param);
+void saveParameters(char * code, Symbol * method);
 
 int paramNum = 1;
 
@@ -116,6 +117,7 @@ void processThreeAddressCode(struct Instruction * instruction, char * code) {
             strcpy(requiredSpace, "$(8 * ");
             strcat(requiredSpace, frameSpace);
             generateInstructionCode(code, "ENTER", strcat(requiredSpace, ")"), "$0");
+            saveParameters(code, instruction->sndOp);
             break;
 
         case METHCALL: {
@@ -240,7 +242,7 @@ void generateTwoAddressInstruction(char * code, char * operation, char * dest) {
 }
 
 char * getSymbolLocation(Symbol * symbol) {
-    char * location = (char *) malloc(11 * sizeof(char *));
+    char * location = (char *) malloc(12 * sizeof(char *));
     if(symbol->isGlobal == YES){
         strcpy(location, symbol->name);
         strcat(location, "(%rip)");
@@ -253,12 +255,8 @@ char * getSymbolLocation(Symbol * symbol) {
         strcat(location, "(%rbp)");
     } else {
         int offset = -1 * symbol->offset; //to make it positive
-        if (offset < 7) {     //case of convention registers (rdi, rsi, etc)
-            strcpy(location, getRegister(offset));
-        } else {    //case of pushed in the stack
-            strcat(location, intToString(offset));
-            strcat(location, "(%rbp)");
-        }
+        strcat(location, intToString(offset));
+        strcat(location, "(%rbp)");
     }
     return location;
 }
@@ -295,4 +293,28 @@ char * getRegister(int param) {
             printf("\n-> ERROR: invalid param number %d\nprocess terminated\n", param);
             exit(0);
     }
+}
+
+void saveParameters(char * code, Symbol * method) {
+    struct ParameterNode * currentNode = method->parameterList->head;
+    int size = sizeParameter(method->parameterList->head);
+    int offset = method->frameSpace;
+    
+    int i = size;
+    while (i > 6) {
+        currentNode = currentNode->next;
+        i--;
+    }
+
+    offset = method->frameSpace * 8 + 8;
+    while (i > 0) {
+        char * location = (char *) malloc(12 * sizeof(char *));
+        strcpy(location, "-");
+        strcat(location, intToString(offset));
+        strcat(location, "(%rbp)");
+
+        generateInstructionCode(code, "MOV", getRegister(i), location);
+        offset += 8;
+        i--;
+    }    
 }

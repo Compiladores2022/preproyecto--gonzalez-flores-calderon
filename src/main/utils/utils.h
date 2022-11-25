@@ -43,6 +43,6 @@ int foundMaxOffset(struct TreeNode *body, int maxOffset);
 
 void setGlobal(struct TreeNode *declGlobal);
 
-void setParameterListOffsets(SymbolList *symbolList, struct ParameterList *paramList);
+void setParameterListOffsets(SymbolList *symbolList, struct ParameterList *paramList, int maxOffset);
 
 #endif

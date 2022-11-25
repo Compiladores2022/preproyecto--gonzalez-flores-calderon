@@ -161,10 +161,11 @@ methodDecl: type ID '('  ')'    {   if(search(&list, $2) != NULL){
                                                                     insert(&list, s);
                                                                 }
                                                                 else{
-                                                                    setParameterListOffsets(&list, $5);
-                                                                    addParametersOffset(&list, $8);
                                                                     Symbol *s = search(&list, $2);
                                                                     addFrameSpace(s, calculateFrameSpace($8));
+                                                                    setParameterListOffsets(&list, $5, s->frameSpace);
+                                                                    s->frameSpace += sizeParameter(s->parameterList->head) >= 6 ? 6 * 8 : sizeParameter(s->parameterList->head) * 8;
+                                                                    addParametersOffset(&list, $8);
                                                                     $$ = createTree(s, $8, NULL);
                                                                     closeLevel(&list);
                                                                     insert(&list, s);
@@ -189,10 +190,11 @@ methodDecl: type ID '('  ')'    {   if(search(&list, $2) != NULL){
                                                                     insert(&list, s);
                                                                 }
                                                                 else{
-                                                                    setParameterListOffsets(&list, $5);
-                                                                    addParametersOffset(&list, $8);                                      
                                                                     Symbol *s = search(&list, $2);
                                                                     addFrameSpace(s, calculateFrameSpace($8));
+                                                                    setParameterListOffsets(&list, $5, s->frameSpace);
+                                                                    s->frameSpace += sizeParameter(s->parameterList->head) >= 6 ? 6 * 8 : sizeParameter(s->parameterList->head) * 8;
+                                                                    addParametersOffset(&list, $8);                                      
                                                                     $$ = createTree(s, $8, NULL);
                                                                     closeLevel(&list);
                                                                     insert(&list, s);
