@@ -1,7 +1,7 @@
 program {
     
     int suma(int x, int y, int a, int b, int c, int d, int e, int f){
-        return x + y + a + b + c + d + e;
+        return x + y + a + b + c + d + e + f;
     }
     
     int main (){
