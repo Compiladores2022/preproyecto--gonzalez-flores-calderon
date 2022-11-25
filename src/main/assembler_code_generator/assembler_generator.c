@@ -143,12 +143,9 @@ void processThreeAddressCode(struct Instruction * instruction, char * code) {
 
         case JMPFALSE: {
             char * location = getSymbolLocation(instruction->fstOp);
-            generateInstructionCode(code, "MOV", location, "%rax");
-            generateInstructionCode(code, "MOV", "%eax", "%rax");
+            generateInstructionCode(code, "MOV", location, "%eax");
             generateInstructionCode(code, "MOV", "%edx", "$1");
             generateInstructionCode(code, "CMP", "%edx", "%eax");
-            //esto podria ser solo CMP location, 1
-            //                     JNE label
 
             generateTwoAddressInstruction(code, "JNE", instruction->result->name);
         } break;
