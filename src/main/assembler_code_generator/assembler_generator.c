@@ -145,7 +145,7 @@ void processThreeAddressCode(struct Instruction * instruction, char * code) {
             char * location = getSymbolLocation(instruction->fstOp);
             generateInstructionCode(code, "MOV", location, "%rax");
             generateInstructionCode(code, "MOV", "%eax", "%rax");
-            generateInstructionCode(code, "MOV", "%edx", "1");
+            generateInstructionCode(code, "MOV", "%edx", "$1");
             generateInstructionCode(code, "CMP", "%edx", "%eax");
             //esto podria ser solo CMP location, 1
             //                     JNE label
@@ -191,7 +191,7 @@ void processThreeAddressCode(struct Instruction * instruction, char * code) {
         default:
             if (isLabel(instruction)) {             //generate a new label
                 strcat(code, instruction->name);
-                strcat(code, "\n");
+                strcat(code, ":\n");
             } else {
                 printf("\n-> ERROR: unrecognized operation %s\nprocess terminated\n", instruction->name);
                 exit(0);
