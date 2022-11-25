@@ -233,7 +233,6 @@ void createParameterInstructions(struct TreeNode *parameters, InstructionList * 
 char * createGenericLabel(char * name) {
     char * label = malloc(strlen(name) + 6 * sizeof(char *));
     strcpy(label, name);
-    strcat(label, " ");
     strcat(label, intToString(labelNumber));
     strcat(label, ":");
     

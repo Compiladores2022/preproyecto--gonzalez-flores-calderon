@@ -296,6 +296,7 @@ char * getRegister(int param) {
 }
 
 void saveParameters(char * code, Symbol * method) {
+    if (method->parameterList == NULL) return;
     struct ParameterNode * currentNode = method->parameterList->head;
     int size = sizeParameter(method->parameterList->head);
     int offset = method->frameSpace;
