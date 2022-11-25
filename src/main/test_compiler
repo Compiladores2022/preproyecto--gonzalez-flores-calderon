@@ -5,7 +5,7 @@
 function testValidProgram {
     total_tests=total_tests+1
     file_output=$(./script_generated/a.out $file)
-    if [[ "$file_output" =~ $error_message ]]; #output contains error message or is empty due to segfault
+    if [[ "$file_output" =~ $valid_tests_error_message ]]; #output contains error message or is empty due to segfault
     then
         printf "\n\n${RED}Test $file_number - $file failed:${NORMAL}\n\n%s" "${file_output}"
     elif [ -z "$file_output" ]
@@ -22,7 +22,7 @@ function testValidProgram {
 function testInvalidProgram {
     total_tests=total_tests+1
     file_output=$(./script_generated/a.out $file)
-    if ! [[ "$file_output" =~ $error_message ]]; #output doesn't contains error message
+    if ! [[ "$file_output" =~ $invalid_tests_error_message ]]; #output doesn't contains error message
     then
         printf "\n\n${RED}Test $file_number - $file failed, compiler didn't detect the error in:${NORMAL}\n\n%s" "${file_output}"
     elif [ -z "$file_output" ]
@@ -59,7 +59,8 @@ declare -i total_tests=0
 RED=$(tput setaf 1) #colors
 GREEN=$(tput setaf 2)
 NORMAL=$(tput sgr0)
-error_message="(-> ERROR|Incompatible types|Conflicting types|Aborted|Segmentation fault)"
+valid_tests_error_message="(-> ERROR|Incompatible types|Conflicting types|Aborted|Segmentation fault|Assembler messages:)"
+invalid_tests_error_message="(-> ERROR|Incompatible types|Conflicting types)"
 
 declare -i file_number=1
 printf "Testing valid programs\n";
