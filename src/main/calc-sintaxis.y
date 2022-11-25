@@ -94,8 +94,7 @@ prog: TProgram '{' declList  methodDeclList '}' {   setGlobal($3);
     | TProgram '{' methodDeclList '}'   { $$ = $3; }
     ;
 
-methodDeclList: methodDecl methodDeclList    { $$ = createNextTree($1, $2);
-                                                offset = 0; }
+methodDeclList: methodDecl { offset = 0; } methodDeclList    { $$ = createNextTree($1, $3); }
     
     | methodDecl          { $$ = createNextTree($1, NULL);
                             offset = 0; }
