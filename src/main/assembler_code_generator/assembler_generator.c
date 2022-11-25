@@ -306,7 +306,7 @@ void saveParameters(char * code, Symbol * method) {
         i--;
     }
 
-    offset = method->frameSpace * 8 + 8;
+    offset = method->frameSpace * 8 - 8;
     while (i > 0) {
         char * location = (char *) malloc(12 * sizeof(char *));
         strcpy(location, "-");
@@ -314,7 +314,7 @@ void saveParameters(char * code, Symbol * method) {
         strcat(location, "(%rbp)");
 
         generateInstructionCode(code, "MOV", getRegister(i), location);
-        offset += 8;
+        offset -= 8;
         i--;
     }    
 }

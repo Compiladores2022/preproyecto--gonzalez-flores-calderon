@@ -110,9 +110,6 @@ void addFrameSpace(Symbol *symbol, int frameSpace){
         printf("\033[0;31m-> ERROR: \033[0m Symbol %s already has a frame space setted\n", symbol->name);
         exit(0);
     }
-    if(frameSpace % 2 != 0){
-        frameSpace++;
-    }
     symbol->frameSpace = frameSpace;
 }
 

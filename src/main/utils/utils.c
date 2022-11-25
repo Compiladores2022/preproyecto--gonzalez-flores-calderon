@@ -289,6 +289,7 @@ void setParameterListOffsets(SymbolList *symbolList, struct ParameterList *param
     for (int i = 1; i <= size; i++) {    //add offset for the first 6 parameters
         Symbol * parameter = searchInLevel(symbolList->head->levelSymbols, currentNode->info->id);
         parameter->offset = offset;
+        printf("symbol %s tiene offset %d\n", parameter->name, parameter->offset);
         offset += 8;
         currentNode = currentNode->next;
     }
