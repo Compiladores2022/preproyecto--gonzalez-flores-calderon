@@ -172,11 +172,11 @@ void processThreeAddressCode(struct Instruction * instruction, char * code) {
             generateInstructionCode(code, "ENTER", strcat(requiredSpace, ")"), "$0");
         } break;
 
-        case VARIABLEGLOBAL: {
+        case GLOBALVARIABLE: {
             int value = *(int*)instruction->result->value;
             strcat(code, "\n.globl \t");
             strcat(code, instruction->result->name);
-            strcat(code, "\n.align 4\n.type\t");
+            strcat(code, "\n.align  4\n.type\t");
             strcat(code, instruction->result->name);
             strcat(code, ", @object\n");
             strcat(code, ".size\t");
@@ -258,6 +258,7 @@ char * getSymbolLocation(Symbol * symbol) {
         strcat(location, intToString(offset));
         strcat(location, "(%rbp)");
     }
+    
     return location;
 }
 
