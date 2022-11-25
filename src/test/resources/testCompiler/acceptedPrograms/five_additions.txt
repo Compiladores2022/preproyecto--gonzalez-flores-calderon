@@ -1,0 +1,26 @@
+program {
+    
+    int suma5(int x){
+        return x;
+    }
+    
+    int suma4(int x){
+        return x + suma5(5);
+    }
+    
+    int suma3(int x){
+        return x + suma4(4);
+    }
+    
+    int suma2(int x){
+        return x + suma3(3);
+    }
+    
+    int suma(int x){
+        return x + suma2(2);
+    }
+    
+    int main (){            //15
+       return suma(1);
+    }
+}
