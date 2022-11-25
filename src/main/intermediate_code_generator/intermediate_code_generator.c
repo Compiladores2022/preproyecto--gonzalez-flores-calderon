@@ -206,6 +206,7 @@ Symbol * addCurrentInstruction(struct TreeNode *tree, InstructionList * codeList
             } break;
         case GLOBALVARIABLE: {// t}his case variable globals
             instruction = createInstruction("GLOBALVARIABLE", temp2, NULL, temp1);
+            temp1->value = temp2->value;
             }break;
         default: printf("-> ERROR: %s is not an operator\n", tree->info->name);
             exit(0);
