@@ -181,8 +181,8 @@ int stringToOperation(char *string) {
     else if (strcmp(string, "MAINMETHOD") == 0){
         return MAINMETHOD;
     }
-    else if (strcmp(string, "VARIABLEGLOGAL") == 0){
-        return VARIABLEGLOBAL;
+    else if (strcmp(string, "GLOBALVARIABLE") == 0){
+        return GLOBALVARIABLE;
     }
     else {
         return -1;

@@ -200,13 +200,14 @@ Symbol * addCurrentInstruction(struct TreeNode *tree, InstructionList * codeList
             insertInstructionNode(codeList, createInstruction("JMP", NULL, NULL, whileCheckLabel));
             instruction = createInstruction(endLabel->name, NULL, NULL, NULL);  //insert while end label
             } break;
-        case NEXTBLOCK: //this case happens when a new block is inserted inside another block
+        case NEXTBLOCK: { //this case happens when a new block is inserted inside another block
             translateTreeIntoCode(tree, codeList);
             instruction = NULL;
-            break;
-        case VARIABLEGLOBAL: // this case variable globals
-            instruction = createInstruction("VARIABLEGLOGAL", temp2, NULL, temp1);
-            break;
+            } break;
+        case GLOBALVARIABLE: {// t}his case variable globals
+            instruction = createInstruction("GLOBALVARIABLE", temp2, NULL, temp1);
+            temp1->value = temp2->value;
+            }break;
         default: printf("-> ERROR: %s is not an operator\n", tree->info->name);
             exit(0);
     }
@@ -253,13 +254,17 @@ char * createLabel(char* name) {
 char * getOperationName(Symbol * s) {
     if (s->it == METHOD) {
         return "methoddecl";
-    } else if (s->it == EXTERNMETHOD) {
+    } 
+    else if (s->it == EXTERNMETHOD) {
         return "externmethod";
-    } else if (s->it == METHODCALL) {
+    } 
+    else if (s->it == METHODCALL) {
         return "methodcall";
-    } else if (s->isGlobal == YES) {
-        return "VARIABLEGLOGAL";
-    } else {
+    } 
+    else if (s->isGlobal == YES) {
+        return "GLOBALVARIABLE";
+    } 
+    else {
         return s->name;
     }
 }
