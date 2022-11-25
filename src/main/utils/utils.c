@@ -50,7 +50,7 @@ struct TreeNode * createNewTreeWithParameters(types symbolType, struct TreeNode 
 
 struct TreeNode * createNewNode(types symbolType, char * operation, identifierType identifiertype){
     
-    Symbol *s = createSymbol(symbolType, operation, 0, 0);
+    Symbol *s = createSymbol(symbolType, operation, NULL, 0);
     addIdentifierType(s, identifiertype);
     struct TreeNode * newNode = createNode(s);
     return newNode;
@@ -58,7 +58,7 @@ struct TreeNode * createNewNode(types symbolType, char * operation, identifierTy
 
 struct TreeNode * createNewNodeWithParameters(types symbolType, char * operation, identifierType identifiertype, struct ParameterList * parameters){
     
-    Symbol *s = createSymbolWithParameter(symbolType, operation, 0, 0, parameters);
+    Symbol *s = createSymbolWithParameter(symbolType, operation, NULL, 0, parameters);
     addIdentifierType(s, identifiertype);
     struct TreeNode * newNode = createNode(s);
     return newNode;
