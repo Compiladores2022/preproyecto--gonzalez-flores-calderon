@@ -204,6 +204,9 @@ Symbol * addCurrentInstruction(struct TreeNode *tree, InstructionList * codeList
             translateTreeIntoCode(tree, codeList);
             instruction = NULL;
             break;
+        case VARIABLEGLOBAL: // this case variable globals
+            instruction = createInstruction("VARIABLEGLOGAL", temp2, NULL, temp1);
+            break;
         default: printf("-> ERROR: %s is not an operator\n", tree->info->name);
             exit(0);
     }
@@ -254,6 +257,8 @@ char * getOperationName(Symbol * s) {
         return "externmethod";
     } else if (s->it == METHODCALL) {
         return "methodcall";
+    } else if (s->isGlobal == YES) {
+        return "VARIABLEGLOGAL";
     } else {
         return s->name;
     }
